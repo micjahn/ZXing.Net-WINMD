@@ -33,6 +33,8 @@ namespace ZXing
 
       private static readonly Func<byte[], int, int, BitmapFormat, LuminanceSource> defaultCreateRGBLuminanceSource =
          (rawBytes, width, height, format) => new RGBLuminanceSource(rawBytes, width, height, format);
+      private static readonly Func<WriteableBitmap, LuminanceSource> defaultCreateLuminanceSource =
+         (bitmap) => new BitmapLuminanceSource(bitmap);
 
       private Reader reader;
       private readonly IDictionary<DecodeHintType, object> hints;
@@ -209,7 +211,7 @@ namespace ZXing
       {
          get
          {
-            return createLuminanceSource;
+            return createLuminanceSource ?? defaultCreateLuminanceSource;
          }
       }
 
@@ -229,7 +231,7 @@ namespace ZXing
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric"/> class.
+      /// Initializes a new instance of the <see cref="BarcodeReader"/> class.
       /// </summary>
       public BarcodeReader()
          : this(new MultiFormatReader(), null, defaultCreateBinarizer)
@@ -237,7 +239,7 @@ namespace ZXing
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric"/> class.
+      /// Initializes a new instance of the <see cref="BarcodeReader"/> class.
       /// </summary>
       /// <param name="reader">Sets the reader which should be used to find and decode the barcode.
       /// If null then MultiFormatReader is used</param>
@@ -254,7 +256,7 @@ namespace ZXing
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric&lt;T&gt;"/> class.
+      /// Initializes a new instance of the <see cref="BarcodeReader"/> class.
       /// </summary>
       /// <param name="reader">Sets the reader which should be used to find and decode the barcode.
       /// If null then MultiFormatReader is used</param>
