@@ -191,7 +191,7 @@ namespace ZXing.QrCode.Internal
             return false;
          }
          var other = (FormatInformation)o;
-         return errorCorrectionLevel == other.errorCorrectionLevel && dataMask == other.dataMask;
+         return errorCorrectionLevel.Equals(other.errorCorrectionLevel) && dataMask == other.dataMask;
       }
    }
 }

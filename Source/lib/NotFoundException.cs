@@ -22,7 +22,7 @@ namespace ZXing
    /// <author>Sean Owen</author>
    /// </summary>
    [System.Obsolete("Isn't used anymore, will be removed with next version")]
-   public sealed class NotFoundException : ReaderException
+   internal sealed class NotFoundException : ReaderException
    {
       private static readonly NotFoundException instance = new NotFoundException();
 

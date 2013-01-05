@@ -19,7 +19,7 @@ using System;
 namespace ZXing.Client.Result
 {
    /// <author>dswitkin@google.com (Daniel Switkin)</author>
-   public sealed class ProductParsedResult : ParsedResult
+   internal sealed class ProductParsedResult : ParsedResult
    {
       internal ProductParsedResult(String productID)
          : this(productID, productID)

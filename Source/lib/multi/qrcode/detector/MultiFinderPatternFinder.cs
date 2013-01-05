@@ -190,7 +190,7 @@ namespace ZXing.Multi.QrCode.Internal
                   }
 
                   FinderPattern[] test = { p1, p2, p3 };
-                  ResultPoint.orderBestPatterns(test);
+                  FinderPattern.orderBestPatterns(test);
 
                   // Calculate the distances: a = topleft-bottomleft, b=topleft-topright, c = diagonal
                   FinderPatternInfo info = new FinderPatternInfo(test);
@@ -336,7 +336,7 @@ namespace ZXing.Multi.QrCode.Internal
          List<FinderPatternInfo> result = new List<FinderPatternInfo>();
          foreach (FinderPattern[] pattern in patternInfo)
          {
-            ResultPoint.orderBestPatterns(pattern);
+            FinderPattern.orderBestPatterns(pattern);
             result.Add(new FinderPatternInfo(pattern));
          }
 

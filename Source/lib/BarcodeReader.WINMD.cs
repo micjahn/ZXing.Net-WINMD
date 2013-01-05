@@ -26,7 +26,7 @@ namespace ZXing
    /// <summary>
    /// A smart class to decode the barcode inside a bitmap object
    /// </summary>
-   public class BarcodeReader : IBarcodeReader, IMultipleBarcodeReader
+   public sealed class BarcodeReader : IBarcodeReader // , IMultipleBarcodeReader
    {
       private static readonly Func<LuminanceSource, Binarizer> defaultCreateBinarizer =
          (luminanceSource) => new HybridBinarizer(luminanceSource);
@@ -58,7 +58,7 @@ namespace ZXing
       /// <summary>
       /// event is executed if a result was found via decode
       /// </summary>
-      public event Action<Result> ResultFound;
+      //public event Action<Result> ResultFound;
 
       /// <summary>
       /// Gets or sets a flag which cause a deeper look into the bitmap
@@ -298,7 +298,7 @@ namespace ZXing
          return Decode(luminanceSource);
       }
 
-      virtual protected Result Decode(LuminanceSource luminanceSource)
+      private Result Decode(LuminanceSource luminanceSource)
       {
          var result = default(Result);
          var binarizer = CreateBinarizer(luminanceSource);
@@ -343,7 +343,7 @@ namespace ZXing
                result.ResultMetadata[ResultMetadataType.ORIENTATION] = ((int)(result.ResultMetadata[ResultMetadataType.ORIENTATION]) + rotationCount * 90) % 360;
             }
 
-            OnResultFound(result);
+//            OnResultFound(result);
          }
 
          return result;
@@ -368,7 +368,7 @@ namespace ZXing
          return DecodeMultiple(luminanceSource);
       }
 
-      virtual protected Result[] DecodeMultiple(LuminanceSource luminanceSource)
+      private Result[] DecodeMultiple(LuminanceSource luminanceSource)
       {
          var results = default(Result[]);
          var binarizer = CreateBinarizer(luminanceSource);
@@ -421,30 +421,30 @@ namespace ZXing
                }
             }
 
-            OnResultsFound(results);
+//            OnResultsFound(results);
          }
 
          return results;
       }
 
-      protected void OnResultsFound(IEnumerable<Result> results)
-      {
-         if (ResultFound != null)
-         {
-            foreach (var result in results)
-            {
-               ResultFound(result);
-            }
-         }
-      }
+      //      protected void OnResultsFound(IEnumerable<Result> results)
+//      {
+//         if (ResultFound != null)
+//         {
+//            foreach (var result in results)
+//            {
+//               ResultFound(result);
+//            }
+//         }
+//      }
 
-      protected void OnResultFound(Result result)
-      {
-         if (ResultFound != null)
-         {
-            ResultFound(result);
-         }
-      }
+//      protected void OnResultFound(Result result)
+//      {
+//         if (ResultFound != null)
+//         {
+//            ResultFound(result);
+//         }
+//      }
 
       /// <summary>
       /// Decodes the specified barcode bitmap.
@@ -456,7 +456,7 @@ namespace ZXing
       /// <returns>
       /// the result data or null
       /// </returns>
-      public Result Decode(byte[] rawRGB, int width, int height, BitmapFormat format)
+      public Result Decode([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] rawRGB, int width, int height, BitmapFormat format)
       {
          if (rawRGB == null)
             throw new ArgumentNullException("rawRGB");
@@ -476,7 +476,7 @@ namespace ZXing
       /// <returns>
       /// the result data or null
       /// </returns>
-      public Result[] DecodeMultiple(byte[] rawRGB, int width, int height, BitmapFormat format)
+      public Result[] DecodeMultiple([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] rawRGB, int width, int height, BitmapFormat format)
       {
          if (rawRGB == null)
             throw new ArgumentNullException("rawRGB");

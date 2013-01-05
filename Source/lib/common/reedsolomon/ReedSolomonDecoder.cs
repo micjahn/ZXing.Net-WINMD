@@ -42,7 +42,7 @@ namespace ZXing.Common.ReedSolomon
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public sealed class ReedSolomonDecoder
+   internal sealed class ReedSolomonDecoder
    {
       private readonly GenericGF field;
 

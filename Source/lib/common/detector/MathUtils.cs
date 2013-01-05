@@ -18,7 +18,7 @@ using System;
 
 namespace ZXing.Common.Detector
 {
-   public static class MathUtils
+   internal static class MathUtils
    {
       /// <summary>
       /// Ends up being a bit faster than {@link Math#round(float)}. This merely rounds its

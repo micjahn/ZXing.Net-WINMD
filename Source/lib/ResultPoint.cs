@@ -26,7 +26,7 @@ namespace ZXing
    /// </summary>
    /// <author>Sean Owen</author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source</author>
-   public class ResultPoint
+   public sealed class ResultPoint
    {
       private readonly float x;
       private readonly float y;
@@ -58,7 +58,7 @@ namespace ZXing
       /// <summary>
       /// Gets the X.
       /// </summary>
-      virtual public float X
+      public float X
       {
          get
          {
@@ -69,7 +69,7 @@ namespace ZXing
       /// <summary>
       /// Gets the Y.
       /// </summary>
-      virtual public float Y
+      public float Y
       {
          get
          {
@@ -84,7 +84,7 @@ namespace ZXing
       /// <returns>
       ///   <c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
       /// </returns>
-      public override bool Equals(Object other)
+      public sealed override bool Equals(Object other)
       {
          var otherPoint = other as ResultPoint;
          if (otherPoint == null)
@@ -98,7 +98,7 @@ namespace ZXing
       /// <returns>
       /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
       /// </returns>
-      public override int GetHashCode()
+      public sealed override int GetHashCode()
       {
          return 31 * ((bytesX[0] << 24) + (bytesX[1] << 16) + (bytesX[2] << 8) + bytesX[3]) +
                       (bytesY[0] << 24) + (bytesY[1] << 16) + (bytesY[2] << 8) + bytesY[3];
@@ -110,7 +110,7 @@ namespace ZXing
       /// <returns>
       /// A <see cref="System.String"/> that represents this instance.
       /// </returns>
-      public override String ToString()
+      public sealed override String ToString()
       {
          if (toString == null)
          {
@@ -125,7 +125,7 @@ namespace ZXing
       /// Orders an array of three ResultPoints in an order [A,B,C] such that AB &lt; AC and
       /// BC &lt; AC and the angle between BC and BA is less than 180 degrees.
       /// </summary>
-      public static void orderBestPatterns(ResultPoint[] patterns)
+      internal static void orderBestPatterns(ResultPoint[] patterns)
       {
          // Find distances between pattern centers
          float zeroOneDistance = distance(patterns[0], patterns[1]);

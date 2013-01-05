@@ -24,7 +24,7 @@ namespace ZXing.OneD
    /// This object renders an EAN13 code as a <see cref="BitMatrix"/>.
    /// <author>aripollak@gmail.com (Ari Pollak)</author>
    /// </summary>
-   public sealed class EAN13Writer : UPCEANWriter
+   internal sealed class EAN13Writer : UPCEANWriter
    {
       private const int CODE_WIDTH = 3 + // start guard
           (7 * 6) + // left bars

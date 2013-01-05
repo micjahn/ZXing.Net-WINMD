@@ -33,7 +33,7 @@ namespace ZXing.Rendering
    /// <summary>
    /// Renders a <see cref="BitMatrix" /> to a <see cref="WriteableBitmap" />
    /// </summary>
-   public class WriteableBitmapRenderer : IBarcodeRenderer<WriteableBitmap>
+   public sealed class WriteableBitmapRenderer : IBarcodeRenderer
    {
       /// <summary>
       /// Gets or sets the foreground color.
@@ -126,7 +126,7 @@ namespace ZXing.Rendering
       /// <param name="content">The content.</param>
       /// <param name="options">The options.</param>
       /// <returns></returns>
-      virtual public WriteableBitmap Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
+      public WriteableBitmap Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
       {
          int width = matrix.Width;
          int height = matrix.Height;

@@ -22,7 +22,7 @@ namespace ZXing.Client.Result
    /// A simple result type encapsulating a string that has no further interpretation.
    /// </summary>
    /// <author>Sean Owen</author>
-   public sealed class TextParsedResult : ParsedResult
+   internal sealed class TextParsedResult : ParsedResult
    {
       public TextParsedResult(String text, String language)
          : base(ParsedResultType.TEXT)

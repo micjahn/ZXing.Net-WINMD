@@ -17,17 +17,7 @@
 using System;
 using System.Collections.Generic;
 
-#if !(SILVERLIGHT || NETFX_CORE)
-#if !UNITY
-using System.Drawing;
-#else
-using UnityEngine;
-#endif
-#elif NETFX_CORE
 using Windows.UI.Xaml.Media.Imaging;
-#else
-using System.Windows.Media.Imaging;
-#endif
 
 namespace ZXing
 {
@@ -39,7 +29,7 @@ namespace ZXing
       /// <summary>
       /// event is executed when a result was found via decode
       /// </summary>
-      event Action<Result> ResultFound;
+      //event Action<Result> ResultFound;
 
       /// <summary>
       /// Gets or sets a flag which cause a deeper look into the bitmap
@@ -84,47 +74,13 @@ namespace ZXing
       /// <returns>
       /// the result data or null
       /// </returns>
-      Result Decode(byte[] rawRGB, int width, int height, BitmapFormat format);
+      Result Decode([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] rawRGB, int width, int height, BitmapFormat format);
 
-#if MONOTOUCH
-      /// <summary>
-      /// Decodes the specified barcode bitmap.
-      /// </summary>
-      /// <param name="barcodeBitmap">The barcode bitmap.</param>
-      /// <returns>the result data or null</returns>
-      Result Decode(MonoTouch.UIKit.UIImage barcodeImage);
-#elif MONOANDROID
-      /// <summary>
-      /// Decodes the specified barcode bitmap.
-      /// </summary>
-      /// <param name="barcodeBitmap">The barcode bitmap.</param>
-      /// <returns>the result data or null</returns>
-      Result Decode(Android.Graphics.Bitmap barcodeImage);
-#else
-#if !(SILVERLIGHT || NETFX_CORE)
-#if !UNITY
-      /// <summary>
-      /// Decodes the specified barcode bitmap.
-      /// </summary>
-      /// <param name="barcodeBitmap">The barcode bitmap.</param>
-      /// <returns>the result data or null</returns>
-      Result Decode(Bitmap barcodeBitmap);
-#else
-      /// <summary>
-      /// Decodes the specified barcode bitmap.
-      /// </summary>
-      /// <param name="rawColor32">The image as Color32 array.</param>
-      /// <returns>the result data or null</returns>
-      Result Decode(Color32[] rawColor32, int width, int height);
-#endif
-#else
       /// <summary>
       /// Decodes the specified barcode bitmap.
       /// </summary>
       /// <param name="barcodeBitmap">The barcode bitmap.</param>
       /// <returns>the result data or null</returns>
       Result Decode(WriteableBitmap barcodeBitmap);
-#endif
-#endif
    }
 }

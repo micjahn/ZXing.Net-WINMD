@@ -26,9 +26,9 @@ namespace ZXing.Client.Result
    /// for purposes of forwarding to the platform.</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public class SMSTOMMSTOResultParser : ResultParser
+   internal sealed class SMSTOMMSTOResultParser : ResultParser
    {
-      override public ParsedResult parse(ZXing.Result result)
+      override sealed public ParsedResult parse(ZXing.Result result)
       {
          String rawText = result.Text;
          if (!(rawText.StartsWith("smsto:") || rawText.StartsWith("SMSTO:") ||
@@ -46,7 +46,7 @@ namespace ZXing.Client.Result
             body = number.Substring(bodyStart + 1);
             number = number.Substring(0, bodyStart);
          }
-         return new SMSParsedResult(number, null, null, body);
+         return new SMSParsedResult(number, null, null, body, true);
       }
    }
 }

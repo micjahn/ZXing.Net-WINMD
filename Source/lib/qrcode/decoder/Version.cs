@@ -24,7 +24,7 @@ namespace ZXing.QrCode.Internal
    /// See ISO 18004:2006 Annex D
    /// </summary>
    /// <author>Sean Owen</author>
-   public sealed class Version
+   internal sealed class Version
    {
       /// <summary> See ISO 18004:2006 Annex D.
       /// Element i represents the raw version bits that specify version i + 7
@@ -237,7 +237,7 @@ namespace ZXing.QrCode.Internal
       /// each set of blocks. It also holds the number of error-correction codewords per block since it
       /// will be the same across all blocks within one version.</p>
       /// </summary>
-      public sealed class ECBlocks
+      internal sealed class ECBlocks
       {
          private readonly int ecCodewordsPerBlock;
          private readonly ECB[] ecBlocks;
@@ -300,7 +300,7 @@ namespace ZXing.QrCode.Internal
       /// This includes the number of data codewords, and the number of times a block with these
       /// parameters is used consecutively in the QR code version's format.</p>
       /// </summary>
-      public sealed class ECB
+      internal sealed class ECB
       {
          private readonly int count;
          private readonly int dataCodewords;

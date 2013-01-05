@@ -32,7 +32,7 @@ namespace ZXing.Client.Result
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public abstract class ParsedResult
+   internal abstract class ParsedResult
    {
       protected string displayResultValue;
 

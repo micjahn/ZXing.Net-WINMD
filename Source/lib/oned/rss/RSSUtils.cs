@@ -19,7 +19,7 @@ namespace ZXing.OneD.RSS
    /// <summary>
    /// Adapted from listings in ISO/IEC 24724 Appendix B and Appendix G.
    /// </summary>
-   public static class RSSUtils
+   internal static class RSSUtils
    {
       /// <summary>
       /// Gets the RS swidths.

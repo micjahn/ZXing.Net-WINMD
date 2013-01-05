@@ -25,7 +25,7 @@ namespace ZXing.OneD
    /// 
    /// <author>erik.barbara@gmail.com (Erik Barbara)</author>
    /// </summary>
-   public sealed class Code128Writer : OneDimensionalCodeWriter
+   internal sealed class Code128Writer : OneDimensionalCodeWriter
    {
       private const int CODE_START_B = 104;
       private const int CODE_START_C = 105;

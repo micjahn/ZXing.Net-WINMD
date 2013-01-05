@@ -26,14 +26,94 @@ namespace ZXing.QrCode.Internal
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   internal sealed class AlignmentPattern : ResultPoint
+   internal sealed class AlignmentPattern
    {
       private float estimatedModuleSize;
+      private readonly float x;
+      private readonly float y;
+      private readonly byte[] bytesX;
+      private readonly byte[] bytesY;
+      private String toString;
 
       internal AlignmentPattern(float posX, float posY, float estimatedModuleSize)
-         : base(posX, posY)
       {
          this.estimatedModuleSize = estimatedModuleSize;
+         this.x = posX;
+         this.y = posY;
+         // calculate only once for GetHashCode
+         bytesX = BitConverter.GetBytes(x);
+         bytesY = BitConverter.GetBytes(y);
+      }
+
+      /// <summary>
+      /// Gets the X.
+      /// </summary>
+      public float X
+      {
+         get
+         {
+            return x;
+         }
+      }
+
+      /// <summary>
+      /// Gets the Y.
+      /// </summary>
+      public float Y
+      {
+         get
+         {
+            return y;
+         }
+      }
+
+      /// <summary>
+      /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+      /// </summary>
+      /// <param name="other">The <see cref="System.Object"/> to compare with this instance.</param>
+      /// <returns>
+      ///   <c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+      /// </returns>
+      public sealed override bool Equals(Object other)
+      {
+         var otherPoint = other as AlignmentPattern;
+         if (otherPoint == null)
+            return false;
+         return x == otherPoint.x && y == otherPoint.y;
+      }
+
+      /// <summary>
+      /// Returns a hash code for this instance.
+      /// </summary>
+      /// <returns>
+      /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+      /// </returns>
+      public sealed override int GetHashCode()
+      {
+         return 31 * ((bytesX[0] << 24) + (bytesX[1] << 16) + (bytesX[2] << 8) + bytesX[3]) +
+                      (bytesY[0] << 24) + (bytesY[1] << 16) + (bytesY[2] << 8) + bytesY[3];
+      }
+
+      /// <summary>
+      /// Returns a <see cref="System.String"/> that represents this instance.
+      /// </summary>
+      /// <returns>
+      /// A <see cref="System.String"/> that represents this instance.
+      /// </returns>
+      public sealed override String ToString()
+      {
+         if (toString == null)
+         {
+            var result = new System.Text.StringBuilder(25);
+            result.AppendFormat(System.Globalization.CultureInfo.CurrentUICulture, "({0}, {1})", x, y);
+            toString = result.ToString();
+         }
+         return toString;
+      }
+
+      public static implicit operator ResultPoint(AlignmentPattern point)
+      {
+         return new ResultPoint(point.X, point.Y);
       }
 
       /// <summary> <p>Determines if this alignment pattern "about equals" an alignment pattern at the stated

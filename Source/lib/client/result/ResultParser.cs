@@ -34,7 +34,7 @@ namespace ZXing.Client.Result
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public abstract class ResultParser
+   internal abstract class ResultParser
    {
       private static ResultParser[] PARSERS = {
                                                  new BookmarkDoCoMoResultParser(),

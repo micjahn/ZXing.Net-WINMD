@@ -22,7 +22,7 @@ using System.Text.RegularExpressions;
 namespace ZXing.Client.Result
 {
    ///<author>Sean Owen</author>
-   public sealed class CalendarParsedResult : ParsedResult
+   internal sealed class CalendarParsedResult : ParsedResult
    {
       private static readonly Regex RFC2445_DURATION = new Regex("P(?:(\\d+)W)?(?:(\\d+)D)?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?)?"
 #if !(SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE)
@@ -76,7 +76,7 @@ namespace ZXing.Client.Result
                                   String durationString,
                                   String location,
                                   String organizer,
-                                  String[] attendees,
+                                  [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] String[] attendees,
                                   String description,
                                   double latitude,
                                   double longitude)
@@ -138,7 +138,7 @@ namespace ZXing.Client.Result
       /// <summary>
       /// Gets the start.
       /// </summary>
-      public DateTime Start
+      public object Start
       {
          get { return start; }
       }
@@ -155,7 +155,7 @@ namespace ZXing.Client.Result
       /// <summary>
       /// May return null if the event has no duration.
       /// </summary>
-      public DateTime? End
+      public object End
       {
          get { return end; }
       }

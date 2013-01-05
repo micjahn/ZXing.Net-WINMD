@@ -24,7 +24,7 @@ namespace ZXing
 	/// </summary>
 	/// <author>dswitkin@google.com (Daniel Switkin)</author>
 	[Serializable]
-	public sealed class WriterException : Exception
+	internal sealed class WriterException : Exception
 	{
       /// <summary>
       /// Initializes a new instance of the <see cref="WriterException"/> class.

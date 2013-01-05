@@ -25,7 +25,7 @@ namespace ZXing.Client.Result
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public class ISBNResultParser : ResultParser
+   internal class ISBNResultParser : ResultParser
    {
       /// <summary>
       /// See <a href="http://www.bisg.org/isbn-13/for.dummies.html">ISBN-13 For Dummies</a>

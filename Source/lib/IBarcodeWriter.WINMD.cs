@@ -1,5 +1,5 @@
-/*
- * Copyright 2009 ZXing authors
+﻿/*
+ * Copyright 2012 ZXing.Net authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-namespace ZXing.OneD
+using ZXing.Common;
+
+namespace ZXing
 {
    /// <summary>
-   ///   <p>Encapsulates functionality and implementation that is common to UPC and EAN families
-   /// of one-dimensional barcodes.</p>
-   ///   <author>aripollak@gmail.com (Ari Pollak)</author>
-   ///   <author>dsbnatut@gmail.com (Kazuki Nishiura)</author>
+   /// Interface for a smart class to encode some content into a barcode
    /// </summary>
-   internal abstract class UPCEANWriter : OneDimensionalCodeWriter
+   public interface IBarcodeWriter
    {
       /// <summary>
-      /// Gets the default margin.
+      /// Encodes the specified contents.
       /// </summary>
-      public sealed override int DefaultMargin
-      {
-         get
-         {
-            // Use a different default more appropriate for UPC/EAN
-            return UPCEANReader.START_END_PATTERN.Length;
-         }
-      }
+      /// <param name="contents">The contents.</param>
+      /// <returns></returns>
+      BitMatrix Encode(string contents);
+
+      /// <summary>
+      /// Creates a visual representation of the contents
+      /// </summary>
+      Windows.UI.Xaml.Media.Imaging.WriteableBitmap Write(string contents);
    }
 }

@@ -24,7 +24,7 @@ namespace ZXing.QrCode.Internal
    /// <author>Satoru Takabayashi</author>
    /// <author>Daniel Switkin</author>
    /// <author>Sean Owen</author>
-   public static class MaskUtil
+   internal static class MaskUtil
    {
       // Penalty weights from section 6.8.2.1
       private const int N1 = 3;

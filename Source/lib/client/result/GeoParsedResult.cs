@@ -21,7 +21,7 @@ using System.Text;
 namespace ZXing.Client.Result
 {
    /// <author>Sean Owen</author>
-   public sealed class GeoParsedResult : ParsedResult
+   internal sealed class GeoParsedResult : ParsedResult
    {
       internal GeoParsedResult(double latitude, double longitude, double altitude, String query)
          : base(ParsedResultType.GEO)

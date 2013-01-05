@@ -21,7 +21,7 @@ namespace ZXing.QrCode.Internal
 {
    /// <author>satorux@google.com (Satoru Takabayashi) - creator</author>
    /// <author>dswitkin@google.com (Daniel Switkin) - ported from C++</author>
-   public sealed class QRCode
+   internal sealed class QRCode
    {
       /// <summary>
       /// 

@@ -60,8 +60,8 @@ namespace ZXing
       /// <param name="resultPoints">The result points.</param>
       /// <param name="format">The format.</param>
       public Result(String text,
-                    byte[] rawBytes,
-                    ResultPoint[] resultPoints,
+                    [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawBytes,
+                    [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] ResultPoint[] resultPoints,
                     BarcodeFormat format)
          : this(text, rawBytes, resultPoints, format, DateTime.Now.Ticks)
       {
@@ -75,7 +75,11 @@ namespace ZXing
       /// <param name="resultPoints">The result points.</param>
       /// <param name="format">The format.</param>
       /// <param name="timestamp">The timestamp.</param>
-      public Result(String text, byte[] rawBytes, ResultPoint[] resultPoints, BarcodeFormat format, long timestamp)
+      public Result(String text,
+         [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawBytes,
+         [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] ResultPoint[] resultPoints, 
+         BarcodeFormat format, 
+         long timestamp)
       {
          if (text == null && rawBytes == null)
          {
@@ -127,7 +131,7 @@ namespace ZXing
       /// Adds the result points.
       /// </summary>
       /// <param name="newPoints">The new points.</param>
-      public void addResultPoints(ResultPoint[] newPoints)
+      public void addResultPoints([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] ResultPoint[] newPoints)
       {
          var oldPoints = ResultPoints;
          if (oldPoints == null)

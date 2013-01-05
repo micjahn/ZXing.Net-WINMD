@@ -19,7 +19,7 @@ using System;
 namespace ZXing.Client.Result
 {
    /// <author>Sean Owen</author>
-   public sealed class TelParsedResult : ParsedResult
+   internal sealed class TelParsedResult : ParsedResult
    {
       public TelParsedResult(String number, String telURI, String title)
          : base(ParsedResultType.TEL)

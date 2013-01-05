@@ -26,7 +26,7 @@ namespace ZXing.PDF417
    /// The class holds the available options for the <see cref="PDF417Writer" />
    /// </summary>
    [Serializable]
-   public class PDF417EncodingOptions : IEncodingOptions
+   public sealed class PDF417EncodingOptions : IEncodingOptions
    {
       /// <summary>
       /// Gets the data container for all options

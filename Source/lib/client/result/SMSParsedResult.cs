@@ -20,18 +20,19 @@ using System.Text;
 namespace ZXing.Client.Result
 {
    /// <author>Sean Owen</author>
-   public sealed class SMSParsedResult : ParsedResult
+   internal sealed class SMSParsedResult : ParsedResult
    {
       public SMSParsedResult(String number,
                              String via,
                              String subject,
-                             String body)
+                             String body,
+                             bool dummy)
          : this(new[] { number }, new[] { via }, subject, body)
       {
       }
 
-      public SMSParsedResult(String[] numbers,
-                             String[] vias,
+      public SMSParsedResult([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]String[] numbers,
+                             [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]String[] vias,
                              String subject,
                              String body)
          : base(ParsedResultType.SMS)

@@ -28,7 +28,7 @@ namespace ZXing.Common.ReedSolomon
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public sealed class ReedSolomonEncoder
+   internal sealed class ReedSolomonEncoder
    {
       private readonly GenericGF field;
       private readonly IList<GenericGFPoly> cachedGenerators;

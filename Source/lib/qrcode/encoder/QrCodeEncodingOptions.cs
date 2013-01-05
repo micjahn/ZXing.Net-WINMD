@@ -26,7 +26,7 @@ namespace ZXing.QrCode
    /// The class holds the available options for the QrCodeWriter
    /// </summary>
    [Serializable]
-   public class QrCodeEncodingOptions : IEncodingOptions
+   public sealed class QrCodeEncodingOptions : IEncodingOptions
    {
       /// <summary>
       /// Gets the data container for all options
@@ -125,7 +125,7 @@ namespace ZXing.QrCode
       /// Type depends on the encoder. For example for QR codes it's type
       /// {@link com.google.zxing.qrcode.decoder.ErrorCorrectionLevel ErrorCorrectionLevel}.
       /// </summary>
-      public ErrorCorrectionLevel ErrorCorrection
+      internal ErrorCorrectionLevel ErrorCorrection
       {
          get
          {

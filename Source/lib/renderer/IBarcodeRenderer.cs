@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
+using Windows.UI.Xaml.Media.Imaging;
+
 using ZXing.Common;
 
 namespace ZXing.Rendering
 {
-#if !(WINDOWS_PHONE || WindowsCE)
    /// <summary>
    /// Interface for a class to convert a BitMatrix to an output image format
    /// </summary>
-   public interface IBarcodeRenderer<out TOutput>
-#else
-   /// <summary>
-   /// Interface for a class to convert a BitMatrix to an output image format
-   /// </summary>
-   public interface IBarcodeRenderer<TOutput>
-#endif
+   public interface IBarcodeRenderer
    {
       /// <summary>
       /// Renders the specified matrix to its graphically representation
@@ -38,7 +33,7 @@ namespace ZXing.Rendering
       /// <param name="content">The encoded content of the barcode which should be included in the image.
       /// That can be the numbers below a 1D barcode or something other.</param>
       /// <returns></returns>
-      TOutput Render(BitMatrix matrix, BarcodeFormat format, string content);
+      WriteableBitmap Render(BitMatrix matrix, BarcodeFormat format, string content);
 
       /// <summary>
       /// Renders the specified matrix to its graphically representation
@@ -49,6 +44,6 @@ namespace ZXing.Rendering
       /// That can be the numbers below a 1D barcode or something other.</param>
       /// <param name="options">The options.</param>
       /// <returns></returns>
-      TOutput Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options);
+      WriteableBitmap Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options);
    }
 }

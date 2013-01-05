@@ -35,9 +35,9 @@ namespace ZXing.Client.Result
    /// </summary>
    /// <author>Antonio Manuel Benjumea Conde, Servinform, S.A.</author>
    /// <author>Agustín Delgado, Servinform, S.A.</author>
-   public class ExpandedProductResultParser : ResultParser
+   internal sealed class ExpandedProductResultParser : ResultParser
    {
-      override public ParsedResult parse(ZXing.Result result)
+      override sealed public ParsedResult parse(ZXing.Result result)
       {
          BarcodeFormat format = result.BarcodeFormat;
          if (format != BarcodeFormat.RSS_EXPANDED)

@@ -135,12 +135,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Source\lib\zxing.winrt.csproj">
-      <Project>{1de71ad0-9e5e-4649-90f7-883e467acc1a}</Project>
-      <Name>zxing.winrt</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

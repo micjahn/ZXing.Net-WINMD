@@ -26,7 +26,7 @@ namespace ZXing
    /// YCbCr_420_SP and YCbCr_422_SP.
    /// @author dswitkin@google.com (Daniel Switkin)
    /// </summary>
-   public sealed class PlanarYUVLuminanceSource : LuminanceSource
+   internal sealed class PlanarYUVLuminanceSource : LuminanceSource
    {
       private readonly byte[] yuvData;
       private readonly int dataWidth;
@@ -45,7 +45,7 @@ namespace ZXing
       /// <param name="width">The width.</param>
       /// <param name="height">The height.</param>
       /// <param name="reverseHoriz">if set to <c>true</c> [reverse horiz].</param>
-      public PlanarYUVLuminanceSource(byte[] yuvData,
+      public PlanarYUVLuminanceSource([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] yuvData,
                                       int dataWidth,
                                       int dataHeight,
                                       int left,
@@ -84,7 +84,7 @@ namespace ZXing
       /// <returns>
       /// An array containing the luminance data.
       /// </returns>
-      override public byte[] getRow(int y, byte[] row)
+      override sealed public byte[] getRow(int y, [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] row)
       {
          if (y < 0 || y >= Height)
          {

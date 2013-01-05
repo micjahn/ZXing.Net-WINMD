@@ -25,7 +25,7 @@ namespace ZXing.OneD
    ///   <p>Encapsulates functionality and implementation that is common to one-dimensional barcodes.</p>
    ///   <author>dsbnatut@gmail.com (Kazuki Nishiura)</author>
    /// </summary>
-   public abstract class OneDimensionalCodeWriter : Writer
+   internal abstract class OneDimensionalCodeWriter : Writer
    {
       /// <summary>
       /// Encode a barcode using the default settings.

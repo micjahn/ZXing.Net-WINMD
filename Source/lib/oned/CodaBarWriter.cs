@@ -22,7 +22,7 @@ namespace ZXing.OneD
    /// This class renders CodaBar as <see cref="bool" />[].
    /// </summary>
    /// <author>dsbnatut@gmail.com (Kazuki Nishiura)</author>
-   public sealed class CodaBarWriter : OneDimensionalCodeWriter
+   internal sealed class CodaBarWriter : OneDimensionalCodeWriter
    {
       private static readonly char[] START_CHARS = { 'A', 'B', 'C', 'D' };
       private static readonly char[] END_CHARS = { 'T', 'N', '*', 'E' };

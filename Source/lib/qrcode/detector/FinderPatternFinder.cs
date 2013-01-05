@@ -232,7 +232,7 @@ namespace ZXing.QrCode.Internal
          if (patternInfo == null)
             return null;
 
-         ResultPoint.orderBestPatterns(patternInfo);
+         FinderPattern.orderBestPatterns(patternInfo);
 
          return new FinderPatternInfo(patternInfo);
       }

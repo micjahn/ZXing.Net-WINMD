@@ -25,7 +25,7 @@ namespace ZXing
 	/// </summary>
 	/// <author>Sean Owen</author>
 	[Serializable]
-	public class ReaderException : Exception
+	internal class ReaderException : Exception
 	{
       /// <summary>
       /// Gets the instance.

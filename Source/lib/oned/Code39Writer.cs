@@ -24,7 +24,7 @@ namespace ZXing.OneD
    /// This object renders a CODE39 code as a <see cref="BitMatrix"/>.
    /// <author>erik.barbara@gmail.com (Erik Barbara)</author>
    /// </summary>
-   public sealed class Code39Writer : OneDimensionalCodeWriter
+   internal sealed class Code39Writer : OneDimensionalCodeWriter
    {
       /// <summary>
       /// Encode the contents following specified format.

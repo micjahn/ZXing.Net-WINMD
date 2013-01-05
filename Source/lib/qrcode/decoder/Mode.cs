@@ -23,7 +23,7 @@ namespace ZXing.QrCode.Internal
    /// data can be encoded to bits in the QR code standard.</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public sealed class Mode
+   internal sealed class Mode
    {
       /// <summary>
       /// Gets the name.

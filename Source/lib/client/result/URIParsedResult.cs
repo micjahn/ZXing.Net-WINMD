@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 namespace ZXing.Client.Result
 {
    /// <author>Sean Owen</author>
-   public sealed class URIParsedResult : ParsedResult
+   internal sealed class URIParsedResult : ParsedResult
    {
       private static readonly Regex USER_IN_HOST = new Regex(":/*([^/@]+)@[^/]+"
 #if !(SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE)

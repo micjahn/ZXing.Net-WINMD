@@ -46,7 +46,12 @@ namespace ZXing.Common
          }
       }
 
-      public bool this[int i]
+      public bool get(int i)
+      {
+         return this[i];
+      }
+
+      internal bool this[int i]
       {
          get
          {
@@ -238,7 +243,7 @@ namespace ZXing.Common
       /// <returns> true iff all bits are set or not set in range, according to value argument
       /// </returns>
       /// <throws>  IllegalArgumentException if end is less than or equal to start </throws>
-      public bool isRange(int start, int end, bool value)
+      public bool isRange(int start, int end, bool val)
       {
          if (end < start)
          {
@@ -271,7 +276,7 @@ namespace ZXing.Common
 
             // Return false if we're looking for 1s and the masked bits[i] isn't all 1s (that is,
             // equals the mask, or we're looking for 0s and the masked portion is not all 0s
-            if ((bits[i] & mask) != (value ? mask : 0))
+            if ((bits[i] & mask) != (val ? mask : 0))
             {
                return false;
             }
@@ -353,7 +358,7 @@ namespace ZXing.Common
       /// of the internal representation, which is exposed by BitArray</param>
       /// <param name="offset">position in array to start writing</param>
       /// <param name="numBytes">how many bytes to write</param>
-      public void toBytes(int bitOffset, byte[] array, int offset, int numBytes)
+      public void toBytes(int bitOffset, [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] array, int offset, int numBytes)
       {
          for (int i = 0; i < numBytes; i++)
          {

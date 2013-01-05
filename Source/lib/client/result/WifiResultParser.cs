@@ -25,9 +25,9 @@ namespace ZXing.Client.Result
    /// </summary>
    /// <author>Vikram Aggarwal</author>
    /// <author>Sean Owen</author>
-   public class WifiResultParser : ResultParser
+   internal sealed class WifiResultParser : ResultParser
    {
-      override public ParsedResult parse(ZXing.Result result)
+      override sealed public ParsedResult parse(ZXing.Result result)
       {
          var rawText = result.Text;
          if (!rawText.StartsWith("WIFI:"))

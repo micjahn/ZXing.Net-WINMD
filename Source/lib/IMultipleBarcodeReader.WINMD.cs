@@ -39,7 +39,7 @@ namespace ZXing
       /// <summary>
       /// event is executed when a result was found via decode
       /// </summary>
-      event Action<Result> ResultFound;
+      //event Action<Result> ResultFound;
 
       /// <summary>
       /// Gets or sets a flag which cause a deeper look into the bitmap
@@ -85,7 +85,7 @@ namespace ZXing
       /// <returns>
       /// the result data or null
       /// </returns>
-      Result[] DecodeMultiple(byte[] rawRGB, int width, int height, BitmapFormat format);
+      Result[] DecodeMultiple([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] rawRGB, int width, int height, BitmapFormat format);
 
       /// <summary>
       /// Decodes the specified barcode bitmap.

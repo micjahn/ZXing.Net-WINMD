@@ -20,7 +20,7 @@ using System.Text;
 namespace ZXing.Client.Result
 {
    /// <author>Sean Owen</author>
-   public sealed class EmailAddressParsedResult : ParsedResult
+   internal sealed class EmailAddressParsedResult : ParsedResult
    {
       public String EmailAddress { get; private set; }
       public String Subject { get; private set; }

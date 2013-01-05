@@ -32,7 +32,7 @@ namespace ZXing
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public sealed class MultiFormatWriter : Writer
+   internal sealed class MultiFormatWriter : Writer
    {
       private static readonly IDictionary<BarcodeFormat, Func<Writer>> formatMap;
 

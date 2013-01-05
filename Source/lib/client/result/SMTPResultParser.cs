@@ -24,9 +24,9 @@ namespace ZXing.Client.Result
    /// <p>See http://code.google.com/p/zxing/issues/detail?id=536</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public class SMTPResultParser : ResultParser
+   internal sealed class SMTPResultParser : ResultParser
    {
-      override public ParsedResult parse(ZXing.Result result)
+      override sealed public ParsedResult parse(ZXing.Result result)
       {
          String rawText = result.Text;
          if (!(rawText.StartsWith("smtp:") || rawText.StartsWith("SMTP:")))

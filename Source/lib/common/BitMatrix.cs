@@ -101,6 +101,11 @@ namespace ZXing.Common
          bits = new int[rowSize * height];
       }
 
+      public bool get(int x, int y)
+      {
+         return this[x, y];
+      }
+
       /// <summary> <p>Gets the requested bit, where true means black.</p>
       /// 
       /// </summary>
@@ -110,7 +115,7 @@ namespace ZXing.Common
       /// </param>
       /// <returns> value of given bit in matrix
       /// </returns>
-      public bool this[int x, int y]
+      internal bool this[int x, int y]
       {
          get
          {

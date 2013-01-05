@@ -23,7 +23,7 @@ namespace ZXing.QrCode.Internal
    /// defined by the QR code standard.</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public sealed class ErrorCorrectionLevel
+   internal sealed class ErrorCorrectionLevel
    {
       /// <summary> L = ~7% correction</summary>
       public static readonly ErrorCorrectionLevel L = new ErrorCorrectionLevel(0, 0x01, "L");

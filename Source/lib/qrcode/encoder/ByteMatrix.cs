@@ -27,7 +27,7 @@ namespace ZXing.QrCode.Internal
    /// 0, 1 and 2 I'm going to use less memory and go with bytes.
    /// </summary>
    /// <author>dswitkin@google.com (Daniel Switkin)</author>
-   public sealed class ByteMatrix
+   internal sealed class ByteMatrix
    {
       private readonly byte[][] bytes;
       private readonly int width;

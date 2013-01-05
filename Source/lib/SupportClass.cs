@@ -18,7 +18,7 @@ namespace ZXing
    /// <summary>
    /// Contains conversion support elements such as classes, interfaces and static methods.
    /// </summary>
-   public static class SupportClass
+   internal static class SupportClass
    {
       /*******************************/
       /// <summary>
@@ -75,7 +75,7 @@ namespace ZXing
       /// <param name="separator">The separator.</param>
       /// <param name="values">The values.</param>
       /// <returns></returns>
-      public static string Join<T>(string separator, IEnumerable<T> values)
+      internal static string Join<T>(string separator, IEnumerable<T> values)
       {
          var builder = new StringBuilder();
          separator = separator ?? String.Empty;

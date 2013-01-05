@@ -25,7 +25,7 @@ namespace ZXing.OneD
    /// 
    /// <author>erik.barbara@gmail.com (Erik Barbara)</author>
    /// </summary>
-   public sealed class ITFWriter : OneDimensionalCodeWriter
+   internal sealed class ITFWriter : OneDimensionalCodeWriter
    {
       private static readonly int[] START_PATTERN = {1, 1, 1, 1};
       private static readonly int[] END_PATTERN = {3, 1, 1};
