@@ -26,7 +26,7 @@ namespace ZXing.OneD
    /// <author>dswitkin@google.com (Daniel Switkin)</author>
    /// <author>Sean Owen</author>
    /// </summary>
-   public sealed class MultiFormatOneDReader : OneDReader
+   internal sealed class MultiFormatOneDReader : OneDReader
    {
       private readonly IList<OneDReader> readers;
 

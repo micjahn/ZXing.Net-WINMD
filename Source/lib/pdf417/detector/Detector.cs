@@ -29,7 +29,7 @@ namespace ZXing.PDF417.Internal
    /// <author>SITA Lab (kevin.osullivan@sita.aero)</author>
    /// <author>dswitkin@google.com (Daniel Switkin)</author>
    /// </summary>
-   public sealed class Detector
+   internal sealed class Detector
    {
       private const int INTEGER_MATH_SHIFT = 8;
       private const int PATTERN_MATCH_RESULT_SCALE_FACTOR = 1 << INTEGER_MATH_SHIFT;

@@ -28,7 +28,7 @@ namespace ZXing.Aztec.Internal
    /// the Aztec Code from an image.
    /// </summary>
    /// <author>David Olivier</author>
-   public sealed class Decoder
+   internal sealed class Decoder
    {
       private enum Table
       {

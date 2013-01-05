@@ -35,7 +35,7 @@ namespace ZXing.Common
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public sealed class HybridBinarizer : GlobalHistogramBinarizer
+   internal sealed class HybridBinarizer : GlobalHistogramBinarizer
    {
       override public BitMatrix BlackMatrix
       {

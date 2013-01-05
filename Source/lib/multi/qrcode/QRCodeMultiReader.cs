@@ -25,7 +25,7 @@ namespace ZXing.Multi.QrCode
    /// <summary>
    /// This implementation can detect and decode multiple QR Codes in an image.
    /// </summary>
-   public sealed class QRCodeMultiReader : QRCodeReader, MultipleBarcodeReader
+   internal sealed class QRCodeMultiReader : QRCodeReader, MultipleBarcodeReader
    {
       private static readonly Result[] EMPTY_RESULT_ARRAY = new Result[0];
 

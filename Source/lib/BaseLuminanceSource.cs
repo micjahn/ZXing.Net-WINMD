@@ -22,7 +22,7 @@ namespace ZXing
    /// The base class for luminance sources which supports 
    /// cropping and rotating based upon the luminance values.
    /// </summary>
-   public abstract class BaseLuminanceSource : LuminanceSource
+   internal abstract class BaseLuminanceSource : LuminanceSource
    {
       /// <summary>
       /// 

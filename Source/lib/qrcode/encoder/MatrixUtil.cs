@@ -24,7 +24,7 @@ namespace ZXing.QrCode.Internal
    /// <author>
    /// satorux@google.com (Satoru Takabayashi) - creator
    /// </author>
-   public static class MatrixUtil
+   internal static class MatrixUtil
    {
       private static readonly int[][] POSITION_DETECTION_PATTERN = new int[][]
                                                                       {
@@ -360,22 +360,22 @@ namespace ZXing.QrCode.Internal
       /// Since all coefficients in the polynomials are 1 or 0, we can do the calculation by bit
       /// operations. We don't care if cofficients are positive or negative.
       /// </summary>
-      /// <param name="value">The value.</param>
+      /// <param name="valueCode">The value.</param>
       /// <param name="poly">The poly.</param>
       /// <returns></returns>
-      public static int calculateBCHCode(int value, int poly)
+      public static int calculateBCHCode(int valueCode, int poly)
       {
          // If poly is "1 1111 0010 0101" (version info poly), msbSetInPoly is 13. We'll subtract 1
          // from 13 to make it 12.
          int msbSetInPoly = findMSBSet(poly);
-         value <<= msbSetInPoly - 1;
+         valueCode <<= msbSetInPoly - 1;
          // Do the division business using exclusive-or operations.
-         while (findMSBSet(value) >= msbSetInPoly)
+         while (findMSBSet(valueCode) >= msbSetInPoly)
          {
-            value ^= poly << (findMSBSet(value) - msbSetInPoly);
+            valueCode ^= poly << (findMSBSet(valueCode) - msbSetInPoly);
          }
          // Now the "value" is the remainder (i.e. the BCH code)
-         return value;
+         return valueCode;
       }
 
       /// <summary>

@@ -27,7 +27,7 @@ namespace ZXing.Datamatrix.Internal
    /// is rotated or skewed, or partially obscured.</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public sealed class Detector
+   internal sealed class Detector
    {
       private readonly BitMatrix image;
       private readonly WhiteRectangleDetector rectangleDetector;

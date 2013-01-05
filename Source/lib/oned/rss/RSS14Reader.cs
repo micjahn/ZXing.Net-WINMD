@@ -24,7 +24,7 @@ namespace ZXing.OneD.RSS
    /// <summary>
    /// Decodes RSS-14, including truncated and stacked variants. See ISO/IEC 24724:2006.
    /// </summary>
-   public sealed class RSS14Reader : AbstractRSSReader
+   internal sealed class RSS14Reader : AbstractRSSReader
    {
       private static readonly int[] OUTSIDE_EVEN_TOTAL_SUBSET = { 1, 10, 34, 70, 126 };
       private static readonly int[] INSIDE_ODD_TOTAL_SUBSET = { 4, 20, 48, 81 };

@@ -27,7 +27,7 @@ namespace ZXing.QrCode.Internal
    /// is rotated or skewed, or partially obscured.</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public class Detector
+   internal class Detector
    {
       private readonly BitMatrix image;
       private ResultPointCallback resultPointCallback;

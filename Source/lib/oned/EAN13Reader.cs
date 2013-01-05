@@ -26,7 +26,7 @@ namespace ZXing.OneD
    /// <author>Sean Owen</author>
    /// <author>alasdair@google.com (Alasdair Mackintosh)</author>
    /// </summary>
-   public sealed class EAN13Reader : UPCEANReader
+   internal sealed class EAN13Reader : UPCEANReader
    {
       // For an EAN-13 barcode, the first digit is represented by the parities used
       // to encode the next six digits, according to the table below. For example,

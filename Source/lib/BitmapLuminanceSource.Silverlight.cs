@@ -24,7 +24,7 @@ using System.Windows.Media.Imaging;
 
 namespace ZXing
 {
-   public partial class BitmapLuminanceSource : BaseLuminanceSource
+   internal partial class BitmapLuminanceSource : BaseLuminanceSource
    {
       /// <summary>
       /// Initializes a new instance of the <see cref="BitmapLuminanceSource"/> class.

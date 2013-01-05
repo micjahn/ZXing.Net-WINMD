@@ -21,7 +21,7 @@ namespace ZXing.OneD.RSS
    /// <summary>
    /// 
    /// </summary>
-   public sealed class FinderPattern
+   internal sealed class FinderPattern
    {
       /// <summary>
       /// Gets the value.

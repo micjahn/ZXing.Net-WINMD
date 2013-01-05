@@ -26,7 +26,7 @@ namespace ZXing.OneD
    /// 	<author>Sean Owen</author>
    /// <see cref="Code39Reader" />
    /// </summary>
-   public sealed class Code93Reader : OneDReader
+   internal sealed class Code93Reader : OneDReader
    {
       // Note that 'abcd' are dummy characters in place of control characters.
       private const String ALPHABET_STRING = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%abcd*";

@@ -29,7 +29,7 @@ namespace ZXing.Multi
    ///   <code>new ByQuadrantReader(reader)</code>.</p>
    ///   <author>Sean Owen</author>
    /// </summary>
-   public sealed class GenericMultipleBarcodeReader : MultipleBarcodeReader, Reader
+   internal sealed class GenericMultipleBarcodeReader : MultipleBarcodeReader, Reader
    {
       private const int MIN_DIMENSION_TO_RECUR = 30;
 

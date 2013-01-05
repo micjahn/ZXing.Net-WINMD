@@ -26,7 +26,7 @@ namespace ZXing.OneD
    ///
    /// <author>Sean Owen</author>
    /// </summary>
-   public sealed class Code128Reader : OneDReader
+   internal sealed class Code128Reader : OneDReader
    {
       internal static int[][] CODE_PATTERNS = {
                                                 new[] {2, 1, 2, 2, 2, 2}, // 0

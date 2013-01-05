@@ -27,7 +27,7 @@ namespace ZXing.QrCode
    ///
    /// <author>Sean Owen</author>
    /// </summary>
-   public class QRCodeReader : Reader
+   internal class QRCodeReader : Reader
    {
       private static readonly ResultPoint[] NO_POINTS = new ResultPoint[0];
 

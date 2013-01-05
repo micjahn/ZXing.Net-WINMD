@@ -24,7 +24,7 @@ namespace ZXing.Maxicode
    /// <summary>
    /// This implementation can detect and decode a MaxiCode in an image.
    /// </summary>
-   public sealed class MaxiCodeReader : Reader
+   internal sealed class MaxiCodeReader : Reader
    {
       private static readonly ResultPoint[] NO_POINTS = new ResultPoint[0];
       private const int MATRIX_WIDTH = 30;

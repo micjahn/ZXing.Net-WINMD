@@ -21,7 +21,7 @@ namespace ZXing.QrCode.Internal
    /// the three finder patterns, and their estimated module size.</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public sealed class FinderPatternInfo
+   internal sealed class FinderPatternInfo
    {
       private readonly FinderPattern bottomLeft;
       private readonly FinderPattern topLeft;

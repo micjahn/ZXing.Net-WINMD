@@ -20,7 +20,7 @@ using System.Text;
 namespace ZXing.Client.Result
 {
    /// <author>Sean Owen</author>
-   public sealed class AddressBookParsedResult : ParsedResult
+   internal sealed class AddressBookParsedResult : ParsedResult
    {
       private readonly String[] names;
       private readonly String pronunciation;

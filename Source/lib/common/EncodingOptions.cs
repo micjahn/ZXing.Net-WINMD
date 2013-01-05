@@ -20,11 +20,16 @@ using System.ComponentModel;
 
 namespace ZXing.Common
 {
+   public interface IEncodingOptions
+   {
+      IDictionary<EncodeHintType, object> Hints { get; }
+   }
+
    /// <summary>
    /// Defines an container for encoder options
    /// </summary>
    [Serializable]
-   public class EncodingOptions
+   public sealed class EncodingOptions : IEncodingOptions
    {
       /// <summary>
       /// Gets the data container for all options

@@ -25,7 +25,7 @@ namespace ZXing.Datamatrix.Internal
    ///
    /// <author>bbrown@google.com (Brian Brown)</author>
    /// </summary>
-   public sealed class Decoder
+   internal sealed class Decoder
    {
       private readonly ReedSolomonDecoder rsDecoder;
 

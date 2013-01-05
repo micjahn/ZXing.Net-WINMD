@@ -27,7 +27,7 @@ namespace ZXing.Maxicode.Internal
    ///
    /// <author>Manuel Kasten</author>
    /// </summary>
-   public sealed class Decoder
+   internal sealed class Decoder
    {
       private const int ALL = 0;
       private const int EVEN = 1;

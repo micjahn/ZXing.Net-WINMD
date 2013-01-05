@@ -26,7 +26,7 @@ namespace ZXing.OneD
    /// 	<author>Sean Owen</author>
    /// @see Code93Reader
    /// </summary>
-   public sealed class Code39Reader : OneDReader
+   internal sealed class Code39Reader : OneDReader
    {
       internal static String ALPHABET_STRING = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%";
       private static readonly char[] ALPHABET = ALPHABET_STRING.ToCharArray();

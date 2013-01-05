@@ -21,7 +21,7 @@ namespace ZXing.OneD.RSS
    /// <summary>
    /// 
    /// </summary>
-   public class DataCharacter
+   internal class DataCharacter
    {
       /// <summary>
       /// Gets the value.

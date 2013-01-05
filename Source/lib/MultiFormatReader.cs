@@ -33,7 +33,7 @@ namespace ZXing
    /// <author>Sean Owen</author>
    /// <author>dswitkin@google.com (Daniel Switkin)</author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source</author>
-   public sealed class MultiFormatReader : Reader
+   internal sealed class MultiFormatReader : Reader
    {
       private IDictionary<DecodeHintType, object> hints;
       private IList<Reader> readers;

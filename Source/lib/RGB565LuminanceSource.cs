@@ -22,7 +22,7 @@ namespace ZXing
    /// 
    /// </summary>
    [Obsolete("Use RGBLuminanceSource with the argument BitmapFormat.RGB565")]
-   public class RGB565LuminanceSource :RGBLuminanceSource
+   internal sealed class RGB565LuminanceSource : RGBLuminanceSource
    {
       /// <summary>
       /// Initializes a new instance of the <see cref="RGB565LuminanceSource"/> class.

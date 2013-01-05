@@ -25,7 +25,7 @@ namespace ZXing.Aztec
    /// This implementation can detect and decode Aztec codes in an image.
    /// </summary>
    /// <author>David Olivier</author>
-   public class AztecReader : Reader
+   internal class AztecReader : Reader
    {
       /// <summary>
       /// Locates and decodes a barcode in some format within an image.

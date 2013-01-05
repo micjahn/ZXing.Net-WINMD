@@ -19,57 +19,57 @@ using System;
 namespace ZXing
 {
    /// <summary>
-   /// Luminance source class which support different formats of images.
+   /// enumeration of supported bitmap format which the RGBLuminanceSource can process
    /// </summary>
-   public partial class RGBLuminanceSource : BaseLuminanceSource
+   public enum BitmapFormat
    {
       /// <summary>
-      /// enumeration of supported bitmap format which the RGBLuminanceSource can process
+      /// format of the byte[] isn't known. RGBLuminanceSource tries to determine the best possible value
       /// </summary>
-      public enum BitmapFormat
-      {
-         /// <summary>
-         /// format of the byte[] isn't known. RGBLuminanceSource tries to determine the best possible value
-         /// </summary>
-         Unknown,
-         /// <summary>
-         /// grayscale array, the byte array is a luminance array with 1 byte per pixel
-         /// </summary>
-         Gray8,
-         /// <summary>
-         /// 3 bytes per pixel with the channels red, green and blue
-         /// </summary>
-         RGB24,
-         /// <summary>
-         /// 4 bytes per pixel with the channels red, green and blue
-         /// </summary>
-         RGB32,
-         /// <summary>
-         /// 4 bytes per pixel with the channels alpha, red, green and blue
-         /// </summary>
-         ARGB32,
-         /// <summary>
-         /// 3 bytes per pixel with the channels blue, green and red
-         /// </summary>
-         BGR24,
-         /// <summary>
-         /// 4 bytes per pixel with the channels blue, green and red
-         /// </summary>
-         BGR32,
-         /// <summary>
-         /// 4 bytes per pixel with the channels blue, green, red and alpha
-         /// </summary>
-         BGRA32,
-         /// <summary>
-         /// 2 bytes per pixel, 5 bit red, 6 bits green and 5 bits blue
-         /// </summary>
-         RGB565,
-         /// <summary>
-         /// 4 bytes per pixel with the channels red, green, blue and alpha
-         /// </summary>
-         RGBA32,
-      }
+      Unknown,
+      /// <summary>
+      /// grayscale array, the byte array is a luminance array with 1 byte per pixel
+      /// </summary>
+      Gray8,
+      /// <summary>
+      /// 3 bytes per pixel with the channels red, green and blue
+      /// </summary>
+      RGB24,
+      /// <summary>
+      /// 4 bytes per pixel with the channels red, green and blue
+      /// </summary>
+      RGB32,
+      /// <summary>
+      /// 4 bytes per pixel with the channels alpha, red, green and blue
+      /// </summary>
+      ARGB32,
+      /// <summary>
+      /// 3 bytes per pixel with the channels blue, green and red
+      /// </summary>
+      BGR24,
+      /// <summary>
+      /// 4 bytes per pixel with the channels blue, green and red
+      /// </summary>
+      BGR32,
+      /// <summary>
+      /// 4 bytes per pixel with the channels blue, green, red and alpha
+      /// </summary>
+      BGRA32,
+      /// <summary>
+      /// 2 bytes per pixel, 5 bit red, 6 bits green and 5 bits blue
+      /// </summary>
+      RGB565,
+      /// <summary>
+      /// 4 bytes per pixel with the channels red, green, blue and alpha
+      /// </summary>
+      RGBA32,
+   }
 
+   /// <summary>
+   /// Luminance source class which support different formats of images.
+   /// </summary>
+   internal partial class RGBLuminanceSource : BaseLuminanceSource
+   {
       /// <summary>
       /// Initializes a new instance of the <see cref="RGBLuminanceSource"/> class.
       /// </summary>

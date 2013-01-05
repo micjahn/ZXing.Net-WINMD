@@ -28,7 +28,7 @@ namespace ZXing.OneD
    /// UPC-E information.</p>
    ///   <author>Sean Owen</author>
    /// </summary>
-   public sealed class UPCEReader : UPCEANReader
+   internal sealed class UPCEReader : UPCEANReader
    {
       /// <summary>
       /// The pattern that marks the middle, and end, of a UPC-E pattern.

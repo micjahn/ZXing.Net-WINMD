@@ -21,7 +21,7 @@ namespace ZXing.OneD.RSS
    /// <summary>
    /// 
    /// </summary>
-   public abstract class AbstractRSSReader : OneDReader
+   internal abstract class AbstractRSSReader : OneDReader
    {
       private static readonly int MAX_AVG_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.2f);
       private static readonly int MAX_INDIVIDUAL_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.45f);

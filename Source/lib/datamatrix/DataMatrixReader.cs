@@ -26,7 +26,7 @@ namespace ZXing.Datamatrix
    ///
    /// <author>bbrown@google.com (Brian Brown)</author>
    /// </summary>
-   public sealed class DataMatrixReader : Reader
+   internal sealed class DataMatrixReader : Reader
    {
       private static readonly ResultPoint[] NO_POINTS = new ResultPoint[0];
 

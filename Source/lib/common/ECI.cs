@@ -25,7 +25,7 @@ namespace ZXing.Common
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public abstract class ECI
+   internal abstract class ECI
    {
       virtual public int Value
       {

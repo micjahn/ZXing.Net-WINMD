@@ -24,7 +24,7 @@ namespace ZXing.Common
    /// applies to 2D barcode formats. For now it contains the raw bytes obtained,
    /// as well as a String interpretation of those bytes, if applicable.
    /// </summary>
-   public sealed class DecoderResult
+   internal sealed class DecoderResult
    {
       public byte[] RawBytes { get; private set; }
 

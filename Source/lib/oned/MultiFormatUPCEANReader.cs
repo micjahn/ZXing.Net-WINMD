@@ -25,7 +25,7 @@ namespace ZXing.OneD
    /// individual readers.</p>
    ///   <author>Sean Owen</author>
    /// </summary>
-   public sealed class MultiFormatUPCEANReader : OneDReader
+   internal sealed class MultiFormatUPCEANReader : OneDReader
    {
       private readonly UPCEANReader[] readers;
 

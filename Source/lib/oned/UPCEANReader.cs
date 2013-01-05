@@ -29,7 +29,7 @@ namespace ZXing.OneD
    ///   <author>Sean Owen</author>
    ///   <author>alasdair@google.com (Alasdair Mackintosh)</author>
    /// </summary>
-   public abstract class UPCEANReader : OneDReader
+   internal abstract class UPCEANReader : OneDReader
    {
 
       // These two values are critical for determining how permissive the decoding will be.

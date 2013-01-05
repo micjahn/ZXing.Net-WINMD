@@ -27,7 +27,7 @@ namespace ZXing.Multi.QrCode.Internal
    /// <author>Sean Owen</author>
    /// <author>Hannes Erven</author>
    /// </summary>
-   public sealed class MultiDetector : Detector
+   internal sealed class MultiDetector : Detector
    {
       private static readonly DetectorResult[] EMPTY_DETECTOR_RESULTS = new DetectorResult[0];
 

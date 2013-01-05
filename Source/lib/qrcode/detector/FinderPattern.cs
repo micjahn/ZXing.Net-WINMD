@@ -24,7 +24,7 @@ namespace ZXing.QrCode.Internal
    /// as a convenience to the finder's bookkeeping.</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public sealed class FinderPattern : ResultPoint
+   internal sealed class FinderPattern : ResultPoint
    {
       private readonly float estimatedModuleSize;
       private int count;

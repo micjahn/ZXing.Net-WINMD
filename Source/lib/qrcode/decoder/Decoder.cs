@@ -28,7 +28,7 @@ namespace ZXing.QrCode.Internal
    /// <author>
    /// Sean Owen
    /// </author>
-   public sealed class Decoder
+   internal sealed class Decoder
    {
       private readonly ReedSolomonDecoder rsDecoder;
 

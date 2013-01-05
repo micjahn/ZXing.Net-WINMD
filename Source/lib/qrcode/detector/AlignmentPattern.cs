@@ -26,7 +26,7 @@ namespace ZXing.QrCode.Internal
    /// </author>
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
-   public sealed class AlignmentPattern : ResultPoint
+   internal sealed class AlignmentPattern : ResultPoint
    {
       private float estimatedModuleSize;
 

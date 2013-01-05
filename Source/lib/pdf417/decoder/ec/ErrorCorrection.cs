@@ -23,7 +23,7 @@ namespace ZXing.PDF417.Internal.EC
    /// <author>Sean Owen</author>
    /// <see cref="ZXing.Common.ReedSolomon.ReedSolomonDecoder" />
    /// </summary>
-   public sealed class ErrorCorrection
+   internal sealed class ErrorCorrection
    {
       private readonly ModulusGF field;
 

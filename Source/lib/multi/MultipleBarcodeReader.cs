@@ -23,7 +23,7 @@ namespace ZXing.Multi
    /// <author>Sean Owen</author>
    /// 	<seealso cref="Reader"/>
    /// </summary>
-   public interface MultipleBarcodeReader
+   internal interface MultipleBarcodeReader
    {
       /// <summary>
       /// Decodes the multiple.

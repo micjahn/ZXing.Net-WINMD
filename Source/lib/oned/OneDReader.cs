@@ -26,7 +26,7 @@ namespace ZXing.OneD
    /// <author>dswitkin@google.com (Daniel Switkin)</author>
    /// <author>Sean Owen</author>
    /// </summary>
-   public abstract class OneDReader : Reader
+   internal abstract class OneDReader : Reader
    {
       /// <summary>
       /// 

@@ -37,7 +37,7 @@ namespace ZXing.OneD
    ///
    /// <author>kevin.osullivan@sita.aero, SITA Lab.</author>
    /// </summary>
-   public sealed class ITFReader : OneDReader
+   internal sealed class ITFReader : OneDReader
    {
       private static readonly int MAX_AVG_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
       private static readonly int MAX_INDIVIDUAL_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f);

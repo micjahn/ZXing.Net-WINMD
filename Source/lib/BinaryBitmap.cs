@@ -29,7 +29,7 @@ namespace ZXing
    /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
    /// </author>
 
-   public sealed class BinaryBitmap
+   internal sealed class BinaryBitmap
    {
       private Binarizer binarizer;
       private BitMatrix matrix;

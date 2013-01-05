@@ -26,7 +26,7 @@ namespace ZXing.OneD
    ///
    /// <author>Bas Vijfwinkel</author>
    /// </summary>
-   public sealed class CodaBarReader : OneDReader
+   internal sealed class CodaBarReader : OneDReader
    {
       // These values are critical for determining how permissive the decoding
       // will be. All stripe sizes must be within the window these define, as

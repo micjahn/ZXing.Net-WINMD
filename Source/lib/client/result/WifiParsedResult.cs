@@ -23,7 +23,7 @@ namespace ZXing.Client.Result
    /// 
    /// </summary>
    /// <author>Vikram Aggarwal</author>
-   public class WifiParsedResult : ParsedResult
+   public sealed class WifiParsedResult : ParsedResult
    {
       public WifiParsedResult(String networkEncryption, String ssid, String password)
          : this(networkEncryption, ssid, password, false)

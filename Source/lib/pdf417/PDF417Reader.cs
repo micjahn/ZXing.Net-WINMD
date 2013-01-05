@@ -26,7 +26,7 @@ namespace ZXing.PDF417
    ///
    /// <author>SITA Lab (kevin.osullivan@sita.aero)</author>
    /// </summary>
-   public sealed class PDF417Reader : Reader
+   internal sealed class PDF417Reader : Reader
    {
       private static readonly ResultPoint[] NO_POINTS = new ResultPoint[0];
 

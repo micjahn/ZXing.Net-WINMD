@@ -21,7 +21,7 @@ namespace ZXing.Aztec.Internal
    /// <summary>
    /// The class contains all information about the Aztec code which was found
    /// </summary>
-   public class AztecDetectorResult : DetectorResult
+   internal class AztecDetectorResult : DetectorResult
    {
       /// <summary>
       /// Gets a value indicating whether this Aztec code is compact.

@@ -26,7 +26,7 @@ namespace ZXing.Common
    /// <author>dswitkin@google.com (Daniel Switkin)</author>
    /// <author>Sean Owen</author>
    /// </summary>
-   public class GlobalHistogramBinarizer : Binarizer
+   internal class GlobalHistogramBinarizer : Binarizer
    {
       private const int LUMINANCE_BITS = 5;
       private const int LUMINANCE_SHIFT = 8 - LUMINANCE_BITS;

@@ -25,7 +25,7 @@ namespace ZXing.PDF417.Internal
    ///
    /// <author>SITA Lab (kevin.osullivan@sita.aero)</author>
    /// </summary>
-   public sealed class Decoder
+   internal sealed class Decoder
    {
       private const int MAX_ERRORS = 3;
       private const int MAX_EC_CODEWORDS = 512;

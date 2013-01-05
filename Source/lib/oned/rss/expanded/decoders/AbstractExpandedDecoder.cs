@@ -33,7 +33,7 @@ namespace ZXing.OneD.RSS.Expanded.Decoders
    /// <author>Pablo Orduña, University of Deusto (pablo.orduna@deusto.es)</author>
    /// <author>Eduardo Castillejo, University of Deusto (eduardo.castillejo@deusto.es)</author>
    /// </summary>
-   public abstract class AbstractExpandedDecoder
+   internal abstract class AbstractExpandedDecoder
    {
       private readonly BitArray information;
       private readonly GeneralAppIdDecoder generalDecoder;

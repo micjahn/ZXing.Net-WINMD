@@ -23,7 +23,7 @@ namespace ZXing.OneD
    ///   <p>Implements decoding of the EAN-8 format.</p>
    ///   <author>Sean Owen</author>
    /// </summary>
-   public sealed class EAN8Reader : UPCEANReader
+   internal sealed class EAN8Reader : UPCEANReader
    {
       private readonly int[] decodeMiddleCounters;
 

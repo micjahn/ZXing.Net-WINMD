@@ -28,7 +28,7 @@ namespace ZXing.QrCode.Internal
    /// <p>This class is thread-safe but not reentrant. Each thread must allocate its own object.
    /// </summary>
    /// <author>Sean Owen</author>
-   public class FinderPatternFinder
+   internal class FinderPatternFinder
    {
       private const int CENTER_QUORUM = 2;
       /// <summary>

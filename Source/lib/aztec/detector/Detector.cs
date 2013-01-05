@@ -25,7 +25,7 @@ namespace ZXing.Aztec.Internal
    /// is rotated or skewed, or partially obscured.
    /// </summary>
    /// <author>David Olivier</author>
-   public sealed class Detector
+   internal sealed class Detector
    {
       private readonly BitMatrix image;
 

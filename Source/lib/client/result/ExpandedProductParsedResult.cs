@@ -34,7 +34,7 @@ namespace ZXing.Client.Result
    /// </summary>
    /// <author> Antonio Manuel Benjumea Conde, Servinform, S.A.</author>
    /// <author> Agustín Delgado, Servinform, S.A.</author>
-   public class ExpandedProductParsedResult : ParsedResult
+   internal class ExpandedProductParsedResult : ParsedResult
    {
       public static String KILOGRAM = "KG";
       public static String POUND = "LB";

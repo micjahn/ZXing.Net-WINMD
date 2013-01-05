@@ -36,7 +36,7 @@ namespace ZXing.OneD.RSS.Expanded
    /// <author>Pablo Orduña, University of Deusto (pablo.orduna@deusto.es)</author>
    /// <author>Eduardo Castillejo, University of Deusto (eduardo.castillejo@deusto.es)</author>
    /// </summary>
-   public sealed class RSSExpandedReader : AbstractRSSReader
+   internal sealed class RSSExpandedReader : AbstractRSSReader
    {
       private static readonly int[] SYMBOL_WIDEST = { 7, 5, 4, 3, 1 };
       private static readonly int[] EVEN_TOTAL_SUBSET = { 4, 20, 52, 104, 204 };
