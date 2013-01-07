@@ -9,7 +9,7 @@
     <ProjectGuid>{0B7B3309-1369-45CF-B97F-20CB65AB76A9}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>zxing.winmd</RootNamespace>
+    <RootNamespace>ZXing</RootNamespace>
     <AssemblyName>zxing</AssemblyName>
     <DefaultLanguage>de-DE</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
