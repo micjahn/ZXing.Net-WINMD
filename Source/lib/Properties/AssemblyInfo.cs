@@ -40,6 +40,9 @@ using System.Runtime.InteropServices;
 #if MONOTOUCH
 [assembly: AssemblyTitle("zxing.net for mono touch")]
 #endif
+#if NETFX_CORE
+[assembly: AssemblyTitle("zxing.net for windows rt")]
+#endif
 [assembly: AssemblyDescription("port of the java based barcode scanning library for .net (java zxing rev. 2521)")]
 [assembly: AssemblyCompany("ZXing.Net Development")]
 [assembly: AssemblyProduct("ZXing.Net")]
