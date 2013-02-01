@@ -62,6 +62,14 @@ namespace ZXing
       public IBarcodeRenderer Renderer { get; set; }
 
       /// <summary>
+      /// Initializes a new instance of the <see cref="BarcodeWriter"/> class.
+      /// </summary>
+      public BarcodeWriter()
+      {
+         Renderer = new WriteableBitmapRenderer();
+      }
+
+      /// <summary>
       /// Encodes the specified contents and returns a BitMatrix array.
       /// That array has to be rendered manually or with a IBarcodeRenderer.
       /// </summary>
