@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsStoreDemo", "Clients
 EndProject
 Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "WindowsStoreJavaScriptDemo", "Clients\WindowsStoreJavaScriptDemo\WindowsStoreJavaScriptDemo.jsproj", "{900FE853-E7D5-42BF-8690-182315BE695A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsStoreC++Demo", "Clients\WindowStoreC++Demo\WindowsStoreC++Demo.vcxproj", "{868AAE46-72EE-4ADB-9FCF-032C4948F43E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsStoreC++Demo", "Clients\WindowsStoreC++Demo\WindowsStoreC++Demo.vcxproj", "{868AAE46-72EE-4ADB-9FCF-032C4948F43E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
