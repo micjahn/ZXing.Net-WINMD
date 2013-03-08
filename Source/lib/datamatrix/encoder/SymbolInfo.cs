@@ -22,7 +22,7 @@ namespace ZXing.Datamatrix.Encoder
    /// <summary>
    /// Symbol info table for DataMatrix.
    /// </summary>
-   public class SymbolInfo
+   internal class SymbolInfo
    {
       public static readonly SymbolInfo[] PROD_SYMBOLS = {
                                                          new SymbolInfo(false, 3, 5, 8, 8, 1),

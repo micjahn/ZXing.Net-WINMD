@@ -22,7 +22,7 @@ namespace ZXing.Datamatrix.Encoder
    /// <summary>
    /// Error Correction Code for ECC200.
    /// </summary>
-   public static class ErrorCorrection
+   internal static class ErrorCorrection
    {
       /// <summary>
       /// Lookup table which factors to use for which number of error correction codewords.

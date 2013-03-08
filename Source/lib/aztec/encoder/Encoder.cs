@@ -25,7 +25,7 @@ namespace ZXing.Aztec.Internal
    /// Generates Aztec 2D barcodes.
    /// </summary>
    /// <author>Rustam Abdullaev</author>
-   public static class Encoder
+   internal static class Encoder
    {
       public const int DEFAULT_EC_PERCENT = 33; // default minimal percentage of error check words
 
