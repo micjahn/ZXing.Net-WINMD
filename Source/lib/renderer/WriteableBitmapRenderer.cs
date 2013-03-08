@@ -130,14 +130,36 @@ namespace ZXing.Rendering
       {
          int width = matrix.Width;
          int height = matrix.Height;
-         bool outputContent = !options.PureBarcode && !String.IsNullOrEmpty(content) && (format == BarcodeFormat.CODE_39 ||
+         bool outputContent = (options == null || !options.PureBarcode) &&
+                              !String.IsNullOrEmpty(content) && (format == BarcodeFormat.CODE_39 ||
                                                                  format == BarcodeFormat.CODE_128 ||
                                                                  format == BarcodeFormat.EAN_13 ||
                                                                  format == BarcodeFormat.EAN_8 ||
                                                                  format == BarcodeFormat.CODABAR ||
                                                                  format == BarcodeFormat.ITF ||
-                                                                 format == BarcodeFormat.UPC_A);
+                                                                 format == BarcodeFormat.UPC_A ||
+                                                                 format == BarcodeFormat.MSI ||
+                                                                 format == BarcodeFormat.PLESSEY);
          int emptyArea = outputContent ? 16 : 0;
+         int pixelsize = 1;
+
+         if (options != null)
+         {
+            if (options.Width > width)
+            {
+               width = options.Width;
+            }
+            if (options.Height > height)
+            {
+               height = options.Height;
+            }
+            // calculating the scaling factor
+            pixelsize = width / matrix.Width;
+            if (pixelsize > height / matrix.Height)
+            {
+               pixelsize = height / matrix.Height;
+            }
+         }
 
 #if NETFX_CORE
          var foreground = new byte[] { Foreground.B, Foreground.G, Foreground.R, Foreground.A };
@@ -150,10 +172,23 @@ namespace ZXing.Rendering
          {
             for (int y = 0; y < height - emptyArea; y++)
             {
+               for (var pixelsizeHeight = 0; pixelsizeHeight < pixelsize; pixelsizeHeight++)
+               {
+                  for (var x = 0; x < width; x++)
+                  {
+                     var color = matrix[x, y] ? foreground : background;
+                     for (var pixelsizeWidth = 0; pixelsizeWidth < pixelsize; pixelsizeWidth++)
+                     {
+                        stream.Write(color, 0, 4);
+                     }
+                  }
+               }
+            }
+            for (int y = matrix.Height * pixelsize - emptyArea; y < height; y++)
+            {
                for (var x = 0; x < width; x++)
                {
-                  var color = matrix[x, y] ? foreground : background;
-                  stream.Write(color, 0, 4);
+                  stream.Write(background, 0, 4);
                }
             }
          }
@@ -165,17 +200,36 @@ namespace ZXing.Rendering
          var pixels = bmp.Pixels;
          var index = 0;
 
-         for (int y = 0; y < height - emptyArea; y++)
+         for (int y = 0; y < matrix.Height - emptyArea; y++)
+         {
+            for (var pixelsizeHeight = 0; pixelsizeHeight < pixelsize; pixelsizeHeight++)
+            {
+               for (var x = 0; x < matrix.Width; x++)
+               {
+                  var color = matrix[x, y] ? foreground : background;
+                  for (var pixelsizeWidth = 0; pixelsizeWidth < pixelsize; pixelsizeWidth++)
+                  {
+                     pixels[index++] = color;
+                  }
+               }
+               for (var x = pixelsize * matrix.Width; x < width; x++)
+               {
+                  pixels[index++] = background;
+               }
+            }
+         }
+         for (int y = matrix.Height * pixelsize - emptyArea; y < height; y++)
          {
             for (var x = 0; x < width; x++)
             {
-               var color = matrix[x, y] ? foreground : background;
-               pixels[index++] = color;
+               pixels[index++] = background;
             }
          }
          bmp.Invalidate();
 #endif
 
+         /* doesn't correctly work at the moment
+          * renders at the wrong position
          if (outputContent)
          {
             switch (format)
@@ -192,13 +246,11 @@ namespace ZXing.Rendering
                   content = content.Insert(1, "   ");
                   break;
             }
-            /* doesn't correctly work at the moment
-             * renders at the wrong position
             var txt1 = new TextBlock {Text = content, FontSize = 10, Foreground = new SolidColorBrush(Colors.Black)};
             bmp.Render(txt1, new RotateTransform { Angle = 0, CenterX = width / 2, CenterY = height - 14});
             bmp.Invalidate();
-             * */
          }
+          * */
 
          return bmp;
       }

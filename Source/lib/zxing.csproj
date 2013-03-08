@@ -112,6 +112,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="aztec\AztecWriter.cs" />
+    <Compile Include="aztec\encoder\AztecCode.cs" />
+    <Compile Include="aztec\encoder\Encoder.cs" />
     <Compile Include="BarcodeFormat.cs" />
     <Compile Include="BarcodeReader.cs" />
     <Compile Include="BarcodeReaderGeneric.cs" />
@@ -185,17 +188,38 @@
     <Compile Include="common\reedsolomon\ReedSolomonDecoder.cs" />
     <Compile Include="common\reedsolomon\ReedSolomonEncoder.cs" />
     <Compile Include="datamatrix\DataMatrixReader.cs" />
+    <Compile Include="datamatrix\DataMatrixWriter.cs" />
     <Compile Include="datamatrix\decoder\BitMatrixParser.cs" />
     <Compile Include="datamatrix\decoder\DataBlock.cs" />
     <Compile Include="datamatrix\decoder\DecodedBitStreamParser.cs" />
     <Compile Include="datamatrix\decoder\Decoder.cs" />
     <Compile Include="datamatrix\decoder\Version.cs" />
     <Compile Include="datamatrix\detector\Detector.cs" />
+    <Compile Include="datamatrix\encoder\ASCIIEncoder.cs" />
+    <Compile Include="datamatrix\encoder\Base256Encoder.cs" />
+    <Compile Include="datamatrix\encoder\C40Encoder.cs" />
+    <Compile Include="datamatrix\encoder\DatamatrixEncodingOptions.cs" />
+    <Compile Include="datamatrix\encoder\DataMatrixSymbolInfo144.cs" />
+    <Compile Include="datamatrix\encoder\DefaultPlacement.cs" />
+    <Compile Include="datamatrix\encoder\EdifactEncoder.cs" />
+    <Compile Include="datamatrix\encoder\Encoder.cs" />
+    <Compile Include="datamatrix\encoder\EncoderContext.cs" />
+    <Compile Include="datamatrix\encoder\ErrorCorrection.cs" />
+    <Compile Include="datamatrix\encoder\HighLevelEncoder.cs" />
+    <Compile Include="datamatrix\encoder\SymbolInfo.cs" />
+    <Compile Include="datamatrix\encoder\SymbolShapeHint.cs" />
+    <Compile Include="datamatrix\encoder\TextEncoder.cs" />
+    <Compile Include="datamatrix\encoder\X12Encoder.cs" />
     <Compile Include="DecodeHintType.cs" />
+    <Compile Include="Dimension.cs" />
     <Compile Include="EncodeHintType.cs" />
     <Compile Include="FormatException.cs" />
     <Compile Include="IBarcodeReader.cs" />
     <Compile Include="IBarcodeReaderGeneric.cs" />
+    <Compile Include="InvertedLuminanceSource.cs" />
+    <Compile Include="oned\MSIReader.cs" />
+    <Compile Include="oned\MSIWriter.cs" />
+    <Compile Include="oned\PlesseyWriter.cs" />
     <Compile Include="oned\rss\expanded\ExpandedRow.cs" />
     <Compile Include="pdf417\encoder\PDF417EncodingOptions.cs" />
     <Compile Include="qrcode\encoder\QrCodeEncodingOptions.cs" />

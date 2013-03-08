@@ -78,5 +78,20 @@ namespace ZXing
       /// type: <see cref="ZXing.PDF417.Internal.Dimensions" />
       /// </summary>
       PDF417_DIMENSIONS,
+
+      /// <summary>
+      /// Specifies the matrix shape for Data Matrix (type {@link com.google.zxing.datamatrix.encoder.SymbolShapeHint})
+      /// </summary>
+      DATA_MATRIX_SHAPE,
+
+      /// <summary>
+      /// Specifies a minimum barcode size (type {@link Dimension}). Only applicable to Data Matrix now.
+      /// </summary>
+      MIN_SIZE,
+
+      /// <summary>
+      /// Specifies a maximum barcode size (type {@link Dimension}). Only applicable to Data Matrix now.
+      /// </summary>
+      MAX_SIZE,
    }
 }

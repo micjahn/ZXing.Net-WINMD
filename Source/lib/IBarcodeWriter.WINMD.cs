@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Windows.Foundation.Metadata;
+
 using ZXing.Common;
 
 namespace ZXing
@@ -33,6 +35,12 @@ namespace ZXing
       /// <summary>
       /// Creates a visual representation of the contents
       /// </summary>
+      [DefaultOverload]
       Windows.UI.Xaml.Media.Imaging.WriteableBitmap Write(string contents);
+
+      /// <summary>
+      /// Returns a rendered instance of the barcode which is given by a BitMatrix.
+      /// </summary>
+      Windows.UI.Xaml.Media.Imaging.WriteableBitmap Write(BitMatrix matrix);
    }
 }

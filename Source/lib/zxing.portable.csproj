@@ -1,107 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\Key\private.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0B7B3309-1369-45CF-B97F-20CB65AB76A9}</ProjectGuid>
-    <OutputType>winmdobj</OutputType>
+    <ProjectGuid>{24B441F2-CBE9-4405-9FD0-72EBCBEA0EC3}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ZXing</RootNamespace>
-    <AssemblyName>zxing</AssemblyName>
-    <DefaultLanguage>de-DE</DefaultLanguage>
+    <AssemblyName>zxing.portable</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile1</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Build\Debug\winmd\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINMD</DefineConstants>
+    <OutputPath>..\..\Build\Debug\portable\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;PORTABLE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Build\Release\winmd\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINMD</DefineConstants>
+    <OutputPath>..\..\Build\Release\portable\</OutputPath>
+    <DefineConstants>TRACE;PORTABLE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Build\Release\winmd\zxing.XML</DocumentationFile>
+    <DocumentationFile>..\..\Build\Release\portable\zxing.portable.XML</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>ARM</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
-    <OutputPath>bin\ARM\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
-    <Optimize>true</Optimize>
-    <NoWarn>;2008</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>ARM</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
-    <Optimize>true</Optimize>
-    <NoWarn>;2008</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
-    <Optimize>true</Optimize>
-    <NoWarn>;2008</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="aztec\AztecDetectorResult.cs" />
     <Compile Include="aztec\AztecReader.cs" />
@@ -111,12 +48,13 @@
     <Compile Include="aztec\encoder\AztecCode.cs" />
     <Compile Include="aztec\encoder\Encoder.cs" />
     <Compile Include="BarcodeFormat.cs" />
-    <Compile Include="BarcodeReader.WINMD.cs" />
-    <Compile Include="BarcodeWriter.WINMD.cs" />
+    <Compile Include="BarcodeReader.cs" />
+    <Compile Include="BarcodeReaderGeneric.cs" />
+    <Compile Include="BarcodeWriter.cs" />
+    <Compile Include="BarcodeWriterGeneric.cs" />
     <Compile Include="BaseLuminanceSource.cs" />
     <Compile Include="Binarizer.cs" />
     <Compile Include="BinaryBitmap.cs" />
-    <Compile Include="BitmapLuminanceSource.Silverlight.cs" />
     <Compile Include="client\result\AbstractDoCoMoResultParser.cs" />
     <Compile Include="client\result\AddressBookAUResultParser.cs" />
     <Compile Include="client\result\AddressBookDoCoMoResultParser.cs" />
@@ -152,9 +90,12 @@
     <Compile Include="client\result\VEventResultParser.cs" />
     <Compile Include="client\result\WifiParsedResult.cs" />
     <Compile Include="client\result\WifiResultParser.cs" />
+    <Compile Include="common\BigInteger\Base10BigInteger.cs" />
+    <Compile Include="common\BigInteger\BigInteger.cs" />
+    <Compile Include="common\BigInteger\BigIntegerException.cs" />
+    <Compile Include="common\BigInteger\Sign.cs" />
     <Compile Include="common\BitArray.cs" />
     <Compile Include="common\BitMatrix.cs" />
-    <Compile Include="common\BitMatrix.Silverlight.cs" />
     <Compile Include="common\BitSource.cs" />
     <Compile Include="common\CharacterSetECI.cs" />
     <Compile Include="common\DecoderResult.cs" />
@@ -201,9 +142,12 @@
     <Compile Include="Dimension.cs" />
     <Compile Include="EncodeHintType.cs" />
     <Compile Include="FormatException.cs" />
-    <Compile Include="IBarcodeReader.WINMD.cs" />
-    <Compile Include="IBarcodeWriter.WINMD.cs" />
-    <Compile Include="IMultipleBarcodeReader.WINMD.cs" />
+    <Compile Include="IBarcodeReader.cs" />
+    <Compile Include="IBarcodeReaderGeneric.cs" />
+    <Compile Include="IBarcodeWriter.cs" />
+    <Compile Include="IBarcodeWriterGeneric.cs" />
+    <Compile Include="IMultipleBarcodeReader.cs" />
+    <Compile Include="IMultipleBarcodeReaderGeneric.cs" />
     <Compile Include="InvertedLuminanceSource.cs" />
     <Compile Include="LuminanceSource.cs" />
     <Compile Include="maxicode\decoder\BitMatrixParser.cs" />
@@ -218,6 +162,7 @@
     <Compile Include="multi\qrcode\detector\MultiDetector.cs" />
     <Compile Include="multi\qrcode\detector\MultiFinderPatternFinder.cs" />
     <Compile Include="multi\qrcode\QRCodeMultiReader.cs" />
+    <Compile Include="net2.0\TimeZoneInfo.cs" />
     <Compile Include="NotFoundException.cs" />
     <Compile Include="oned\CodaBarReader.cs" />
     <Compile Include="oned\CodaBarWriter.cs" />
@@ -323,7 +268,7 @@
     <Compile Include="Reader.cs" />
     <Compile Include="ReaderException.cs" />
     <Compile Include="renderer\IBarcodeRenderer.cs" />
-    <Compile Include="renderer\WriteableBitmapRenderer.cs" />
+    <Compile Include="renderer\SVGRenderer.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="ResultMetadataType.cs" />
     <Compile Include="ResultPoint.cs" />
@@ -336,10 +281,15 @@
     <Compile Include="Writer.cs" />
     <Compile Include="WriterException.cs" />
   </ItemGroup>
-  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
-    <VisualStudioVersion>11.0</VisualStudioVersion>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Key\private.snk">
+      <Link>Properties\private.snk</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
