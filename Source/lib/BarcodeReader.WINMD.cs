@@ -201,6 +201,16 @@ namespace ZXing
       public bool AutoRotate { get; set; }
 
       /// <summary>
+      /// Gets or sets a value indicating whether the image should be automatically inverted
+      /// if no result is found in the original image.
+      /// ATTENTION: Please be carefully because it slows down the decoding process if it is used
+      /// </summary>
+      /// <value>
+      ///   <c>true</c> if image should be inverted; otherwise, <c>false</c>.
+      /// </value>
+      public bool TryInverted { get; set; }
+
+      /// <summary>
       /// Optional: Gets or sets the function to create a luminance source object for a bitmap.
       /// If null a platform specific default LuminanceSource is used
       /// </summary>
@@ -321,6 +331,23 @@ namespace ZXing
                usePreviousState = true;
             }
 
+            if (result == null)
+            {
+               if (TryInverted && luminanceSource.InversionSupported)
+               {
+                  binaryBitmap = new BinaryBitmap(CreateBinarizer(luminanceSource.invert()));
+                  if (usePreviousState && multiformatReader != null)
+                  {
+                     result = multiformatReader.decodeWithState(binaryBitmap);
+                  }
+                  else
+                  {
+                     result = Reader.decode(binaryBitmap, hints);
+                     usePreviousState = true;
+                  }
+               }
+            }
+
             if (result != null ||
                 !luminanceSource.RotateSupported ||
                 !AutoRotate)
@@ -394,6 +421,15 @@ namespace ZXing
          for (; rotationCount < rotationMaxCount; rotationCount++)
          {
             results = multiReader.decodeMultiple(binaryBitmap, hints);
+
+            if (results == null)
+            {
+               if (TryInverted && luminanceSource.InversionSupported)
+               {
+                  binaryBitmap = new BinaryBitmap(CreateBinarizer(luminanceSource.invert()));
+                  results = multiReader.decodeMultiple(binaryBitmap, hints);
+               }
+            }
 
             if (results != null ||
                 !luminanceSource.RotateSupported ||

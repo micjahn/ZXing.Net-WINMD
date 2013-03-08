@@ -31,13 +31,8 @@ namespace ZXing
       private static readonly Func<LuminanceSource, Binarizer> defaultCreateBinarizer =
          (luminanceSource) => new HybridBinarizer(luminanceSource);
 
-#if MONOTOUCH
-      private static readonly Func<byte[], int, int, RGBLuminanceSource.BitmapFormat, LuminanceSource> defaultCreateRGBLuminanceSource =
-         (rawBytes, width, height, format) => new RGBLuminanceSource(rawBytes, width, height);
-#else
-      private static readonly Func<byte[], int, int, RGBLuminanceSource.BitmapFormat, LuminanceSource> defaultCreateRGBLuminanceSource =
+      protected static readonly Func<byte[], int, int, RGBLuminanceSource.BitmapFormat, LuminanceSource> defaultCreateRGBLuminanceSource =
          (rawBytes, width, height, format) => new RGBLuminanceSource(rawBytes, width, height, format);
-#endif
 
       private Reader reader;
       private readonly IDictionary<DecodeHintType, object> hints;
@@ -236,6 +231,16 @@ namespace ZXing
       /// </value>
       public bool AutoRotate { get; set; }
 
+      /// <summary>
+      /// Gets or sets a value indicating whether the image should be automatically inverted
+      /// if no result is found in the original image.
+      /// ATTENTION: Please be carefully because it slows down the decoding process if it is used
+      /// </summary>
+      /// <value>
+      ///   <c>true</c> if image should be inverted; otherwise, <c>false</c>.
+      /// </value>
+      public bool TryInverted { get; set; }
+
 #if !UNITY
       /// <summary>
       /// Optional: Gets or sets the function to create a luminance source object for a bitmap.
@@ -278,7 +283,7 @@ namespace ZXing
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric"/> class.
+      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric{T}"/> class.
       /// </summary>
       public BarcodeReaderGeneric()
          : this(new MultiFormatReader(), null, defaultCreateBinarizer)
@@ -286,7 +291,7 @@ namespace ZXing
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric"/> class.
+      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric{T}"/> class.
       /// </summary>
       /// <param name="reader">Sets the reader which should be used to find and decode the barcode.
       /// If null then MultiFormatReader is used</param>
@@ -307,7 +312,7 @@ namespace ZXing
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric&lt;T&gt;"/> class.
+      /// Initializes a new instance of the <see cref="BarcodeReaderGeneric{T}"/> class.
       /// </summary>
       /// <param name="reader">Sets the reader which should be used to find and decode the barcode.
       /// If null then MultiFormatReader is used</param>
@@ -335,6 +340,7 @@ namespace ZXing
          usePreviousState = false;
       }
 
+#if !PORTABLE
 #if !UNITY
       /// <summary>
       /// Decodes the specified barcode bitmap.
@@ -376,6 +382,7 @@ namespace ZXing
 
          return Decode(luminanceSource);
       }
+#endif
 
       virtual protected Result Decode(LuminanceSource luminanceSource)
       {
@@ -396,6 +403,23 @@ namespace ZXing
             {
                result = Reader.decode(binaryBitmap, hints);
                usePreviousState = true;
+            }
+
+            if (result == null)
+            {
+               if (TryInverted && luminanceSource.InversionSupported)
+               {
+                  binaryBitmap = new BinaryBitmap(CreateBinarizer(luminanceSource.invert()));
+                  if (usePreviousState && multiformatReader != null)
+                  {
+                     result = multiformatReader.decodeWithState(binaryBitmap);
+                  }
+                  else
+                  {
+                     result = Reader.decode(binaryBitmap, hints);
+                     usePreviousState = true;
+                  }
+               }
             }
 
             if (result != null ||
@@ -428,6 +452,7 @@ namespace ZXing
          return result;
       }
 
+#if !PORTABLE
 #if !UNITY
       /// <summary>
       /// Decodes the specified barcode bitmap.
@@ -468,6 +493,7 @@ namespace ZXing
 
          return DecodeMultiple(luminanceSource);
       }
+#endif
 
       virtual protected Result[] DecodeMultiple(LuminanceSource luminanceSource)
       {
@@ -493,6 +519,21 @@ namespace ZXing
          for (; rotationCount < rotationMaxCount; rotationCount++)
          {
             results = multiReader.decodeMultiple(binaryBitmap, hints);
+
+            if (results == null)
+            {
+               if (TryInverted && luminanceSource.InversionSupported)
+               {
+                  luminanceSource.invert();
+                  binaryBitmap = new BinaryBitmap(CreateBinarizer(luminanceSource));
+                  results = multiReader.decodeMultiple(binaryBitmap, hints);
+                  // invert back because for next round of rotation
+                  // but I'm not sure if it would be necessary because the next round
+                  // with rotation would decode an inverted image and if no result was found
+                  // it would be inverted back and checked again
+                  luminanceSource.invert();
+               }
+            }
 
             if (results != null ||
                 !luminanceSource.RotateSupported ||

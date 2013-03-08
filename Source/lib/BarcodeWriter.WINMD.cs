@@ -100,5 +100,22 @@ namespace ZXing
 
          return Renderer.Render(matrix, Format, contents, Options);
       }
+
+      /// <summary>
+      /// Returns a rendered instance of the barcode which is given by a BitMatrix.
+      /// For rendering the instance of the property Renderer is used and has to be set before
+      /// calling that method.
+      /// </summary>
+      /// <param name="matrix">The matrix.</param>
+      /// <returns></returns>
+      public WriteableBitmap Write(BitMatrix matrix)
+      {
+         if (Renderer == null)
+         {
+            throw new InvalidOperationException("You have to set a renderer instance.");
+         }
+
+         return Renderer.Render(matrix, Format, null, Options);
+      }
    }
 }
