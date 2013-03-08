@@ -22,17 +22,14 @@ using System.Text.RegularExpressions;
 
 namespace ZXing.Client.Result
 {
-   /// <summary> Parses contact information formatted according to the VCard (2.1) format. This is not a complete
+   /// <summary>
+   /// Parses contact information formatted according to the VCard (2.1) format. This is not a complete
    /// implementation but should parse information as commonly encoded in 2D barcodes.
-   /// 
    /// </summary>
-   /// <author>  Sean Owen
-   /// </author>
-   /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
-   /// </author>
+   /// <authorSean Owen</author>
    sealed class VCardResultParser : ResultParser
    {
-#if SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE
+#if SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE
       private static readonly Regex BEGIN_VCARD = new Regex("BEGIN:VCARD", RegexOptions.IgnoreCase);
       private static readonly Regex VCARD_LIKE_DATE = new Regex("\\d{4}-?\\d{2}-?\\d{2}");
       private static readonly Regex CR_LF_SPACE_TAB = new Regex("\r\n[ \t]");
@@ -41,6 +38,8 @@ namespace ZXing.Client.Result
       private static readonly Regex EQUALS = new Regex("=");
       private static readonly Regex SEMICOLON = new Regex(";");
       private static readonly Regex UNESCAPED_SEMICOLONS = new Regex("(?<!\\\\);+");
+      private static readonly Regex COMMA = new Regex(",");
+      private static readonly Regex SEMICOLON_OR_COMMA = new Regex("[;,]");
 #else
       private static readonly Regex BEGIN_VCARD = new Regex("BEGIN:VCARD", RegexOptions.Compiled | RegexOptions.IgnoreCase);
       private static readonly Regex VCARD_LIKE_DATE = new Regex("\\d{4}-?\\d{2}-?\\d{2}", RegexOptions.Compiled);
@@ -50,6 +49,8 @@ namespace ZXing.Client.Result
       private static readonly Regex EQUALS = new Regex("=", RegexOptions.Compiled);
       private static readonly Regex SEMICOLON = new Regex(";", RegexOptions.Compiled);
       private static readonly Regex UNESCAPED_SEMICOLONS = new Regex("(?<!\\\\);+", RegexOptions.Compiled);
+      private static readonly Regex COMMA = new Regex(",", RegexOptions.Compiled);
+      private static readonly Regex SEMICOLON_OR_COMMA = new Regex("[;,]", RegexOptions.Compiled);
 #endif
 
       override public ParsedResult parse(ZXing.Result result)
@@ -70,6 +71,8 @@ namespace ZXing.Client.Result
             names = matchVCardPrefixedField("N", rawText, true, false);
             formatNames(names);
          }
+         List<String> nicknameString = matchSingleVCardPrefixedField("NICKNAME", rawText, true, false);
+         String[] nicknames = nicknameString == null ? null : COMMA.Split(nicknameString[0]);
          List<List<String>> phoneNumbers = matchVCardPrefixedField("TEL", rawText, true, false);
          List<List<String>> emails = matchVCardPrefixedField("EMAIL", rawText, true, false);
          List<String> note = matchSingleVCardPrefixedField("NOTE", rawText, false, false);
@@ -81,9 +84,16 @@ namespace ZXing.Client.Result
             birthday = null;
          }
          List<String> title = matchSingleVCardPrefixedField("TITLE", rawText, true, false);
-         List<String> url = matchSingleVCardPrefixedField("URL", rawText, true, false);
+         List<List<String>> urls = matchVCardPrefixedField("URL", rawText, true, false);
          List<String> instantMessenger = matchSingleVCardPrefixedField("IMPP", rawText, true, false);
+         List<String> geoString = matchSingleVCardPrefixedField("GEO", rawText, true, false);
+         String[] geo = geoString == null ? null : SEMICOLON_OR_COMMA.Split(geoString[0]);
+         if (geo != null && geo.Length != 2)
+         {
+            geo = null;
+         }
          return new AddressBookParsedResult(toPrimaryValues(names),
+                                            nicknames,
                                             null,
                                             toPrimaryValues(phoneNumbers),
                                             toTypes(phoneNumbers),
@@ -96,7 +106,8 @@ namespace ZXing.Client.Result
                                             toPrimaryValue(org),
                                             toPrimaryValue(birthday),
                                             toPrimaryValue(title),
-                                            toPrimaryValue(url));
+                                            toPrimaryValues(urls),
+                                            geo);
       }
 
       public static List<List<String>> matchVCardPrefixedField(String prefix,
@@ -296,7 +307,7 @@ namespace ZXing.Client.Result
             {
 #if WindowsCE
                fragment = Encoding.Default.GetString(fragmentBytes, 0, fragmentBytes.Length);
-#elif (WINDOWS_PHONE70 || WINDOWS_PHONE71 || WINDOWS_PHONE80 || SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE)
+#elif (WINDOWS_PHONE70 || WINDOWS_PHONE71 || WINDOWS_PHONE80 || SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE)
                fragment = Encoding.UTF8.GetString(fragmentBytes, 0, fragmentBytes.Length);
 #else
                fragment = Encoding.Default.GetString(fragmentBytes);
@@ -323,7 +334,7 @@ namespace ZXing.Client.Result
                      fragment = Encoding.Default.GetString(fragmentBytes, 0, fragmentBytes.Length);
                   }
                   fragment = Encoding.Default.GetString(fragmentBytes, 0, fragmentBytes.Length);
-#elif (WINDOWS_PHONE70 || WINDOWS_PHONE71 || WINDOWS_PHONE80 || SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE)
+#elif (WINDOWS_PHONE70 || WINDOWS_PHONE71 || WINDOWS_PHONE80 || SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE)
                   fragment = Encoding.UTF8.GetString(fragmentBytes, 0, fragmentBytes.Length);
 #else
                   fragment = Encoding.Default.GetString(fragmentBytes);
@@ -356,10 +367,14 @@ namespace ZXing.Client.Result
          {
             return null;
          }
-         List<String> result = new List<String>(lists.Count);
+         var result = new List<String>(lists.Count);
          foreach (var list in lists)
          {
-            result.Add(list[0]);
+            String value = list[0];
+            if (!String.IsNullOrEmpty(value))
+            {
+               result.Add(value);
+            }
          }
          return SupportClass.toStringArray(result);
       }
