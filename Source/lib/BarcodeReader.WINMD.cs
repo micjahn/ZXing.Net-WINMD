@@ -286,7 +286,11 @@ namespace ZXing
          this.createLuminanceSource = createLuminanceSource;
          this.createBinarizer = createBinarizer ?? defaultCreateBinarizer;
          this.createRGBLuminanceSource = createRGBLuminanceSource ?? defaultCreateRGBLuminanceSource;
-         hints = new Dictionary<DecodeHintType, object>();
+         hints = new Dictionary<DecodeHintType, object>
+                    {
+                       {DecodeHintType.USE_CODE_39_EXTENDED_MODE, true},
+                       {DecodeHintType.RELAXED_CODE_39_EXTENDED_MODE, true}
+                    }; 
          usePreviousState = false;
       }
 
@@ -317,7 +321,13 @@ namespace ZXing
          var binaryBitmap = new BinaryBitmap(binarizer);
          var multiformatReader = Reader as MultiFormatReader;
          var rotationCount = 0;
-         var rotationMaxCount = AutoRotate ? 4 : 1;
+         var rotationMaxCount = 1;
+
+         if (AutoRotate)
+         {
+            hints[DecodeHintType.TRY_HARDER_WITHOUT_ROTATION] = true;
+            rotationMaxCount = 4;
+         }
 
          for (; rotationCount < rotationMaxCount; rotationCount++)
          {
@@ -403,8 +413,14 @@ namespace ZXing
          var binarizer = CreateBinarizer(luminanceSource);
          var binaryBitmap = new BinaryBitmap(binarizer);
          var rotationCount = 0;
-         var rotationMaxCount = AutoRotate ? 4 : 1;
+         var rotationMaxCount = 1;
          MultipleBarcodeReader multiReader = null;
+
+         if (AutoRotate)
+         {
+            hints[DecodeHintType.TRY_HARDER_WITHOUT_ROTATION] = true;
+            rotationMaxCount = 4;
+         }
 
          var formats = PossibleFormats;
          if (formats != null &&
