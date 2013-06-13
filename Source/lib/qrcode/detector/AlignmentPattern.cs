@@ -113,6 +113,8 @@ namespace ZXing.QrCode.Internal
 
       public static implicit operator ResultPoint(AlignmentPattern point)
       {
+         if (point == null)
+            return null;
          return new ResultPoint(point.X, point.Y);
       }
 
