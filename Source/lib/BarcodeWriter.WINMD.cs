@@ -24,6 +24,7 @@ namespace ZXing
 {
    /// <summary>
    /// A base class for specific barcode writers with specific formats of barcode images.
+   /// The result is a byte[] array with 4 bytes per pixel, BGRA
    /// </summary>
    public sealed class BarcodeWriter : IBarcodeWriter
    {
@@ -66,7 +67,7 @@ namespace ZXing
       /// </summary>
       public BarcodeWriter()
       {
-         Renderer = new WriteableBitmapRenderer();
+         Renderer = new PixelDataRenderer();
       }
 
       /// <summary>
@@ -89,7 +90,7 @@ namespace ZXing
       /// </summary>
       /// <param name="contents">The contents.</param>
       /// <returns></returns>
-      public WriteableBitmap Write(string contents)
+      public byte[] Write(string contents)
       {
          if (Renderer == null)
          {
@@ -108,7 +109,7 @@ namespace ZXing
       /// </summary>
       /// <param name="matrix">The matrix.</param>
       /// <returns></returns>
-      public WriteableBitmap Write(BitMatrix matrix)
+      internal byte[] Write(BitMatrix matrix)
       {
          if (Renderer == null)
          {

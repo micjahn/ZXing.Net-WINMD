@@ -33,7 +33,7 @@ namespace ZXing.Rendering
       /// <param name="content">The encoded content of the barcode which should be included in the image.
       /// That can be the numbers below a 1D barcode or something other.</param>
       /// <returns></returns>
-      WriteableBitmap Render(BitMatrix matrix, BarcodeFormat format, string content);
+      byte[] Render(BitMatrix matrix, BarcodeFormat format, string content);
 
       /// <summary>
       /// Renders the specified matrix to its graphically representation
@@ -44,6 +44,6 @@ namespace ZXing.Rendering
       /// That can be the numbers below a 1D barcode or something other.</param>
       /// <param name="options">The options.</param>
       /// <returns></returns>
-      WriteableBitmap Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options);
+      byte[] Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options);
    }
 }

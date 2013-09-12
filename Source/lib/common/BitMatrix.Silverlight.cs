@@ -28,9 +28,10 @@ namespace ZXing.Common
    public sealed partial class BitMatrix
    {
       [Obsolete("Use BarcodeWriter instead")]
-      public WriteableBitmap ToBitmap()
+      public byte[] ToBitmap()
       {
-         return ToBitmap(BarcodeFormat.EAN_8, null);
+         var writer = new BarcodeWriter { Format = BarcodeFormat.EAN_8 };
+         return writer.Write(this);
       }
 
       /// <summary>
@@ -38,7 +39,7 @@ namespace ZXing.Common
       /// </summary>
       /// <returns>A black and white bitmap converted from this ByteMatrix.</returns>
       [Obsolete("Use BarcodeWriter instead")]
-      public WriteableBitmap ToBitmap(BarcodeFormat format, String content)
+      public byte[] ToBitmap(BarcodeFormat format, String content)
       {
          var writer = new BarcodeWriter { Format = format };
          return writer.Write(content);
