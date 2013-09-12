@@ -6,4 +6,5 @@
 #pragma once
 
 #include <collection.h>
+#include <robuffer.h>
 #include "App.xaml.h"

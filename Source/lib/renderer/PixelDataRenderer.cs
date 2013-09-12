@@ -113,7 +113,7 @@ namespace ZXing.Rendering
       /// <param name="format">The format.</param>
       /// <param name="content">The content.</param>
       /// <returns></returns>
-      public byte[] Render(BitMatrix matrix, BarcodeFormat format, string content)
+      public PixelData Render(BitMatrix matrix, BarcodeFormat format, string content)
       {
          return Render(matrix, format, content, null);
       }
@@ -126,10 +126,10 @@ namespace ZXing.Rendering
       /// <param name="content">The content.</param>
       /// <param name="options">The options.</param>
       /// <returns></returns>
-      public byte[] Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
+      public PixelData Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
       {
          int width = matrix.Width;
-         int height = matrix.Height;
+         int heigth = matrix.Height;
          bool outputContent = (options == null || !options.PureBarcode) &&
                               !String.IsNullOrEmpty(content) && (format == BarcodeFormat.CODE_39 ||
                                                                  format == BarcodeFormat.CODE_128 ||
@@ -149,19 +149,19 @@ namespace ZXing.Rendering
             {
                width = options.Width;
             }
-            if (options.Height > height)
+            if (options.Height > heigth)
             {
-               height = options.Height;
+               heigth = options.Height;
             }
             // calculating the scaling factor
             pixelsize = width / matrix.Width;
-            if (pixelsize > height / matrix.Height)
+            if (pixelsize > heigth / matrix.Height)
             {
-               pixelsize = height / matrix.Height;
+               pixelsize = heigth / matrix.Height;
             }
          }
 
-         var pixels = new byte[width * height * 4];
+         var pixels = new byte[width * heigth * 4];
          var index = 0;
 
          for (int y = 0; y < matrix.Height - emptyArea; y++)
@@ -173,33 +173,33 @@ namespace ZXing.Rendering
                   var color = matrix[x, y] ? Foreground : Background;
                   for (var pixelsizeWidth = 0; pixelsizeWidth < pixelsize; pixelsizeWidth++)
                   {
-                     pixels[index++] = color.A;
-                     pixels[index++] = color.R;
-                     pixels[index++] = color.G;
                      pixels[index++] = color.B;
+                     pixels[index++] = color.G;
+                     pixels[index++] = color.R;
+                     pixels[index++] = color.A;
                   }
                }
                for (var x = pixelsize * matrix.Width; x < width; x++)
                {
-                  pixels[index++] = Background.A;
-                  pixels[index++] = Background.R;
-                  pixels[index++] = Background.G;
                   pixels[index++] = Background.B;
+                  pixels[index++] = Background.G;
+                  pixels[index++] = Background.R;
+                  pixels[index++] = Background.A;
                }
             }
          }
-         for (int y = matrix.Height * pixelsize - emptyArea; y < height; y++)
+         for (int y = matrix.Height * pixelsize - emptyArea; y < heigth; y++)
          {
             for (var x = 0; x < width; x++)
             {
-               pixels[index++] = Background.A;
-               pixels[index++] = Background.R;
-               pixels[index++] = Background.G;
                pixels[index++] = Background.B;
+               pixels[index++] = Background.G;
+               pixels[index++] = Background.R;
+               pixels[index++] = Background.A;
             }
          }
 
-         return pixels;
+         return new PixelData(width, heigth, pixels);
       }
    }
 }

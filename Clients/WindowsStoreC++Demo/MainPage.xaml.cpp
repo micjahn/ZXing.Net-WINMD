@@ -18,13 +18,14 @@ using namespace Windows::UI::Xaml::Data;
 using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
-using namespace ZXing::QrCode;
 using namespace ZXing;
 using namespace ZXing::Common;
 using namespace ZXing::QrCode;
+using namespace ZXing::Rendering;
 using namespace Windows::UI::Xaml::Media::Imaging;
 using namespace Windows::Storage::Streams ;
 using namespace Windows::Graphics::Imaging;
+using namespace Microsoft::WRL;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 MainPage::MainPage()
@@ -56,7 +57,30 @@ void WindowsStoreCppDemo::MainPage::btnName_Click(Platform::Object^ sender, Wind
 	}
 	BarcodeWriter^ barcodeWriter = ref new BarcodeWriter();
 	barcodeWriter->Format = BarcodeFormat::QR_CODE;
-	this->lastBitmap = barcodeWriter->Write(strName);
+   PixelData^ pixelData = barcodeWriter->Write(strName);
+   WriteableBitmap^ wbitmap = (WriteableBitmap^)pixelData->ToBitmap();
+   /*
+   // alternative way
+   WriteableBitmap^ wbitmap = ref new WriteableBitmap(pixelData->Width, pixelData->Heigth);
+
+   byte* pDstPixels;
+   // Get access to the pixels
+   IBuffer^ buffer = wbitmap->PixelBuffer;
+
+   // Obtain IBufferByteAccess
+   ComPtr<IBufferByteAccess> pBufferByteAccess;
+   ComPtr<IUnknown> pBuffer((IUnknown*)buffer);
+   pBuffer.As(&pBufferByteAccess);
+    
+   // Get pointer to pixel bytes
+   pBufferByteAccess->Buffer(&pDstPixels);
+   // very slow, but I have no better idea at the moment
+   for (int index = 0; index < pixelData->Pixel->Length; index++)
+   {
+      pDstPixels[index] = pixelData->Pixel[index];
+   }
+   */
+   this->lastBitmap = wbitmap;
 	imgPlaceHolder->Source = lastBitmap;
 }
 

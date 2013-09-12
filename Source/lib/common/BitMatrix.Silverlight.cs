@@ -22,13 +22,14 @@ using System.Windows.Media.Imaging;
 #endif
 
 using ZXing.OneD;
+using ZXing.Rendering;
 
 namespace ZXing.Common
 {
    public sealed partial class BitMatrix
    {
       [Obsolete("Use BarcodeWriter instead")]
-      public byte[] ToBitmap()
+      public PixelData ToBitmap()
       {
          var writer = new BarcodeWriter { Format = BarcodeFormat.EAN_8 };
          return writer.Write(this);
@@ -39,7 +40,7 @@ namespace ZXing.Common
       /// </summary>
       /// <returns>A black and white bitmap converted from this ByteMatrix.</returns>
       [Obsolete("Use BarcodeWriter instead")]
-      public byte[] ToBitmap(BarcodeFormat format, String content)
+      public PixelData ToBitmap(BarcodeFormat format, String content)
       {
          var writer = new BarcodeWriter { Format = format };
          return writer.Write(content);

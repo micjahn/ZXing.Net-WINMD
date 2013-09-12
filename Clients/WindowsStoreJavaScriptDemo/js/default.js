@@ -125,9 +125,10 @@ function generate_barcode() {
 
    // draw the pixel data to the canvas
    var ctx = document.getElementById('canvas').getContext('2d');
-   var imageData = ctx.createImageData(writer.options.width, writer.options.height);
-   for (var index = 0; index < imagePixelData.length; index++) {
-      imageData.data[index] = imagePixelData[index];
+   var imageData = ctx.createImageData(imagePixelData.width, imagePixelData.heigth);
+   var pixel = imagePixelData.pixel
+   for (var index = 0; index < pixel.length; index++) {
+      imageData.data[index] = pixel[index];
    }
    ctx.putImageData(imageData, 0, 0);
 }

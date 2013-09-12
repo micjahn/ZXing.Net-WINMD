@@ -17,6 +17,7 @@
 using Windows.Foundation.Metadata;
 
 using ZXing.Common;
+using ZXing.Rendering;
 
 namespace ZXing
 {
@@ -35,7 +36,6 @@ namespace ZXing
       /// <summary>
       /// Creates a visual representation of the contents
       /// </summary>
-      [DefaultOverload]
-      byte[] Write(string contents);
+      PixelData Write(string contents);
    }
 }

@@ -90,7 +90,7 @@ namespace ZXing
       /// </summary>
       /// <param name="contents">The contents.</param>
       /// <returns></returns>
-      public byte[] Write(string contents)
+      public PixelData Write(string contents)
       {
          if (Renderer == null)
          {
@@ -109,7 +109,7 @@ namespace ZXing
       /// </summary>
       /// <param name="matrix">The matrix.</param>
       /// <returns></returns>
-      internal byte[] Write(BitMatrix matrix)
+      internal PixelData Write(BitMatrix matrix)
       {
          if (Renderer == null)
          {
