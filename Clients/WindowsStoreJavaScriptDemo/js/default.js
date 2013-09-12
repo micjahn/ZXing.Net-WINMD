@@ -27,16 +27,19 @@
                openPicker.pickSingleFileAsync()
                .then(function (file) {
                   if (file) {
+                     // open a stream from the image
                      return file.openAsync(Windows.Storage.FileAccessMode.readWrite);
                   }
                })
                .then(function (stream) {
                   if (stream) {
+                     // create a decoder from the image stream
                      return Windows.Graphics.Imaging.BitmapDecoder.createAsync(stream);
                   }
                })
                .done(function (decoder) {
-                  if (decoder){
+                  if (decoder) {
+                     // get the raw pixel data from the decoder
                      decoder.getPixelDataAsync().then(function (pixelDataProvider) {
                         var rawPixels = pixelDataProvider.detachPixelData();
                         var pixels, format; // Assign these in the below switch block.
@@ -72,10 +75,16 @@
                                  format = ZXing.BitmapFormat.bgr32;
                               break;
                         }
+                        // create a barcode reader
                         var reader = new ZXing.BarcodeReader();
+                        // try to decode the raw pixel data
                         var result = reader.decode(pixels, decoder.pixelWidth, decoder.pixelHeight, format);
+                        // show the result
                         if (result) {
                            document.getElementById("result").innerText = result.text;
+                        }
+                        else {
+                           document.getElementById("result").innerText = "no barcode found";
                         }
                      });
                   }
@@ -96,6 +105,30 @@
         // Vorgang vor dem Anhalten der Anwendung abgeschlossen werden muss,
         // args.setPromise() aufrufen.
     };
-
+    
     app.start();
 })();
+
+function generate_barcode() {
+   // get the content which the user puts into the textbox
+   var content = document.getElementById("input").value;
+
+   // create the barcode writer and set some options
+   var writer = new ZXing.BarcodeWriter();
+   writer.options = new ZXing.Common.EncodingOptions();
+   writer.options.height = 200;
+   writer.options.width = 200;
+   writer.format = ZXing.BarcodeFormat.qr_CODE;
+
+   // encode the content to a byte array with 4 byte per pixel as BGRA
+   var imagePixelData = writer.write(content);
+
+   // draw the pixel data to the canvas
+   var ctx = document.getElementById('canvas').getContext('2d');
+   var imageData = ctx.createImageData(writer.options.width, writer.options.height);
+   for (var index = 0; index < imagePixelData.length; index++) {
+      imageData.data[index] = imagePixelData[index];
+   }
+   ctx.putImageData(imageData, 0, 0);
+}
+
