@@ -22,7 +22,7 @@ namespace ZXing.Aztec.Internal
    /// Aztec 2D code representation
    /// </summary>
    /// <author>Rustam Abdullaev</author>
-   public sealed class AztecCode
+   internal sealed class AztecCode
    {
       /// <summary>
       /// Compact or full symbol indicator

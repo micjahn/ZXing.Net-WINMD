@@ -41,7 +41,7 @@ namespace WindowsStoreDemo
 
       private async System.Threading.Tasks.Task DecodeStaticResource()
       {
-         var file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\1.jpg");
+         var file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\1.png");
          var stream = await file.OpenReadAsync();
          // initialize with 1,1 to get the current size of the image
          var writeableBmp = new WriteableBitmap(1, 1);

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Xaml.Media.Imaging;
 using ZXing.Common;
 using ZXing.Multi;
@@ -37,11 +38,23 @@ namespace ZXing
          (bitmap) => new BitmapLuminanceSource(bitmap);
 
       private Reader reader;
-      private readonly IDictionary<DecodeHintType, object> hints;
       private readonly Func<byte[], int, int, BitmapFormat, LuminanceSource> createRGBLuminanceSource;
       private readonly Func<WriteableBitmap, LuminanceSource> createLuminanceSource;
       private readonly Func<LuminanceSource, Binarizer> createBinarizer;
       private bool usePreviousState;
+      private DecodingOptions options;
+
+      /// <summary>
+      /// Gets or sets the options.
+      /// </summary>
+      /// <value>
+      /// The options.
+      /// </value>
+      public DecodingOptions Options
+      {
+         get { return options ?? (options = new DecodingOptions()); }
+         set { options = value; }
+      }
 
       /// <summary>
       /// Gets the reader which should be used to find and decode the barcode.
@@ -58,9 +71,44 @@ namespace ZXing
       }
 
       /// <summary>
+      /// Gets or sets a method which is called if an important point is found
+      /// </summary>
+      /// <value>
+      /// The result point callback.
+      /// </value>
+      public event EventHandler<ResultPoint> ResultPointFound
+      {
+         add
+         {
+            if (!Options.Hints.ContainsKey(DecodeHintType.NEED_RESULT_POINT_CALLBACK))
+            {
+               var callback = new ResultPointCallback(OnResultPointFound);
+               Options.Hints[DecodeHintType.NEED_RESULT_POINT_CALLBACK] = callback;
+            }
+            explicitResultPointFound += value;
+            usePreviousState = false;
+
+            var registrationToken = new EventRegistrationToken();
+            registeredResultPointHandlers[registrationToken] = value;
+            return registrationToken;
+         }
+         remove
+         {
+            EventHandler<ResultPoint> handler;
+            if (registeredResultPointHandlers.TryGetValue(value, out handler))
+               explicitResultPointFound -= handler;
+            if (explicitResultPointFound == null)
+               Options.Hints.Remove(DecodeHintType.NEED_RESULT_POINT_CALLBACK);
+            usePreviousState = false;
+         }
+      }
+      private IDictionary<EventRegistrationToken, EventHandler<ResultPoint>> registeredResultPointHandlers = new Dictionary<EventRegistrationToken, EventHandler<ResultPoint>>();
+      private event EventHandler<ResultPoint> explicitResultPointFound;
+
+      /// <summary>
       /// event is executed if a result was found via decode
       /// </summary>
-      //public event Action<Result> ResultFound;
+      public event EventHandler<Result> ResultFound;
 
       /// <summary>
       /// Gets or sets a flag which cause a deeper look into the bitmap
@@ -68,30 +116,11 @@ namespace ZXing
       /// <value>
       ///   <c>true</c> if [try harder]; otherwise, <c>false</c>.
       /// </value>
+      [Obsolete("Please use the Options.TryHarder property instead.")]
       public bool TryHarder
       {
-         get
-         {
-            if (hints.ContainsKey(DecodeHintType.TRY_HARDER))
-               return (bool)hints[DecodeHintType.TRY_HARDER];
-            return false;
-         }
-         set
-         {
-            if (value)
-            {
-               hints[DecodeHintType.TRY_HARDER] = true;
-               usePreviousState = false;
-            }
-            else
-            {
-               if (hints.ContainsKey(DecodeHintType.TRY_HARDER))
-               {
-                  hints.Remove(DecodeHintType.TRY_HARDER);
-                  usePreviousState = false;
-               }
-            }
-         }
+         get { return Options.TryHarder; }
+         set { Options.TryHarder = value; }
       }
 
       /// <summary>
@@ -100,30 +129,11 @@ namespace ZXing
       /// <value>
       ///   <c>true</c> if monochrome image of a barcode; otherwise, <c>false</c>.
       /// </value>
+      [Obsolete("Please use the Options.PureBarcode property instead.")]
       public bool PureBarcode
       {
-         get
-         {
-            if (hints.ContainsKey(DecodeHintType.PURE_BARCODE))
-               return (bool)hints[DecodeHintType.PURE_BARCODE];
-            return false;
-         }
-         set
-         {
-            if (value)
-            {
-               hints[DecodeHintType.PURE_BARCODE] = true;
-               usePreviousState = false;
-            }
-            else
-            {
-               if (hints.ContainsKey(DecodeHintType.PURE_BARCODE))
-               {
-                  hints.Remove(DecodeHintType.PURE_BARCODE);
-                  usePreviousState = false;
-               }
-            }
-         }
+         get { return Options.PureBarcode; }
+         set { Options.PureBarcode = value; }
       }
 
       /// <summary>
@@ -132,30 +142,11 @@ namespace ZXing
       /// <value>
       /// The character set.
       /// </value>
+      [Obsolete("Please use the Options.CharacterSet property instead.")]
       public string CharacterSet
       {
-         get
-         {
-            if (hints.ContainsKey(DecodeHintType.CHARACTER_SET))
-               return (string)hints[DecodeHintType.CHARACTER_SET];
-            return null;
-         }
-         set
-         {
-            if (value != null)
-            {
-               hints[DecodeHintType.CHARACTER_SET] = value;
-               usePreviousState = false;
-            }
-            else
-            {
-               if (hints.ContainsKey(DecodeHintType.CHARACTER_SET))
-               {
-                  hints.Remove(DecodeHintType.CHARACTER_SET);
-                  usePreviousState = false;
-               }
-            }
-         }
+         get { return Options.CharacterSet; }
+         set { Options.CharacterSet = value; }
       }
 
       /// <summary>
@@ -165,30 +156,11 @@ namespace ZXing
       /// <value>
       /// The possible formats.
       /// </value>
+      [Obsolete("Please use the Options.PossibleFormats property instead.")]
       public IList<BarcodeFormat> PossibleFormats
       {
-         get
-         {
-            if (hints.ContainsKey(DecodeHintType.POSSIBLE_FORMATS))
-               return (IList<BarcodeFormat>)hints[DecodeHintType.POSSIBLE_FORMATS];
-            return null;
-         }
-         set
-         {
-            if (value != null)
-            {
-               hints[DecodeHintType.POSSIBLE_FORMATS] = value;
-               usePreviousState = false;
-            }
-            else
-            {
-               if (hints.ContainsKey(DecodeHintType.POSSIBLE_FORMATS))
-               {
-                  hints.Remove(DecodeHintType.POSSIBLE_FORMATS);
-                  usePreviousState = false;
-               }
-            }
-         }
+         get { return Options.PossibleFormats; }
+         set { Options.PossibleFormats = value; }
       }
 
       /// <summary>
@@ -286,11 +258,7 @@ namespace ZXing
          this.createLuminanceSource = createLuminanceSource;
          this.createBinarizer = createBinarizer ?? defaultCreateBinarizer;
          this.createRGBLuminanceSource = createRGBLuminanceSource ?? defaultCreateRGBLuminanceSource;
-         hints = new Dictionary<DecodeHintType, object>
-                    {
-                       {DecodeHintType.USE_CODE_39_EXTENDED_MODE, true},
-                       {DecodeHintType.RELAXED_CODE_39_EXTENDED_MODE, true}
-                    }; 
+         Options.ValueChanged += (o, args) => usePreviousState = false;
          usePreviousState = false;
       }
 
@@ -314,6 +282,15 @@ namespace ZXing
          return Decode(luminanceSource);
       }
 
+      /// <summary>
+      /// Tries to decode a barcode within an image which is given by a luminance source.
+      /// That method gives a chance to prepare a luminance source completely before calling
+      /// the time consuming decoding method. On the other hand there is a chance to create
+      /// a luminance source which is independent from external resources (like Bitmap objects)
+      /// and the decoding call can be made in a background thread.
+      /// </summary>
+      /// <param name="luminanceSource">The luminance source.</param>
+      /// <returns></returns>
       private Result Decode(LuminanceSource luminanceSource)
       {
          var result = default(Result);
@@ -325,8 +302,13 @@ namespace ZXing
 
          if (AutoRotate)
          {
-            hints[DecodeHintType.TRY_HARDER_WITHOUT_ROTATION] = true;
+            Options.Hints[DecodeHintType.TRY_HARDER_WITHOUT_ROTATION] = true;
             rotationMaxCount = 4;
+         }
+         else
+         {
+            if (Options.Hints.ContainsKey(DecodeHintType.TRY_HARDER_WITHOUT_ROTATION))
+               Options.Hints.Remove(DecodeHintType.TRY_HARDER_WITHOUT_ROTATION);
          }
 
          for (; rotationCount < rotationMaxCount; rotationCount++)
@@ -337,7 +319,7 @@ namespace ZXing
             }
             else
             {
-               result = Reader.decode(binaryBitmap, hints);
+               result = Reader.decode(binaryBitmap, Options.Hints);
                usePreviousState = true;
             }
 
@@ -352,7 +334,7 @@ namespace ZXing
                   }
                   else
                   {
-                     result = Reader.decode(binaryBitmap, hints);
+                     result = Reader.decode(binaryBitmap, Options.Hints);
                      usePreviousState = true;
                   }
                }
@@ -382,7 +364,7 @@ namespace ZXing
                result.ResultMetadata[ResultMetadataType.ORIENTATION] = ((int)(result.ResultMetadata[ResultMetadataType.ORIENTATION]) + rotationCount * 90) % 360;
             }
 
-//            OnResultFound(result);
+            OnResultFound(result);
          }
 
          return result;
@@ -407,6 +389,15 @@ namespace ZXing
          return DecodeMultiple(luminanceSource);
       }
 
+      /// <summary>
+      /// Tries to decode barcodes within an image which is given by a luminance source.
+      /// That method gives a chance to prepare a luminance source completely before calling
+      /// the time consuming decoding method. On the other hand there is a chance to create
+      /// a luminance source which is independent from external resources (like Bitmap objects)
+      /// and the decoding call can be made in a background thread.
+      /// </summary>
+      /// <param name="luminanceSource">The luminance source.</param>
+      /// <returns></returns>
       private Result[] DecodeMultiple(LuminanceSource luminanceSource)
       {
          var results = default(Result[]);
@@ -418,11 +409,11 @@ namespace ZXing
 
          if (AutoRotate)
          {
-            hints[DecodeHintType.TRY_HARDER_WITHOUT_ROTATION] = true;
+            Options.Hints[DecodeHintType.TRY_HARDER_WITHOUT_ROTATION] = true;
             rotationMaxCount = 4;
          }
 
-         var formats = PossibleFormats;
+         var formats = Options.PossibleFormats;
          if (formats != null &&
              formats.Count == 1 &&
              formats.Contains(BarcodeFormat.QR_CODE))
@@ -436,14 +427,14 @@ namespace ZXing
 
          for (; rotationCount < rotationMaxCount; rotationCount++)
          {
-            results = multiReader.decodeMultiple(binaryBitmap, hints);
+            results = multiReader.decodeMultiple(binaryBitmap, Options.Hints);
 
             if (results == null)
             {
                if (TryInverted && luminanceSource.InversionSupported)
                {
                   binaryBitmap = new BinaryBitmap(CreateBinarizer(luminanceSource.invert()));
-                  results = multiReader.decodeMultiple(binaryBitmap, hints);
+                  results = multiReader.decodeMultiple(binaryBitmap, Options.Hints);
                }
             }
 
@@ -475,30 +466,38 @@ namespace ZXing
                }
             }
 
-//            OnResultsFound(results);
+            OnResultsFound(results);
          }
 
          return results;
       }
 
-      //      protected void OnResultsFound(IEnumerable<Result> results)
-//      {
-//         if (ResultFound != null)
-//         {
-//            foreach (var result in results)
-//            {
-//               ResultFound(result);
-//            }
-//         }
-//      }
+      private void OnResultsFound(IEnumerable<Result> results)
+      {
+         if (ResultFound != null)
+         {
+            foreach (var result in results)
+            {
+               ResultFound(this, result);
+            }
+         }
+      }
 
-//      protected void OnResultFound(Result result)
-//      {
-//         if (ResultFound != null)
-//         {
-//            ResultFound(result);
-//         }
-//      }
+      private void OnResultFound(Result result)
+      {
+         if (ResultFound != null)
+         {
+            ResultFound(this, result);
+         }
+      }
+
+      private void OnResultPointFound(ResultPoint resultPoint)
+      {
+         if (explicitResultPointFound != null)
+         {
+            explicitResultPointFound(this, resultPoint);
+         }
+      }
 
       /// <summary>
       /// Decodes the specified barcode bitmap.

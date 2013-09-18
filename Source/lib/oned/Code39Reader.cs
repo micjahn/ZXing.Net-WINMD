@@ -202,8 +202,8 @@ namespace ZXing.OneD
             resultString = decodeRowResult.ToString();
          }
 
-         float left = (float) (start[1] + start[0])/2.0f;
-         float right = (float) (nextStart + lastStart)/2.0f;
+         float left = (start[1] + start[0])/2.0f;
+         float right = lastStart + lastPatternSize / 2.0f;
 
          var resultPointCallback = hints == null || !hints.ContainsKey(DecodeHintType.NEED_RESULT_POINT_CALLBACK)
                                       ? null
@@ -348,6 +348,11 @@ namespace ZXing.OneD
             char c = encoded[i];
             if (c == '+' || c == '$' || c == '%' || c == '/')
             {
+               if (i + 1 >= encoded.Length)
+               {
+                  return null;
+               }
+
                char next = encoded[i + 1];
                char decodedChar = '\0';
                switch (c)

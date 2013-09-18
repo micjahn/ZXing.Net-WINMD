@@ -24,7 +24,6 @@ namespace ZXing.QrCode
 {
    /// <summary>
    /// This implementation can detect and decode QR Codes in an image.
-   ///
    /// <author>Sean Owen</author>
    /// </summary>
    internal class QRCodeReader : Reader
@@ -75,7 +74,7 @@ namespace ZXing.QrCode
          }
          if (hints != null && hints.ContainsKey(DecodeHintType.PURE_BARCODE))
          {
-            BitMatrix bits = extractPureBits(image.BlackMatrix);
+            var bits = extractPureBits(image.BlackMatrix);
             if (bits == null)
                return null;
             decoderResult = decoder.decode(bits, hints);
@@ -83,7 +82,7 @@ namespace ZXing.QrCode
          }
          else
          {
-            DetectorResult detectorResult = new Detector(image.BlackMatrix).detect(hints);
+            var detectorResult = new Detector(image.BlackMatrix).detect(hints);
             if (detectorResult == null)
                return null;
             decoderResult = decoder.decode(detectorResult.Bits, hints);
@@ -92,8 +91,15 @@ namespace ZXing.QrCode
          if (decoderResult == null)
             return null;
 
-         Result result = new Result(decoderResult.Text, decoderResult.RawBytes, points, BarcodeFormat.QR_CODE);
-         IList<byte[]> byteSegments = decoderResult.ByteSegments;
+         // If the code was mirrored: swap the bottom-left and the top-right points.
+         var data = decoderResult.Other as QRCodeDecoderMetaData;
+         if (data != null)
+         {
+            data.applyMirroredCorrection(points);
+         }
+
+         var result = new Result(decoderResult.Text, decoderResult.RawBytes, points, BarcodeFormat.QR_CODE);
+         var byteSegments = decoderResult.ByteSegments;
          if (byteSegments != null)
          {
             result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, byteSegments);
@@ -102,6 +108,11 @@ namespace ZXing.QrCode
          if (ecLevel != null)
          {
             result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, ecLevel);
+         }
+         if (decoderResult.StructuredAppend)
+         {
+            result.putMetadata(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE, decoderResult.StructuredAppendSequenceNumber);
+            result.putMetadata(ResultMetadataType.STRUCTURED_APPEND_PARITY, decoderResult.StructuredAppendParity);
          }
          return result;
       }
@@ -121,7 +132,6 @@ namespace ZXing.QrCode
       /// around it. This is a specialized method that works exceptionally fast in this special
       /// case.
       /// 
-      /// <seealso cref="ZXing.PDF417.PDF417Reader.extractPureBits(BitMatrix)" />
       /// <seealso cref="ZXing.Datamatrix.DataMatrixReader.extractPureBits(BitMatrix)" />
       /// </summary>
       private static BitMatrix extractPureBits(BitMatrix image)
@@ -141,6 +151,12 @@ namespace ZXing.QrCode
          int bottom = rightBottomBlack[1];
          int left = leftTopBlack[0];
          int right = rightBottomBlack[0];
+
+         // Sanity check!
+         if (left >= right || top >= bottom)
+         {
+            return null;
+         }
 
          if (bottom - top != right - left)
          {
@@ -167,6 +183,28 @@ namespace ZXing.QrCode
          int nudge = (int)(moduleSize / 2.0f);
          top += nudge;
          left += nudge;
+
+         // But careful that this does not sample off the edge
+         int nudgedTooFarRight = left + (int)((matrixWidth - 1) * moduleSize) - (right - 1);
+         if (nudgedTooFarRight > 0)
+         {
+            if (nudgedTooFarRight > nudge)
+            {
+               // Neither way fits; abort
+               return null;
+            }
+            left -= nudgedTooFarRight;
+         }
+         int nudgedTooFarDown = top + (int)((matrixHeight - 1) * moduleSize) - (bottom - 1);
+         if (nudgedTooFarDown > 0)
+         {
+            if (nudgedTooFarDown > nudge)
+            {
+               // Neither way fits; abort
+               return null;
+            }
+            top -= nudgedTooFarDown;
+         }
 
          // Now just read off the bits
          BitMatrix bits = new BitMatrix(matrixWidth, matrixHeight);

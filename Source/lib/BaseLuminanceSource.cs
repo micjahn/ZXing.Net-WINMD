@@ -24,6 +24,14 @@ namespace ZXing
    /// </summary>
    internal abstract class BaseLuminanceSource : LuminanceSource
    {
+      // the following channel weights give nearly the same
+      // gray scale picture as the java version with BufferedImage.TYPE_BYTE_GRAY
+      // they are used in sub classes for luminance / gray scale calculation
+      protected const int RChannelWeight = 19562;
+      protected const int GChannelWeight = 38550;
+      protected const int BChannelWeight = 7424;
+      protected const int ChannelWeight = 16;
+
       /// <summary>
       /// 
       /// </summary>
@@ -99,8 +107,8 @@ namespace ZXing
          {
             for (var xold = 0; xold < Width; xold++)
             {
-               var ynew = xold;
-               var xnew = newWidth - yold - 1;
+               var ynew = newHeight - xold - 1;
+               var xnew = yold;
                rotatedLuminances[ynew * newWidth + xnew] = localLuminances[yold * Width + xold];
             }
          }
@@ -148,11 +156,15 @@ namespace ZXing
             throw new ArgumentException("Crop rectangle does not fit within image data.");
          }
          var croppedLuminances = new byte[width * height];
-         for (int yold = top, ynew = 0; yold < height; yold++, ynew++)
+         var oldLuminances = Matrix;
+         var oldWidth = Width;
+         var oldRightBound = left + width;
+         var oldBottomBound = top + height;
+         for (int yold = top, ynew = 0; yold < oldBottomBound; yold++, ynew++)
          {
-            for (int xold = left, xnew = 0; xold < width; xold++, xnew++)
+            for (int xold = left, xnew = 0; xold < oldRightBound; xold++, xnew++)
             {
-               croppedLuminances[ynew * width + xnew] = luminances[yold * Width + xold];
+               croppedLuminances[ynew * width + xnew] = oldLuminances[yold * oldWidth + xold];
             }
          }
          return CreateLuminanceSource(croppedLuminances, width, height);

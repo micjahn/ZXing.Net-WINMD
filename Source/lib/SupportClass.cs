@@ -107,5 +107,69 @@ namespace ZXing
             array[i] = value;
          }
       }
+
+      /// <summary>
+      /// Fills the specified array.
+      /// (can't use extension method because of .Net 2.0 support)
+      /// </summary>
+      /// <typeparam name="T"></typeparam>
+      /// <param name="array">The array.</param>
+      /// <param name="startIndex">The start index.</param>
+      /// <param name="endIndex">The end index.</param>
+      /// <param name="value">The value.</param>
+      public static void Fill<T>(T[] array, int startIndex, int endIndex, T value)
+      {
+         for (int i = startIndex; i < endIndex; i++)
+         {
+            array[i] = value;
+         }
+      }
+
+      public static string ToBinaryString(int x)
+      {
+         char[] bits = new char[32];
+         int i = 0;
+
+         while (x != 0)
+         {
+            bits[i++] = (x & 1) == 1 ? '1' : '0';
+            x >>= 1;
+         }
+
+         Array.Reverse(bits, 0, i);
+         return new string(bits);
+      }
+
+      public static int bitCount(int n)
+      {
+         int ret = 0;
+         while (n != 0)
+         {
+            n &= (n - 1);
+            ret++;
+         }
+         return ret;
+      }
+
+      /// <summary>
+      /// Savely gets the value of a decoding hint
+      /// if hints is null the default is returned
+      /// </summary>
+      /// <typeparam name="T"></typeparam>
+      /// <param name="hints">The hints.</param>
+      /// <param name="hintType">Type of the hint.</param>
+      /// <param name="default">The @default.</param>
+      /// <returns></returns>
+      public static T GetValue<T>(IDictionary<DecodeHintType, object> hints, DecodeHintType hintType, T @default)
+      {
+         // can't use extension method because of .Net 2.0 support
+
+         if (hints == null)
+            return @default;
+         if (!hints.ContainsKey(hintType))
+            return @default;
+
+         return (T)hints[hintType];
+      }
    }
 }

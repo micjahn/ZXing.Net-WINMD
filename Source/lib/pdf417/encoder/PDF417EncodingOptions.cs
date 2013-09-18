@@ -129,14 +129,11 @@ namespace ZXing.PDF417
          {
             if (Hints.ContainsKey(EncodeHintType.PDF417_COMPACT))
             {
-               return (bool)Hints[EncodeHintType.PDF417_COMPACT];
+               return (bool) Hints[EncodeHintType.PDF417_COMPACT];
             }
             return false;
          }
-         set
-         {
-            Hints[EncodeHintType.PDF417_COMPACT] = value;
-         }
+         set { Hints[EncodeHintType.PDF417_COMPACT] = value; }
       }
 
       /// <summary>
@@ -149,14 +146,11 @@ namespace ZXing.PDF417
          {
             if (Hints.ContainsKey(EncodeHintType.PDF417_COMPACTION))
             {
-               return (Compaction)Hints[EncodeHintType.PDF417_COMPACTION];
+               return (Compaction) Hints[EncodeHintType.PDF417_COMPACTION];
             }
             return Compaction.AUTO;
          }
-         set
-         {
-            Hints[EncodeHintType.PDF417_COMPACTION] = value;
-         }
+         set { Hints[EncodeHintType.PDF417_COMPACTION] = value; }
       }
 
       /// <summary>
@@ -169,14 +163,11 @@ namespace ZXing.PDF417
          {
             if (Hints.ContainsKey(EncodeHintType.PDF417_DIMENSIONS))
             {
-               return (Dimensions)Hints[EncodeHintType.PDF417_DIMENSIONS];
+               return (Dimensions) Hints[EncodeHintType.PDF417_DIMENSIONS];
             }
             return null;
          }
-         set
-         {
-            Hints[EncodeHintType.PDF417_DIMENSIONS] = value;
-         }
+         set { Hints[EncodeHintType.PDF417_DIMENSIONS] = value; }
       }
    }
 }

@@ -22,46 +22,46 @@ namespace ZXing.Datamatrix.Encoder
    {
       public int EncodingMode
       {
-         get { return HighLevelEncoder.ASCII_ENCODATION; }
+         get { return (int)Encodation.ASCII; }
       }
 
       public void encode(EncoderContext context)
       {
          //step B
-         int n = HighLevelEncoder.determineConsecutiveDigitCount(context.Msg, context.Pos);
+         int n = HighLevelEncoder.determineConsecutiveDigitCount(context.Message, context.Pos);
          if (n >= 2)
          {
-            context.writeCodeword(encodeASCIIDigits(context.Msg[context.Pos],
-                                                    context.Msg[context.Pos + 1]));
+            context.writeCodeword(encodeASCIIDigits(context.Message[context.Pos],
+                                                    context.Message[context.Pos + 1]));
             context.Pos += 2;
          }
          else
          {
             char c = context.CurrentChar;
-            int newMode = HighLevelEncoder.lookAheadTest(context.Msg, context.Pos, EncodingMode);
+            int newMode = HighLevelEncoder.lookAheadTest(context.Message, context.Pos, EncodingMode);
             if (newMode != EncodingMode)
             {
                switch (newMode)
                {
-                  case HighLevelEncoder.BASE256_ENCODATION:
+                  case (int)Encodation.BASE256:
                      context.writeCodeword(HighLevelEncoder.LATCH_TO_BASE256);
-                     context.signalEncoderChange(HighLevelEncoder.BASE256_ENCODATION);
+                     context.signalEncoderChange(newMode);
                      return;
-                  case HighLevelEncoder.C40_ENCODATION:
+                  case (int)Encodation.C40:
                      context.writeCodeword(HighLevelEncoder.LATCH_TO_C40);
-                     context.signalEncoderChange(HighLevelEncoder.C40_ENCODATION);
+                     context.signalEncoderChange(newMode);
                      return;
-                  case HighLevelEncoder.X12_ENCODATION:
+                  case (int)Encodation.X12:
                      context.writeCodeword(HighLevelEncoder.LATCH_TO_ANSIX12);
-                     context.signalEncoderChange(HighLevelEncoder.X12_ENCODATION);
+                     context.signalEncoderChange(newMode);
                      break;
-                  case HighLevelEncoder.TEXT_ENCODATION:
+                  case (int)Encodation.TEXT:
                      context.writeCodeword(HighLevelEncoder.LATCH_TO_TEXT);
-                     context.signalEncoderChange(HighLevelEncoder.TEXT_ENCODATION);
+                     context.signalEncoderChange(newMode);
                      break;
-                  case HighLevelEncoder.EDIFACT_ENCODATION:
+                  case (int)Encodation.EDIFACT:
                      context.writeCodeword(HighLevelEncoder.LATCH_TO_EDIFACT);
-                     context.signalEncoderChange(HighLevelEncoder.EDIFACT_ENCODATION);
+                     context.signalEncoderChange(newMode);
                      break;
                   default:
                      throw new InvalidOperationException("Illegal mode: " + newMode);

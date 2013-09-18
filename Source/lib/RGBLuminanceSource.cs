@@ -166,12 +166,16 @@ namespace ZXing
                Buffer.BlockCopy(rgbRawBytes, 0, luminances, 0, rgbRawBytes.Length < luminances.Length ? rgbRawBytes.Length : luminances.Length);
                break;
             case BitmapFormat.RGB24:
-            case BitmapFormat.BGR24:
                CalculateLuminanceRGB24(rgbRawBytes);
                break;
+            case BitmapFormat.BGR24:
+               CalculateLuminanceBGR24(rgbRawBytes);
+               break;
             case BitmapFormat.RGB32:
-            case BitmapFormat.BGR32:
                CalculateLuminanceRGB32(rgbRawBytes);
+               break;
+            case BitmapFormat.BGR32:
+               CalculateLuminanceBGR32(rgbRawBytes);
                break;
             case BitmapFormat.RGBA32:
                CalculateLuminanceRGBA32(rgbRawBytes);
@@ -211,7 +215,7 @@ namespace ZXing
             //g8 = (((pixel) & 0x07E0) >> 2) & 0xFF;
             //r8 = (((pixel) & 0xF800) >> 8);
 
-            luminances[luminanceIndex] = (byte)(0.3 * r8 + 0.59 * g8 + 0.11 * b8 + 0.01);
+            luminances[luminanceIndex] = (byte)((RChannelWeight * r8 + GChannelWeight * g8 + BChannelWeight * b8) >> ChannelWeight);
          }
       }
 
@@ -223,7 +227,19 @@ namespace ZXing
             int r = rgbRawBytes[rgbIndex++];
             int g = rgbRawBytes[rgbIndex++];
             int b = rgbRawBytes[rgbIndex++];
-            luminances[luminanceIndex] = (byte)((r + g + g + b) >> 2);
+            luminances[luminanceIndex] = (byte)((RChannelWeight * r + GChannelWeight * g + BChannelWeight * b) >> ChannelWeight);
+         }
+      }
+
+      private void CalculateLuminanceBGR24(byte[] rgbRawBytes)
+      {
+         for (int rgbIndex = 0, luminanceIndex = 0; rgbIndex < rgbRawBytes.Length && luminanceIndex < luminances.Length; luminanceIndex++)
+         {
+            // Calculate luminance cheaply, favoring green.
+            int b = rgbRawBytes[rgbIndex++];
+            int g = rgbRawBytes[rgbIndex++];
+            int r = rgbRawBytes[rgbIndex++];
+            luminances[luminanceIndex] = (byte)((RChannelWeight * r + GChannelWeight * g + BChannelWeight * b) >> ChannelWeight);
          }
       }
 
@@ -236,7 +252,20 @@ namespace ZXing
             int g = rgbRawBytes[rgbIndex++];
             int b = rgbRawBytes[rgbIndex++];
             rgbIndex++;
-            luminances[luminanceIndex] = (byte)((r + g + g + b) >> 2);
+            luminances[luminanceIndex] = (byte)((RChannelWeight * r + GChannelWeight * g + BChannelWeight * b) >> ChannelWeight);
+         }
+      }
+
+      private void CalculateLuminanceBGR32(byte[] rgbRawBytes)
+      {
+         for (int rgbIndex = 0, luminanceIndex = 0; rgbIndex < rgbRawBytes.Length && luminanceIndex < luminances.Length; luminanceIndex++)
+         {
+            // Calculate luminance cheaply, favoring green.
+            int b = rgbRawBytes[rgbIndex++];
+            int g = rgbRawBytes[rgbIndex++];
+            int r = rgbRawBytes[rgbIndex++];
+            rgbIndex++;
+            luminances[luminanceIndex] = (byte)((RChannelWeight * r + GChannelWeight * g + BChannelWeight * b) >> ChannelWeight);
          }
       }
 
@@ -249,7 +278,7 @@ namespace ZXing
             var g = rgbRawBytes[rgbIndex++];
             var r = rgbRawBytes[rgbIndex++];
             var alpha = rgbRawBytes[rgbIndex++];
-            var luminance = (byte)((r + g + g + b) >> 2);
+            var luminance = (byte)((RChannelWeight * r + GChannelWeight * g + BChannelWeight * b) >> ChannelWeight);
             luminances[luminanceIndex] = (byte)(((luminance * alpha) >> 8) + (255 * (255 - alpha) >> 8));
          }
       }
@@ -263,7 +292,7 @@ namespace ZXing
             var g = rgbRawBytes[rgbIndex++];
             var b = rgbRawBytes[rgbIndex++];
             var alpha = rgbRawBytes[rgbIndex++];
-            var luminance = (byte)((r + g + g + b) >> 2);
+            var luminance = (byte)((RChannelWeight * r + GChannelWeight * g + BChannelWeight * b) >> ChannelWeight);
             luminances[luminanceIndex] = (byte)(((luminance * alpha) >> 8) + (255 * (255 - alpha) >> 8));
          }
       }
@@ -277,7 +306,7 @@ namespace ZXing
             var r = rgbRawBytes[rgbIndex++];
             var g = rgbRawBytes[rgbIndex++];
             var b = rgbRawBytes[rgbIndex++];
-            var luminance = (byte)((r + g + g + b) >> 2);
+            var luminance = (byte)((RChannelWeight * r + GChannelWeight * g + BChannelWeight * b) >> ChannelWeight);
             luminances[luminanceIndex] = (byte)(((luminance * alpha) >> 8) + (255 * (255 - alpha) >> 8));
          }
       }

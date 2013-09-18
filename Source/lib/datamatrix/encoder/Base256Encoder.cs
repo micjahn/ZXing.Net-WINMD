@@ -23,7 +23,7 @@ namespace ZXing.Datamatrix.Encoder
    {
       public int EncodingMode
       {
-         get { return HighLevelEncoder.BASE256_ENCODATION; }
+         get { return (int)Encodation.BASE256; }
       }
 
       public void encode(EncoderContext context)
@@ -37,7 +37,7 @@ namespace ZXing.Datamatrix.Encoder
 
             context.Pos++;
 
-            int newMode = HighLevelEncoder.lookAheadTest(context.Msg, context.Pos, EncodingMode);
+            int newMode = HighLevelEncoder.lookAheadTest(context.Message, context.Pos, EncodingMode);
             if (newMode != EncodingMode)
             {
                context.signalEncoderChange(newMode);
@@ -84,10 +84,7 @@ namespace ZXing.Datamatrix.Encoder
          {
             return (char)tempVariable;
          }
-         else
-         {
-            return (char)(tempVariable - 256);
-         }
+         return (char)(tempVariable - 256);
       }
    }
 }

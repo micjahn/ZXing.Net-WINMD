@@ -27,6 +27,16 @@
                openPicker.pickSingleFileAsync()
                .then(function (file) {
                   if (file) {
+                     // draw the image
+                     var canvas = document.getElementById('canvasDecode')
+                     var ctx = canvas.getContext('2d');
+                     var img = new Image;
+                     img.onload = function () {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0, img.width, img.height);
+                     }
+                     img.src = URL.createObjectURL(file);
                      // open a stream from the image
                      return file.openAsync(Windows.Storage.FileAccessMode.readWrite);
                   }
@@ -77,6 +87,9 @@
                         }
                         // create a barcode reader
                         var reader = new ZXing.BarcodeReader();
+                        reader.onresultpointfound = function (resultPoint) {
+                           // do something with the resultpoint location
+                        }
                         // try to decode the raw pixel data
                         var result = reader.decode(pixels, decoder.pixelWidth, decoder.pixelHeight, format);
                         // show the result
@@ -124,7 +137,7 @@ function generate_barcode() {
    var imagePixelData = writer.write(content);
 
    // draw the pixel data to the canvas
-   var ctx = document.getElementById('canvas').getContext('2d');
+   var ctx = document.getElementById('canvasEncode').getContext('2d');
    var imageData = ctx.createImageData(imagePixelData.width, imagePixelData.heigth);
    var pixel = imagePixelData.pixel
    for (var index = 0; index < pixel.length; index++) {

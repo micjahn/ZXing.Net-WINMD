@@ -29,6 +29,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Windows.Media.Imaging;
 #endif
 
+using ZXing.Common;
+
 namespace ZXing
 {
    /// <summary>
@@ -39,7 +41,7 @@ namespace ZXing
       /// <summary>
       /// event is executed when a result was found via decode
       /// </summary>
-      //event Action<Result> ResultFound;
+      event EventHandler<Result> ResultFound;
 
       /// <summary>
       /// Gets or sets a flag which cause a deeper look into the bitmap
@@ -47,6 +49,7 @@ namespace ZXing
       /// <value>
       ///   <c>true</c> if [try harder]; otherwise, <c>false</c>.
       /// </value>
+      [Obsolete("Please use the Options.TryHarder property instead.")]
       bool TryHarder { get; set; }
 
       /// <summary>
@@ -56,6 +59,7 @@ namespace ZXing
       /// <value>
       ///   <c>true</c> if monochrome image of a barcode; otherwise, <c>false</c>.
       /// </value>
+      [Obsolete("Please use the Options.PureBarcode property instead.")]
       bool PureBarcode { get; set; }
 
       /// <summary>
@@ -64,6 +68,7 @@ namespace ZXing
       /// <value>
       /// The character set.
       /// </value>
+      [Obsolete("Please use the Options.CharacterSet property instead.")]
       string CharacterSet { get; set; }
 
       /// <summary>
@@ -73,8 +78,14 @@ namespace ZXing
       /// <value>
       /// The possible formats.
       /// </value>
+      [Obsolete("Please use the Options.PossibleFormats property instead.")]
       IList<BarcodeFormat> PossibleFormats { get; set; }
 
+      /// <summary>
+      /// Specifies some options which influence the decoding process
+      /// </summary>
+      DecodingOptions Options { get; set; }
+      
       /// <summary>
       /// Decodes the specified barcode bitmap which is given by a generic byte array with the order RGB24.
       /// </summary>

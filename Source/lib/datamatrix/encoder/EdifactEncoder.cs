@@ -23,7 +23,7 @@ namespace ZXing.Datamatrix.Encoder
    {
       public int EncodingMode
       {
-         get { return HighLevelEncoder.EDIFACT_ENCODATION; }
+         get { return (int)Encodation.EDIFACT; }
       }
 
       public void encode(EncoderContext context)
@@ -42,10 +42,10 @@ namespace ZXing.Datamatrix.Encoder
                context.writeCodewords(encodeToCodewords(buffer, 0));
                buffer.Remove(0, 4);
 
-               int newMode = HighLevelEncoder.lookAheadTest(context.Msg, context.Pos, EncodingMode);
+               int newMode = HighLevelEncoder.lookAheadTest(context.Message, context.Pos, EncodingMode);
                if (newMode != EncodingMode)
                {
-                  context.signalEncoderChange(HighLevelEncoder.ASCII_ENCODATION);
+                  context.signalEncoderChange((int)Encodation.ASCII);
                   break;
                }
             }
@@ -113,7 +113,7 @@ namespace ZXing.Datamatrix.Encoder
          }
          finally
          {
-            context.signalEncoderChange(HighLevelEncoder.ASCII_ENCODATION);
+            context.signalEncoderChange((int)Encodation.ASCII);
          }
       }
 

@@ -23,7 +23,7 @@ namespace ZXing.Datamatrix.Encoder
    {
       virtual public int EncodingMode
       {
-         get { return HighLevelEncoder.C40_ENCODATION; }
+         get { return (int)Encodation.C40; }
       }
 
       virtual public void encode(EncoderContext context)
@@ -66,7 +66,7 @@ namespace ZXing.Datamatrix.Encoder
             int count = buffer.Length;
             if ((count % 3) == 0)
             {
-               int newMode = HighLevelEncoder.lookAheadTest(context.Msg, context.Pos, EncodingMode);
+               int newMode = HighLevelEncoder.lookAheadTest(context.Message, context.Pos, EncodingMode);
                if (newMode != EncodingMode)
                {
                   context.signalEncoderChange(newMode);
@@ -149,7 +149,7 @@ namespace ZXing.Datamatrix.Encoder
          {
             throw new InvalidOperationException("Unexpected case. Please report!");
          }
-         context.signalEncoderChange(HighLevelEncoder.ASCII_ENCODATION);
+         context.signalEncoderChange((int)Encodation.ASCII);
       }
 
       virtual protected int encodeChar(char c, StringBuilder sb)

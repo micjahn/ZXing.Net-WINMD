@@ -22,7 +22,7 @@ namespace ZXing.Datamatrix.Encoder
    {
       override public int EncodingMode
       {
-         get { return HighLevelEncoder.X12_ENCODATION; }
+         get { return (int)Encodation.X12; }
       }
 
       override public void encode(EncoderContext context)
@@ -41,7 +41,7 @@ namespace ZXing.Datamatrix.Encoder
             {
                writeNextTriplet(context, buffer);
 
-               int newMode = HighLevelEncoder.lookAheadTest(context.Msg, context.Pos, EncodingMode);
+               int newMode = HighLevelEncoder.lookAheadTest(context.Message, context.Pos, EncodingMode);
                if (newMode != EncodingMode)
                {
                   context.signalEncoderChange(newMode);
@@ -94,7 +94,7 @@ namespace ZXing.Datamatrix.Encoder
          {
             context.writeCodeword(HighLevelEncoder.X12_UNLATCH);
             context.Pos -= 2;
-            context.signalEncoderChange(HighLevelEncoder.ASCII_ENCODATION);
+            context.signalEncoderChange((int)Encodation.ASCII);
          }
          else if (count == 1)
          {
@@ -104,7 +104,7 @@ namespace ZXing.Datamatrix.Encoder
                context.writeCodeword(HighLevelEncoder.X12_UNLATCH);
             }
             //NOP - No unlatch necessary
-            context.signalEncoderChange(HighLevelEncoder.ASCII_ENCODATION);
+            context.signalEncoderChange((int)Encodation.ASCII);
          }
       }
    }

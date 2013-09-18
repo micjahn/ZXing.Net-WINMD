@@ -23,6 +23,7 @@ namespace ZXing.Common
    /// Encapsulates the result of decoding a matrix of bits. This typically
    /// applies to 2D barcode formats. For now it contains the raw bytes obtained,
    /// as well as a String interpretation of those bytes, if applicable.
+   /// <author>Sean Owen</author>
    /// </summary>
    internal sealed class DecoderResult
    {
@@ -34,6 +35,22 @@ namespace ZXing.Common
 
       public String ECLevel { get; private set; }
 
+      public bool StructuredAppend { get; private set; }
+
+      public int ErrorsCorrected { get; set; }
+
+      public int StructuredAppendSequenceNumber { get; private set; }
+
+      public int Erasures { get; set; }
+
+      public int StructuredAppendParity { get; private set; }
+
+      /// <summary>
+      /// Miscellanseous data value for the various decoders
+      /// </summary>
+      /// <value>The other.</value>
+      public object Other { get; set; }
+
       public DecoderResult(byte[] rawBytes, String text, IList<byte[]> byteSegments, String ecLevel)
       {
          if (rawBytes == null && text == null)
@@ -44,6 +61,22 @@ namespace ZXing.Common
          Text = text;
          ByteSegments = byteSegments;
          ECLevel = ecLevel;
+         StructuredAppend = false;
+      }
+
+      public DecoderResult(byte[] rawBytes, String text, IList<byte[]> byteSegments, String ecLevel, int saSequence, int saParity)
+      {
+         if (rawBytes == null && text == null)
+         {
+            throw new ArgumentException();
+         }
+         RawBytes = rawBytes;
+         Text = text;
+         ByteSegments = byteSegments;
+         ECLevel = ecLevel;
+         StructuredAppend = true;
+         StructuredAppendParity = saParity;
+         StructuredAppendSequenceNumber = saSequence;
       }
    }
 }
