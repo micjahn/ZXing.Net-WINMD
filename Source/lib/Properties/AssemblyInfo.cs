@@ -43,7 +43,7 @@ using System.Runtime.InteropServices;
 #if NETFX_CORE
 [assembly: AssemblyTitle("zxing.net for windows rt")]
 #endif
-[assembly: AssemblyDescription("port of the java based barcode scanning library for .net (java zxing rev. 2578)")]
+[assembly: AssemblyDescription("port of the java based barcode scanning library for .net (java zxing rev. 2892)")]
 [assembly: AssemblyCompany("ZXing.Net Development")]
 [assembly: AssemblyProduct("ZXing.Net")]
 [assembly: AssemblyCopyright("Copyright © 2012-2013")]
