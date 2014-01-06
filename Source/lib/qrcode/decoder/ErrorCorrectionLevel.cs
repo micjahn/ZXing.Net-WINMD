@@ -23,16 +23,25 @@ namespace ZXing.QrCode.Internal
    /// defined by the QR code standard.</p>
    /// </summary>
    /// <author>Sean Owen</author>
-   internal sealed class ErrorCorrectionLevel
+   public sealed class ErrorCorrectionLevel
    {
       /// <summary> L = ~7% correction</summary>
-      public static readonly ErrorCorrectionLevel L = new ErrorCorrectionLevel(0, 0x01, "L");
+      private static readonly ErrorCorrectionLevel l = new ErrorCorrectionLevel(0, 0x01, "L");
       /// <summary> M = ~15% correction</summary>
-      public static readonly ErrorCorrectionLevel M = new ErrorCorrectionLevel(1, 0x00, "M");
+      private static readonly ErrorCorrectionLevel m = new ErrorCorrectionLevel(1, 0x00, "M");
       /// <summary> Q = ~25% correction</summary>
-      public static readonly ErrorCorrectionLevel Q = new ErrorCorrectionLevel(2, 0x03, "Q");
+      private static readonly ErrorCorrectionLevel q = new ErrorCorrectionLevel(2, 0x03, "Q");
       /// <summary> H = ~30% correction</summary>
-      public static readonly ErrorCorrectionLevel H = new ErrorCorrectionLevel(3, 0x02, "H");
+      private static readonly ErrorCorrectionLevel h = new ErrorCorrectionLevel(3, 0x02, "H");
+
+      /// <summary> L = ~7% correction</summary>
+      public static ErrorCorrectionLevel L { get { return l; } }
+      /// <summary> M = ~15% correction</summary>
+      public static ErrorCorrectionLevel M { get { return m; } }
+      /// <summary> Q = ~25% correction</summary>
+      public static ErrorCorrectionLevel Q { get { return q; } }
+      /// <summary> H = ~30% correction</summary>
+      public static ErrorCorrectionLevel H { get { return h; } }
 
       private static readonly ErrorCorrectionLevel[] FOR_BITS = new [] { M, L, H, Q };
       

@@ -122,10 +122,9 @@ namespace ZXing.QrCode
       
       /// <summary>
       /// Specifies what degree of error correction to use, for example in QR Codes.
-      /// Type depends on the encoder. For example for QR codes it's type
-      /// {@link com.google.zxing.qrcode.decoder.ErrorCorrectionLevel ErrorCorrectionLevel}.
+      /// default: ErrorCorrectionLevel.L, if nothing is explicitly set
       /// </summary>
-      internal ErrorCorrectionLevel ErrorCorrection
+      public ErrorCorrectionLevel ErrorCorrection
       {
          get
          {
