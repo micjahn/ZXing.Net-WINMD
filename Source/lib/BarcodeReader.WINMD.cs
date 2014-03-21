@@ -102,7 +102,7 @@ namespace ZXing
             usePreviousState = false;
          }
       }
-      private IDictionary<EventRegistrationToken, EventHandler<ResultPoint>> registeredResultPointHandlers = new Dictionary<EventRegistrationToken, EventHandler<ResultPoint>>();
+      private readonly IDictionary<EventRegistrationToken, EventHandler<ResultPoint>> registeredResultPointHandlers = new Dictionary<EventRegistrationToken, EventHandler<ResultPoint>>();
       private event EventHandler<ResultPoint> explicitResultPointFound;
 
       /// <summary>
@@ -255,7 +255,7 @@ namespace ZXing
          )
       {
          this.reader = reader ?? new MultiFormatReader();
-         this.createLuminanceSource = createLuminanceSource;
+         this.createLuminanceSource = createLuminanceSource ?? defaultCreateLuminanceSource;
          this.createBinarizer = createBinarizer ?? defaultCreateBinarizer;
          this.createRGBLuminanceSource = createRGBLuminanceSource ?? defaultCreateRGBLuminanceSource;
          Options.ValueChanged += (o, args) => usePreviousState = false;

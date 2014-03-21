@@ -46,6 +46,7 @@ namespace ZXing
       /// <see cref="ZXing.QrCode.Internal.ErrorCorrectionLevel" />
       /// For Aztec it is of type <see cref="System.Int32" />, representing the minimal percentage of error correction words. 
       /// Note: an Aztec symbol should have a minimum of 25% EC words.
+      /// For PDF417 it is of type <see cref="ZXing.PDF417.Internal.PDF417ErrorCorrectionLevel"/> or <see cref="System.Int32" /> (between 0 and 8),
       /// </summary>
       ERROR_CORRECTION,
 
@@ -80,6 +81,17 @@ namespace ZXing
       /// type: <see cref="ZXing.PDF417.Internal.Dimensions" />
       /// </summary>
       PDF417_DIMENSIONS,
+
+      /// <summary>
+      /// Don't append ECI segment.
+      /// That is against the specification of QR Code but some
+      /// readers have problems if the charset is switched from
+      /// ISO-8859-1 (default) to UTF-8 with the necessary ECI segment.
+      /// If you set the property to true you can use UTF-8 encoding
+      /// and the ECI segment is omitted.
+      /// type: <see cref="System.Boolean" />
+      /// </summary>
+      DISABLE_ECI,
 
       /// <summary>
       /// Specifies the matrix shape for Data Matrix (type <see cref="ZXing.Datamatrix.Encoder.SymbolShapeHint"/>)
