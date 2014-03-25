@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media.Imaging;
 
 using ZXing;
+using ZXing.Common;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -64,8 +65,16 @@ namespace WindowsStoreDemo
       {
          var barcodeReader = new BarcodeReader
          {
-            TryHarder = true,
-            AutoRotate = true
+            AutoRotate = true,
+            Options = new DecodingOptions
+               {
+                  TryHarder = true,
+                  // restrict to one or more supported types, if necessary
+                  //PossibleFormats = new []
+                  //   {
+                  //      BarcodeFormat.QR_CODE
+                  //   }
+               }
          };
          var result = barcodeReader.Decode(writeableBmp);
 

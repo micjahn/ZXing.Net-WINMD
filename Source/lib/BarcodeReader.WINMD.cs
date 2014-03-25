@@ -157,7 +157,7 @@ namespace ZXing
       /// The possible formats.
       /// </value>
       [Obsolete("Please use the Options.PossibleFormats property instead.")]
-      public IList<BarcodeFormat> PossibleFormats
+      public BarcodeFormat[] PossibleFormats
       {
          get { return Options.PossibleFormats; }
          set { Options.PossibleFormats = value; }
@@ -415,8 +415,8 @@ namespace ZXing
 
          var formats = Options.PossibleFormats;
          if (formats != null &&
-             formats.Count == 1 &&
-             formats.Contains(BarcodeFormat.QR_CODE))
+             formats.Length == 1 &&
+             formats[0] == BarcodeFormat.QR_CODE)
          {
             multiReader = new QRCodeMultiReader();
          }

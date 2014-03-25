@@ -87,10 +87,26 @@ void WindowsStoreCppDemo::MainPage::btnName_Click(Platform::Object^ sender, Wind
 
 void WindowsStoreCppDemo::MainPage::btnDecode_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
+   if (this->lastBitmap == nullptr)
+   {
+      txtDecodedText->Text = "Please generate a barcode first.";
+      return;
+   }
+
 	BarcodeReader^ barcodeReader = ref new BarcodeReader();
+   
+   // restrict to one or more supported types, if necessary
+   auto possibleFormats = ref new Array<BarcodeFormat>(1);
+   possibleFormats[0] = BarcodeFormat::QR_CODE;
+   barcodeReader->Options->PossibleFormats = possibleFormats;
+   
    Result^ result = barcodeReader->Decode(this->lastBitmap);
    if (result != nullptr)
    {
       txtDecodedText->Text = result->Text;
+   }
+   else
+   {
+      txtDecodedText->Text = "No barcode found";
    }
 }

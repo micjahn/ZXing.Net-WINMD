@@ -87,9 +87,12 @@
                         }
                         // create a barcode reader
                         var reader = new ZXing.BarcodeReader();
-                        reader.onresultpointfound = function (resultPoint) {
+                        // restrict to one or more supported types, if necessary
+                        //reader.options.possibleFormats = [ZXing.BarcodeFormat.qr_CODE];
+
+                        reader.onresultpointfound = function(resultPoint) {
                            // do something with the resultpoint location
-                        }
+                        };
                         // try to decode the raw pixel data
                         var result = reader.decode(pixels, decoder.pixelWidth, decoder.pixelHeight, format);
                         // show the result

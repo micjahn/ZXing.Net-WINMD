@@ -132,12 +132,12 @@ namespace ZXing.Common
       /// <value>
       /// The possible formats.
       /// </value>
-      public IList<BarcodeFormat> PossibleFormats
+      public BarcodeFormat[] PossibleFormats
       {
          get
          {
             if (Hints.ContainsKey(DecodeHintType.POSSIBLE_FORMATS))
-               return (IList<BarcodeFormat>)Hints[DecodeHintType.POSSIBLE_FORMATS];
+               return (BarcodeFormat[])Hints[DecodeHintType.POSSIBLE_FORMATS];
             return null;
          }
          set

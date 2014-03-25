@@ -68,7 +68,7 @@ namespace ZXing
       /// The possible formats.
       /// </value>
       [Obsolete("Please use the Options.PossibleFormats property instead.")]
-      IList<BarcodeFormat> PossibleFormats { get; set; }
+      BarcodeFormat[] PossibleFormats { get; set; }
 
       /// <summary>
       /// Specifies some options which influence the decoding process
