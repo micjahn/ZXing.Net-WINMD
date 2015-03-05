@@ -32,7 +32,7 @@ namespace ZXing.IMB
    /// implements an Intelligent Mail barcode
    /// <author>Rishabh Hatgadkar</author>
    /// </summary>
-   public sealed class IMBReader : OneDReader
+   internal sealed class IMBReader : OneDReader
    {
       private const int NUM_BARS_IMB = 65;
 
