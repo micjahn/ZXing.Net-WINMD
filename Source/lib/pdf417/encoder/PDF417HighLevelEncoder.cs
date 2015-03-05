@@ -132,7 +132,7 @@ namespace ZXing.PDF417.Internal
       private static readonly sbyte[] MIXED = new sbyte[128];
       private static readonly sbyte[] PUNCTUATION = new sbyte[128];
 
-      internal static Encoding DEFAULT_ENCODING;
+      internal static string DEFAULT_ENCODING_NAME = "ISO-8859-1";
 
       static PDF417HighLevelEncoder()
       {
@@ -157,39 +157,25 @@ namespace ZXing.PDF417.Internal
                PUNCTUATION[b] = i;
             }
          }
-#if WindowsCE
-         try
-         {
-            DEFAULT_ENCODING = Encoding.GetEncoding("CP437");
-         }
-         catch (PlatformNotSupportedException)
-         {
-            // WindowsCE doesn't support all encodings. But it is device depended.
-            // So we try here the some different ones
-            DEFAULT_ENCODING = Encoding.GetEncoding(1252);
-         }
-#elif !SILVERLIGHT || WINDOWS
-         DEFAULT_ENCODING = Encoding.GetEncoding("CP437");
-#else
-         // Silverlight supports only UTF-8 and UTF-16 out-of-the-box
-         DEFAULT_ENCODING = Encoding.GetEncoding("UTF-8");
-#endif
       }
 
       /// <summary>
       /// Performs high-level encoding of a PDF417 message using the algorithm described in annex P
       /// of ISO/IEC 15438:2001(E). If byte compaction has been selected, then only byte compaction
       /// is used.
-      ///
-      /// <param name="msg">the message</param>
-      /// <returns>the encoded message (the char values range from 0 to 928)</returns>
       /// </summary>
+      /// <param name="msg">the message</param>
+      /// <param name="compaction">compaction mode to use</param>
+      /// <param name="encoding">character encoding used to encode in default or byte compaction
+      /// or null for default / not applicable</param>
+      /// <param name="disableEci">if true, don't add an ECI segment for different encodings than default</param>
+      /// <returns>the encoded message (the char values range from 0 to 928)</returns>
       internal static String encodeHighLevel(String msg, Compaction compaction, Encoding encoding, bool disableEci)
       {
          //the codewords 0..928 are encoded as Unicode characters
          var sb = new StringBuilder(msg.Length);
 
-         if (!DEFAULT_ENCODING.Equals(encoding) && !disableEci)
+         if (encoding != null && !disableEci && String.Compare(DEFAULT_ENCODING_NAME, encoding.WebName, StringComparison.Ordinal) != 0)
          {
             CharacterSetECI eci = CharacterSetECI.getCharacterSetECIByName(encoding.WebName);
             if (eci != null)
@@ -211,7 +197,7 @@ namespace ZXing.PDF417.Internal
          }
          else if (compaction == Compaction.BYTE)
          {
-            bytes = encoding.GetBytes(msg);
+            bytes = toBytes(msg, encoding);
             encodeBinary(bytes, p, bytes.Length, BYTE_COMPACTION, sb);
 
          }
@@ -253,7 +239,7 @@ namespace ZXing.PDF417.Internal
                   {
                      if (bytes == null)
                      {
-                        bytes = encoding.GetBytes(msg);
+                        bytes = toBytes(msg, encoding);
                      }
                      int b = determineConsecutiveBinaryCount(msg, bytes, p);
                      if (b == 0)
@@ -268,7 +254,11 @@ namespace ZXing.PDF417.Internal
                      else
                      {
                         //Mode latch performed by encodeBinary()
-                        encodeBinary(bytes, p, b, encodingMode, sb);
+                        encodeBinary(bytes,
+                                     toBytes(msg.Substring(0, p), encoding).Length,
+                                     toBytes(msg.Substring(p, b), encoding).Length,
+                                     encodingMode,
+                                     sb);
                         encodingMode = BYTE_COMPACTION;
                         textSubMode = SUBMODE_ALPHA; //Reset after latch
                      }
@@ -279,6 +269,67 @@ namespace ZXing.PDF417.Internal
          }
 
          return sb.ToString();
+      }
+
+      private static bool Contains(string[] stringArray, string lookFor)
+      {
+         var result = false;
+         lookFor = lookFor.ToUpper();
+         for (var index = 0; index < stringArray.Length; index++)
+         {
+            if (stringArray[index] == lookFor)
+            {
+               result = true;
+               break;
+            }
+         }
+
+         return result;
+      }
+
+      private static byte[] toBytes(String msg, Encoding encoding)
+      {
+         // Defer instantiating default Charset until needed, since it may be for an unsupported
+         // encoding.
+         if (encoding == null)
+         {
+            try
+            {
+               encoding = Encoding.GetEncoding(DEFAULT_ENCODING_NAME);
+            }
+            catch (Exception )
+            {
+               // continue
+            }
+            if (encoding == null)
+            {
+               // Fallbacks
+               try
+               {
+#if WindowsCE
+                  try
+                  {
+                     encoding = Encoding.GetEncoding(1252);
+                  }
+                  catch (PlatformNotSupportedException)
+                  {
+                     // WindowsCE doesn't support all encodings. But it is device depended.
+                     // So we try here some different ones
+                     encoding = Encoding.GetEncoding("CP437");
+                  }
+#else
+                  // Silverlight supports only UTF-8 and UTF-16 out-of-the-box
+                  encoding = Encoding.GetEncoding("UTF-8");
+#endif
+
+               }
+               catch (Exception uce)
+               {
+                  throw new WriterException("No support for any encoding: " + DEFAULT_ENCODING_NAME, uce);
+               }
+            }
+         }
+         return encoding.GetBytes(msg);
       }
 
       /// <summary>
@@ -694,6 +745,7 @@ namespace ZXing.PDF417.Internal
       {
          int len = msg.Length;
          int idx = startpos;
+         int idxb = idx;  // bytes index (may differ from idx for utf-8 and other unicode encodings)
          while (idx < len)
          {
             char ch = msg[idx];
@@ -714,31 +766,19 @@ namespace ZXing.PDF417.Internal
             {
                return idx - startpos;
             }
-            int textCount = 0;
-            while (textCount < 5 && isText(ch))
-            {
-               textCount++;
-               int i = idx + textCount;
-               if (i >= len)
-               {
-                  break;
-               }
-               ch = msg[i];
-            }
-            if (textCount >= 5)
-            {
-               return idx - startpos;
-            }
             ch = msg[idx];
 
             //Check if character is encodable
             //Sun returns a ASCII 63 (?) for a character that cannot be mapped. Let's hope all
             //other VMs do the same
-            if (bytes[idx] == 63 && ch != '?')
+            if (bytes[idxb] == 63 && ch != '?')
             {
                throw new WriterException("Non-encodable character detected: " + ch + " (Unicode: " + (int) ch + ')');
             }
             idx++;
+            idxb++;
+            if (ch >= 256)  // for non-ascii symbols
+                idxb++;
          }
          return idx - startpos;
       }

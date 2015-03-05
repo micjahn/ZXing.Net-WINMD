@@ -214,6 +214,7 @@
     <Compile Include="FormatException.cs" />
     <Compile Include="IBarcodeReader.WINMD.cs" />
     <Compile Include="IBarcodeWriter.WINMD.cs" />
+    <Compile Include="imb\IMBReader.cs" />
     <Compile Include="IMultipleBarcodeReader.WINMD.cs" />
     <Compile Include="InvertedLuminanceSource.cs" />
     <Compile Include="LuminanceSource.cs" />
@@ -229,7 +230,6 @@
     <Compile Include="multi\qrcode\detector\MultiDetector.cs" />
     <Compile Include="multi\qrcode\detector\MultiFinderPatternFinder.cs" />
     <Compile Include="multi\qrcode\QRCodeMultiReader.cs" />
-    <Compile Include="NotFoundException.cs" />
     <Compile Include="oned\CodaBarReader.cs" />
     <Compile Include="oned\CodaBarWriter.cs" />
     <Compile Include="oned\Code128EncodingOptions.cs" />
