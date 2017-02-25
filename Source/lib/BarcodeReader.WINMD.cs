@@ -52,8 +52,28 @@ namespace ZXing
       /// </value>
       public DecodingOptions Options
       {
-         get { return options ?? (options = new DecodingOptions()); }
-         set { options = value; }
+         get
+         {
+            if (options == null)
+            {
+               options = new DecodingOptions();
+               options.ValueChanged += (o, args) => usePreviousState = false;
+            }
+            return options;
+         }
+         set
+         {
+            if (value != null)
+            {
+               options = value;
+               options.ValueChanged += (o, args) => usePreviousState = false;
+            }
+            else
+            {
+               options = null;
+            }
+            usePreviousState = false;
+         }
       }
 
       /// <summary>
@@ -258,7 +278,6 @@ namespace ZXing
          this.createLuminanceSource = createLuminanceSource ?? defaultCreateLuminanceSource;
          this.createBinarizer = createBinarizer ?? defaultCreateBinarizer;
          this.createRGBLuminanceSource = createRGBLuminanceSource ?? defaultCreateRGBLuminanceSource;
-         Options.ValueChanged += (o, args) => usePreviousState = false;
          usePreviousState = false;
       }
 

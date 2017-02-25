@@ -309,7 +309,8 @@ namespace ZXing.PDF417.Internal
       /// <param name="barcodeMatrix">Barcode matrix.</param>
       private static bool adjustCodewordCount(DetectionResult detectionResult, BarcodeValue[][] barcodeMatrix)
       {
-         int[] numberOfCodewords = barcodeMatrix[0][1].getValue();
+         var barcodeMatrix01 = barcodeMatrix[0][1];
+         int[] numberOfCodewords = barcodeMatrix01.getValue();
          int calculatedNumberOfCodewords = detectionResult.ColumnCount*
                                            detectionResult.RowCount -
                                            getNumberOfECCodeWords(detectionResult.ErrorCorrectionLevel);
@@ -319,12 +320,12 @@ namespace ZXing.PDF417.Internal
             {
                return false;
             }
-            barcodeMatrix[0][1].setValue(calculatedNumberOfCodewords);
+            barcodeMatrix01.setValue(calculatedNumberOfCodewords);
          }
          else if (numberOfCodewords[0] != calculatedNumberOfCodewords)
          {
             // The calculated one is more reliable as it is derived from the row indicator columns
-            barcodeMatrix[0][1].setValue(calculatedNumberOfCodewords);
+            barcodeMatrix01.setValue(calculatedNumberOfCodewords);
          }
 
          return true;
@@ -475,7 +476,8 @@ namespace ZXing.PDF417.Internal
                      {
                         if (rowNumber >= barcodeMatrix.Length)
                         {
-                           return null;
+                           // We have more rows than the barcode metadata allows for, ignore them.
+                           continue;
                         }
                         barcodeMatrix[rowNumber][column].setValue(codeword.Value);
                      }
@@ -587,7 +589,7 @@ namespace ZXing.PDF417.Internal
             return null;
          }
          int endColumn;
-         int codewordBitCount = PDF417Common.getBitCountSum(moduleBitCount);
+         int codewordBitCount = ZXing.Common.Detector.MathUtils.sum(moduleBitCount);
          if (leftToRight)
          {
             endColumn = startColumn + codewordBitCount;
@@ -655,8 +657,8 @@ namespace ZXing.PDF417.Internal
          int moduleNumber = 0;
          int increment = leftToRight ? 1 : -1;
          bool previousPixelValue = leftToRight;
-         while (((leftToRight && imageColumn < maxColumn) || (!leftToRight && imageColumn >= minColumn)) &&
-                moduleNumber < moduleBitCount.Length)
+         while ((leftToRight ? imageColumn < maxColumn : imageColumn >= minColumn) &&
+               moduleNumber < moduleBitCount.Length)
          {
             if (image[imageColumn, imageRow] == previousPixelValue)
             {
@@ -670,7 +672,8 @@ namespace ZXing.PDF417.Internal
             }
          }
          if (moduleNumber == moduleBitCount.Length ||
-             (((leftToRight && imageColumn == maxColumn) || (!leftToRight && imageColumn == minColumn)) && moduleNumber == moduleBitCount.Length - 1))
+            ((imageColumn == (leftToRight ? maxColumn : minColumn)) &&
+              moduleNumber == moduleBitCount.Length - 1))
          {
             return moduleBitCount;
          }
@@ -709,8 +712,8 @@ namespace ZXing.PDF417.Internal
          // there should be no black pixels before the start column. If there are, then we need to start earlier.
          for (int i = 0; i < 2; i++)
          {
-            while (((leftToRight && correctedStartColumn >= minColumn) || (!leftToRight && correctedStartColumn < maxColumn)) &&
-                   leftToRight == image[correctedStartColumn, imageRow])
+            while ((leftToRight ? correctedStartColumn >= minColumn : correctedStartColumn < maxColumn) &&
+                     leftToRight == image[correctedStartColumn, imageRow])
             {
                if (Math.Abs(codewordStartColumn - correctedStartColumn) > CODEWORD_SKEW_SIZE)
                {

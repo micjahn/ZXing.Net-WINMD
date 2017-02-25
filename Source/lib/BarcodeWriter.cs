@@ -61,6 +61,7 @@ namespace ZXing
    /// <summary>
    /// A smart class to encode some content to a barcode image
    /// </summary>
+   [System.CLSCompliant(false)]
    public class BarcodeWriter : BarcodeWriterGeneric<UnityEngine.Color32[]>, IBarcodeWriter
    {
       /// <summary>
@@ -143,11 +144,25 @@ namespace ZXing
    public class BarcodeWriterSvg : BarcodeWriterGeneric<SvgRenderer.SvgImage>
    {
       /// <summary>
-      /// Initializes a new instance of the <see cref="BarcodeWriter"/> class.
+      /// Initializes a new instance of the <see cref="BarcodeWriterSvg"/> class.
       /// </summary>
       public BarcodeWriterSvg()
       {
          Renderer = new SvgRenderer();
+      }
+   }
+
+   /// <summary>
+   /// A smart class to encode some content to raw pixel data
+   /// </summary>
+   public class BarcodeWriterPixelData : BarcodeWriterGeneric<PixelData>
+   {
+      /// <summary>
+      /// Initializes a new instance of the <see cref="BarcodeWriterPixelData"/> class.
+      /// </summary>
+      public BarcodeWriterPixelData()
+      {
+         Renderer = new PixelDataRenderer();
       }
    }
 }

@@ -33,12 +33,7 @@ namespace ZXing.QrCode.Internal
       /// <summary>
       /// See ISO 18004:2006, 6.4.4 Table 5
       /// </summary>
-      private static readonly char[] ALPHANUMERIC_CHARS = {
-                                                             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-                                                             'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-                                                             'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                                                             ' ', '$', '%', '*', '+', '-', '.', '/', ':'
-                                                          };
+      private static readonly char[] ALPHANUMERIC_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:".ToCharArray();
       private const int GB2312_SUBSET = 1;
 
       internal static DecoderResult decode(byte[] bytes,
@@ -76,15 +71,16 @@ namespace ZXing.QrCode.Internal
                      return null;
                   }
                }
-               if (mode != Mode.TERMINATOR)
+               switch (mode.Name)
                {
-                  if (mode == Mode.FNC1_FIRST_POSITION || mode == Mode.FNC1_SECOND_POSITION)
-                  {
+                  case Mode.Names.TERMINATOR:
+                     break;
+                  case Mode.Names.FNC1_FIRST_POSITION:
+                  case Mode.Names.FNC1_SECOND_POSITION:
                      // We do little with FNC1 except alter the parsed result a bit according to the spec
                      fc1InEffect = true;
-                  }
-                  else if (mode == Mode.STRUCTURED_APPEND)
-                  {
+                     break;
+                  case Mode.Names.STRUCTURED_APPEND:
                      if (bits.available() < 16)
                      {
                         return null;
@@ -93,9 +89,8 @@ namespace ZXing.QrCode.Internal
                      // Read next 8 bits (symbol sequence #) and 8 bits (parity data), then continue
                      symbolSequence = bits.readBits(8);
                      parityData = bits.readBits(8);
-                  }
-                  else if (mode == Mode.ECI)
-                  {
+                     break;
+                  case Mode.Names.ECI:
                      // Count doesn't apply to ECI
                      int value = parseECIValue(bits);
                      currentCharacterSetECI = CharacterSetECI.getCharacterSetECIByValue(value);
@@ -103,52 +98,44 @@ namespace ZXing.QrCode.Internal
                      {
                         return null;
                      }
-                  }
-                  else
-                  {
+                     break;
+                  case Mode.Names.HANZI:
                      // First handle Hanzi mode which does not start with character count
-                     if (mode == Mode.HANZI)
+                     //chinese mode contains a sub set indicator right after mode indicator
+                     int subset = bits.readBits(4);
+                     int countHanzi = bits.readBits(mode.getCharacterCountBits(version));
+                     if (subset == GB2312_SUBSET)
                      {
-                        //chinese mode contains a sub set indicator right after mode indicator
-                        int subset = bits.readBits(4);
-                        int countHanzi = bits.readBits(mode.getCharacterCountBits(version));
-                        if (subset == GB2312_SUBSET)
-                        {
-                           if (!decodeHanziSegment(bits, result, countHanzi))
-                              return null;
-                        }
+                        if (!decodeHanziSegment(bits, result, countHanzi))
+                           return null;
                      }
-                     else
+                     break;
+                  default:
+                     // "Normal" QR code modes:
+                     // How many characters will follow, encoded in this mode?
+                     int count = bits.readBits(mode.getCharacterCountBits(version));
+                     switch (mode.Name)
                      {
-                        // "Normal" QR code modes:
-                        // How many characters will follow, encoded in this mode?
-                        int count = bits.readBits(mode.getCharacterCountBits(version));
-                        if (mode == Mode.NUMERIC)
-                        {
+                        case Mode.Names.NUMERIC:
                            if (!decodeNumericSegment(bits, result, count))
                               return null;
-                        }
-                        else if (mode == Mode.ALPHANUMERIC)
-                        {
+                           break;
+                        case Mode.Names.ALPHANUMERIC:
                            if (!decodeAlphanumericSegment(bits, result, count, fc1InEffect))
                               return null;
-                        }
-                        else if (mode == Mode.BYTE)
-                        {
+                           break;
+                        case Mode.Names.BYTE:
                            if (!decodeByteSegment(bits, result, count, currentCharacterSetECI, byteSegments, hints))
                               return null;
-                        }
-                        else if (mode == Mode.KANJI)
-                        {
+                           break;
+                        case Mode.Names.KANJI:
                            if (!decodeKanjiSegment(bits, result, count))
                               return null;
-                        }
-                        else
-                        {
+                           break;
+                        default:
                            return null;
-                        }
                      }
-                  }
+                     break;
                }
             } while (mode != Mode.TERMINATOR);
          }

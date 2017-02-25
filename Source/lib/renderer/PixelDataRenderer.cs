@@ -91,7 +91,7 @@ namespace ZXing.Rendering
       private static readonly FontFamily DefaultFontFamily = null;
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="WriteableBitmapRenderer"/> class.
+      /// Initializes a new instance of the <see cref="PixelDataRenderer"/> class.
       /// </summary>
       public PixelDataRenderer()
       {

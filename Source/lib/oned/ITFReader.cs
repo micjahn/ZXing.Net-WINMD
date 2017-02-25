@@ -227,7 +227,7 @@ namespace ZXing.OneD
       /// </summary>
       /// <param name="row">row of black/white values to search</param>
       /// <returns>Array, containing index of start of 'start block' and end of 'start block'</returns>
-      int[] decodeStart(BitArray row)
+      private int[] decodeStart(BitArray row)
       {
          int endStart = skipWhiteSpace(row);
          if (endStart < 0)
@@ -308,7 +308,7 @@ namespace ZXing.OneD
       /// <param name="row">row of black/white values to search</param>
       /// <returns>Array, containing index of start of 'end block' and end of 'end
       /// block' or null, if nothing found</returns>
-      int[] decodeEnd(BitArray row)
+      private int[] decodeEnd(BitArray row)
       {
          // For convenience, reverse the row and then
          // search from 'the start' for the end block
@@ -353,9 +353,6 @@ namespace ZXing.OneD
                                             int rowOffset,
                                             int[] pattern)
       {
-
-         // TODO: This is very similar to implementation in UPCEANReader. Consider if they can be
-         // merged to a single method.
          int patternLength = pattern.Length;
          int[] counters = new int[patternLength];
          int width = row.Size;
@@ -365,7 +362,7 @@ namespace ZXing.OneD
          int patternStart = rowOffset;
          for (int x = rowOffset; x < width; x++)
          {
-            if (row[x] ^ isWhite)
+            if (row[x] != isWhite)
             {
                counters[counterPosition]++;
             }
@@ -378,9 +375,9 @@ namespace ZXing.OneD
                      return new int[] { patternStart, x };
                   }
                   patternStart += counters[0] + counters[1];
-                  Array.Copy(counters, 2, counters, 0, patternLength - 2);
-                  counters[patternLength - 2] = 0;
-                  counters[patternLength - 1] = 0;
+                  Array.Copy(counters, 2, counters, 0, counterPosition - 1);
+                  counters[counterPosition - 1] = 0;
+                  counters[counterPosition] = 0;
                   counterPosition--;
                }
                else

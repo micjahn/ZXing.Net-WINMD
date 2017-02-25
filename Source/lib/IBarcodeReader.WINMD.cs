@@ -93,5 +93,24 @@ namespace ZXing
       /// <param name="barcodeBitmap">The barcode bitmap.</param>
       /// <returns>the result data or null</returns>
       Result Decode(WriteableBitmap barcodeBitmap);
+
+      /// <summary>
+      /// Decodes the specified barcode bitmap which is given by a generic byte array with the order RGB24.
+      /// </summary>
+      /// <param name="rawRGB">The image as RGB24 array.</param>
+      /// <param name="width">The width.</param>
+      /// <param name="height">The height.</param>
+      /// <param name="format">The format.</param>
+      /// <returns>
+      /// the result data or null
+      /// </returns>
+      Result[] DecodeMultiple([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] rawRGB, int width, int height, BitmapFormat format);
+
+      /// <summary>
+      /// Decodes the specified barcode bitmap.
+      /// </summary>
+      /// <param name="barcodeBitmap">The barcode bitmap.</param>
+      /// <returns>the result data or null</returns>
+      Result[] DecodeMultiple(WriteableBitmap barcodeBitmap);
    }
 }

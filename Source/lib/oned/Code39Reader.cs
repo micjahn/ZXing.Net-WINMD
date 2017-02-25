@@ -29,7 +29,16 @@ namespace ZXing.OneD
    internal sealed class Code39Reader : OneDReader
    {
       internal static String ALPHABET_STRING = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%";
-      private static readonly char[] ALPHABET = ALPHABET_STRING.ToCharArray();
+      // Note this lacks '*' compared to ALPHABET_STRING
+      private static readonly String CHECK_DIGIT_STRING = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%";
+
+      /// <summary>
+      /// Returns a string with all possible characters
+      /// </summary>
+      public static string Alphabet
+      {
+         get { return ALPHABET_STRING; }
+      }
 
       /// <summary>
       /// These represent the encodings of characters, as patterns of wide and narrow bars.
@@ -44,7 +53,7 @@ namespace ZXing.OneD
                                                     0x0A8, 0x0A2, 0x08A, 0x02A // $-%
                                                  };
 
-      private static readonly int ASTERISK_ENCODING = CHARACTER_ENCODINGS[39];
+      internal static readonly int ASTERISK_ENCODING = CHARACTER_ENCODINGS[39];
 
       private readonly bool usingCheckDigit;
       private readonly bool extendedMode;
@@ -161,9 +170,9 @@ namespace ZXing.OneD
             int total = 0;
             for (int i = 0; i < max; i++)
             {
-               total += ALPHABET_STRING.IndexOf(decodeRowResult[i]);
+               total += CHECK_DIGIT_STRING.IndexOf(decodeRowResult[i]);
             }
-            if (decodeRowResult[max] != ALPHABET[total % 43])
+            if (decodeRowResult[max] != CHECK_DIGIT_STRING[total % 43])
             {
                return null;
             }
@@ -237,7 +246,7 @@ namespace ZXing.OneD
 
          for (int i = rowOffset; i < width; i++)
          {
-            if (row[i] ^ isWhite)
+            if (row[i] != isWhite)
             {
                counters[counterPosition]++;
             }
@@ -254,9 +263,9 @@ namespace ZXing.OneD
                      }
                   }
                   patternStart += counters[0] + counters[1];
-                  Array.Copy(counters, 2, counters, 0, patternLength - 2);
-                  counters[patternLength - 2] = 0;
-                  counters[patternLength - 1] = 0;
+                  Array.Copy(counters, 2, counters, 0, counterPosition - 1);
+                  counters[counterPosition - 1] = 0;
+                  counters[counterPosition] = 0;
                   counterPosition--;
                }
                else
@@ -331,7 +340,7 @@ namespace ZXing.OneD
          {
             if (CHARACTER_ENCODINGS[i] == pattern)
             {
-               c = ALPHABET[i];
+               c = ALPHABET_STRING[i];
                return true;
             }
          }

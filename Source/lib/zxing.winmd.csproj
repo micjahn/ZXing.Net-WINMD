@@ -14,6 +14,10 @@
     <DefaultLanguage>de-DE</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SccProjectName>%24/ZXingNet/branches/WINMD/Source/lib</SccProjectName>
+    <SccLocalPath>.</SccLocalPath>
+    <SccAuxPath>https://tfs.codeplex.com/tfs/tfs05</SccAuxPath>
+    <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -217,6 +221,8 @@
     <Compile Include="imb\IMBReader.cs" />
     <Compile Include="IMultipleBarcodeReader.WINMD.cs" />
     <Compile Include="InvertedLuminanceSource.cs" />
+    <Compile Include="BarcodeWriterSvg.WINMD.cs" />
+    <Compile Include="IBarcodeWriterSvg.WINMD.cs" />
     <Compile Include="LuminanceSource.cs" />
     <Compile Include="maxicode\decoder\BitMatrixParser.cs" />
     <Compile Include="maxicode\decoder\DecodedBitStreamParser.cs" />
@@ -238,6 +244,7 @@
     <Compile Include="oned\Code39Reader.cs" />
     <Compile Include="oned\Code39Writer.cs" />
     <Compile Include="oned\Code93Reader.cs" />
+    <Compile Include="oned\Code93Writer.cs" />
     <Compile Include="oned\EAN13Reader.cs" />
     <Compile Include="oned\EAN13Writer.cs" />
     <Compile Include="oned\EAN8Reader.cs" />
@@ -289,6 +296,7 @@
     <Compile Include="oned\UPCEANReader.cs" />
     <Compile Include="oned\UPCEANWriter.cs" />
     <Compile Include="oned\UPCEReader.cs" />
+    <Compile Include="oned\UPCEWriter.cs" />
     <Compile Include="pdf417\decoder\BarcodeMetadata.cs" />
     <Compile Include="pdf417\decoder\BarcodeValue.cs" />
     <Compile Include="pdf417\decoder\BoundingBox.cs" />
@@ -346,8 +354,10 @@
     <Compile Include="Reader.cs" />
     <Compile Include="ReaderException.cs" />
     <Compile Include="renderer\IBarcodeRenderer.cs" />
+    <Compile Include="renderer\IBarcodeRendererSvg.cs" />
     <Compile Include="renderer\PixelData.cs" />
     <Compile Include="renderer\PixelDataRenderer.cs" />
+    <Compile Include="renderer\SVGRenderer.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="ResultMetadataType.cs" />
     <Compile Include="ResultPoint.cs" />

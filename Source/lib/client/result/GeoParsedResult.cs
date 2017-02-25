@@ -20,6 +20,9 @@ using System.Text;
 
 namespace ZXing.Client.Result
 {
+   /// <summary>
+   /// Represents a parsed result that encodes a geographic coordinate, with latitude, longitude and altitude.
+   /// </summary>
    /// <author>Sean Owen</author>
    internal sealed class GeoParsedResult : ParsedResult
    {
@@ -83,13 +86,13 @@ namespace ZXing.Client.Result
       {
          var result = new StringBuilder();
          result.Append("geo:");
-         result.Append(Latitude);
+         result.AppendFormat(CultureInfo.InvariantCulture, "{0:0.0###########}", Latitude);
          result.Append(',');
-         result.Append(Longitude);
+         result.AppendFormat(CultureInfo.InvariantCulture, "{0:0.0###########}", Longitude);
          if (Altitude > 0)
          {
             result.Append(',');
-            result.Append(Altitude);
+            result.AppendFormat(CultureInfo.InvariantCulture, "{0:0.0###########}", Altitude);
          }
          if (Query != null)
          {
@@ -103,9 +106,9 @@ namespace ZXing.Client.Result
       {
          var result = new StringBuilder(50);
          result.Append("http://maps.google.com/?ll=");
-         result.Append(Latitude);
+         result.AppendFormat(CultureInfo.InvariantCulture, "{0:0.0###########}", Latitude);
          result.Append(',');
-         result.Append(Longitude);
+         result.AppendFormat(CultureInfo.InvariantCulture, "{0:0.0###########}", Longitude);
          if (Altitude > 0.0f)
          {
             // Map altitude to zoom level, cleverly. Roughly, zoom level 19 is like a

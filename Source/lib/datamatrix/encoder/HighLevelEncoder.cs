@@ -117,7 +117,7 @@ namespace ZXing.Datamatrix.Encoder
       {
          int pseudoRandom = ((149 * codewordPosition) % 253) + 1;
          int tempVariable = ch + pseudoRandom;
-         return tempVariable <= 254 ? (char)tempVariable : (char)(tempVariable - 254);
+         return (char)(tempVariable <= 254 ? tempVariable : tempVariable - 254);
       }
 
       /// <summary>
@@ -289,12 +289,12 @@ namespace ZXing.Datamatrix.Encoder
             }
             else if (isExtendedASCII(c))
             {
-               charCounts[(int)Encodation.ASCII] = (int)Math.Ceiling(charCounts[(int)Encodation.ASCII]);
-               charCounts[(int)Encodation.ASCII] += 2;
+               charCounts[(int)Encodation.ASCII] = (float)Math.Ceiling(charCounts[(int)Encodation.ASCII]);
+               charCounts[(int)Encodation.ASCII] += 2.0f;
             }
             else
             {
-               charCounts[(int)Encodation.ASCII] = (int)Math.Ceiling(charCounts[(int)Encodation.ASCII]);
+               charCounts[(int)Encodation.ASCII] = (float)Math.Ceiling(charCounts[(int)Encodation.ASCII]);
                charCounts[(int)Encodation.ASCII]++;
             }
 
@@ -357,7 +357,7 @@ namespace ZXing.Datamatrix.Encoder
             // step Q
             if (isSpecialB256(c))
             {
-               charCounts[(int)Encodation.BASE256] += 4;
+               charCounts[(int)Encodation.BASE256] += 4.0f;
             }
             else
             {

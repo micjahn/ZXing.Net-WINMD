@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using Windows.UI.Xaml.Media.Imaging;
-
 using ZXing.Common;
 
 namespace ZXing.Rendering

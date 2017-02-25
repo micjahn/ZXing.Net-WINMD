@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using Windows.Foundation.Metadata;
-
 using ZXing.Common;
 using ZXing.Rendering;
 

@@ -15,7 +15,6 @@
  */
 
 using System;
-using Windows.UI.Xaml.Media.Imaging;
 
 using ZXing.Common;
 using ZXing.Rendering;

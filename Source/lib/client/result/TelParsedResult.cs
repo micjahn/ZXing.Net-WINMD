@@ -18,6 +18,9 @@ using System;
 
 namespace ZXing.Client.Result
 {
+   /// <summary>
+   /// Represents a parsed result that encodes a telephone number.
+   /// </summary>
    /// <author>Sean Owen</author>
    internal sealed class TelParsedResult : ParsedResult
    {

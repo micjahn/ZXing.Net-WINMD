@@ -79,12 +79,20 @@ namespace ZXing.Common
          get { return rowSize; }
       }
 
-      // A helper to construct a square matrix.
+      /// <summary>
+      /// Creates an empty square <see cref="BitMatrix"/>.
+      /// </summary>
+      /// <param name="dimension">height and width</param>
       public BitMatrix(int dimension)
          : this(dimension, dimension)
       {
       }
 
+      /// <summary>
+      /// Creates an empty square <see cref="BitMatrix"/>.
+      /// </summary>
+      /// <param name="width">bit matrix width</param>
+      /// <param name="height">bit matrix height</param>
       public BitMatrix(int width, int height)
       {
          if (width < 1 || height < 1)
@@ -111,6 +119,27 @@ namespace ZXing.Common
          this.height = height;
          this.rowSize = (width + 31) >> 5;
          this.bits = bits;
+      }
+
+      /// <summary>
+      /// Interprets a 2D array of booleans as a <see cref="BitMatrix"/>, where "true" means an "on" bit.
+      /// </summary>
+      /// <param name="image">bits of the image, as a row-major 2D array. Elements are arrays representing rows</param>
+      /// <returns><see cref="BitMatrix"/> representation of image</returns>
+      internal static BitMatrix parse(bool[][] image)
+      {
+         var height = image.Length;
+         var width = image[0].Length;
+         var bits = new BitMatrix(width, height);
+         for (var i = 0; i < height; i++)
+         {
+            var imageI = image[i];
+            for (var j = 0; j < width; j++)
+            {
+               bits[j, i] = imageI[j];
+            }
+         }
+         return bits;
       }
 
       public static BitMatrix parse(String stringRepresentation, String setString, String unsetString)
@@ -225,17 +254,34 @@ namespace ZXing.Common
          }
       }
 
-      /// <summary> <p>Flips the given bit.</p>
-      /// 
+      /// <summary>
+      /// <p>Flips the given bit.</p>
       /// </summary>
-      /// <param name="x">The horizontal component (i.e. which column)
-      /// </param>
-      /// <param name="y">The vertical component (i.e. which row)
-      /// </param>
+      /// <param name="x">The horizontal component (i.e. which column)</param>
+      /// <param name="y">The vertical component (i.e. which row)</param>
       public void flip(int x, int y)
       {
          int offset = y*rowSize + (x >> 5);
          bits[offset] ^= 1 << (x & 0x1f);
+      }
+
+      /// <summary>
+      /// flip all of the bits, if shouldBeFlipped is true for the coordinates
+      /// </summary>
+      /// <param name="shouldBeFlipped">should return true, if the bit at a given coordinate should be flipped</param>
+      internal void flipWhen(Func<int, int, bool> shouldBeFlipped)
+      {
+         for (var y = 0; y < height; y++)
+         {
+            for (var x = 0; x < width; x++)
+            {
+               if (shouldBeFlipped(y, x))
+               {
+                  int offset = y * rowSize + (x >> 5);
+                  bits[offset] ^= 1 << (x & 0x1f);
+               }
+            }
+         }
       }
 
       /// <summary>
@@ -420,16 +466,13 @@ namespace ZXing.Common
                }
             }
          }
-
-         int widthTmp = right - left;
-         int heightTmp = bottom - top;
-
-         if (widthTmp < 0 || heightTmp < 0)
+         
+         if (right < left || bottom < top)
          {
             return null;
          }
 
-         return new[] {left, top, widthTmp, heightTmp};
+         return new[] { left, top, right - left + 1, bottom - top + 1 };
       }
 
       /// <summary>
@@ -556,7 +599,7 @@ namespace ZXing.Common
       /// </returns>
       public String ToString(String setString, String unsetString)
       {
-         return ToString(setString, unsetString, Environment.NewLine);
+         return buildToString(setString, unsetString, Environment.NewLine);
       }
 
       /// <summary>
@@ -570,7 +613,12 @@ namespace ZXing.Common
       /// </returns>
       public String ToString(String setString, String unsetString, String lineSeparator)
       {
-         var result = new StringBuilder(height*(width + 1));
+         return buildToString(setString, unsetString, lineSeparator);
+      }
+
+      private String buildToString(String setString, String unsetString, String lineSeparator)
+      {
+         var result = new StringBuilder(height * (width + 1));
          for (int y = 0; y < height; y++)
          {
             for (int x = 0; x < width; x++)
