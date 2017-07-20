@@ -15,25 +15,28 @@
  */
 
 using ZXing.Common;
-using ZXing.Rendering;
+
+#if NETFX_CORE
+using Windows.UI.Xaml.Media.Imaging;
+#else
+using System.Windows.Media.Imaging;
+#endif
 
 namespace ZXing
 {
    /// <summary>
    /// Interface for a smart class to encode some content into a barcode
    /// </summary>
-   public interface IBarcodeWriterSvg
+   [System.CLSCompliant(false)]
+   public partial interface IBarcodeWriterWriteableBitmap
    {
-      /// <summary>
-      /// Encodes the specified contents.
-      /// </summary>
-      /// <param name="contents">The contents.</param>
-      /// <returns></returns>
-      BitMatrix Encode(string contents);
-
       /// <summary>
       /// Creates a visual representation of the contents
       /// </summary>
-      SvgImage Write(string contents);
+      WriteableBitmap Write(string contents);
+      /// <summary>
+      /// Returns a rendered instance of the barcode which is given by a BitMatrix.
+      /// </summary>
+      //WriteableBitmap Write(BitMatrix matrix);
    }
 }
