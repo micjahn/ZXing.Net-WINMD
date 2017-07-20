@@ -56,7 +56,7 @@ namespace ZXing.OneD
          return extensionResult;
       }
 
-      int decodeMiddle(BitArray row, int[] startRange, StringBuilder resultString)
+      private int decodeMiddle(BitArray row, int[] startRange, StringBuilder resultString)
       {
          int[] counters = decodeMiddleCounters;
          counters[0] = 0;
@@ -107,7 +107,7 @@ namespace ZXing.OneD
       /// Parses the extension string.
       /// </summary>
       /// <param name="raw">raw content of extension</param>
-      /// <returns>formatted interpretation of raw content as a {@link Map} mapping
+      /// <returns>formatted interpretation of raw content as a {@link Map} mapping</returns>
       private static IDictionary<ResultMetadataType, Object> parseExtensionString(String raw)
       {
          if (raw.Length != 2) 

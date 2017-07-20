@@ -44,23 +44,10 @@ namespace ZXing.Datamatrix.Internal
       /// <param name="image">booleans representing white/black Data Matrix Code modules</param>
       /// <returns>text and bytes encoded within the Data Matrix Code</returns>
       /// <exception cref="FormatException">if the Data Matrix Code cannot be decoded</exception>
-      /// <exception cref="ChecksumException">if error correction fails</exception>
       /// </summary>
       public DecoderResult decode(bool[][] image)
       {
-         int dimension = image.Length;
-         BitMatrix bits = new BitMatrix(dimension);
-         for (int i = 0; i < dimension; i++)
-         {
-            for (int j = 0; j < dimension; j++)
-            {
-               if (image[i][j])
-               {
-                  bits[j, i] = true;
-               }
-            }
-         }
-         return decode(bits);
+         return decode(BitMatrix.parse(image));
       }
 
       /// <summary>
@@ -83,8 +70,6 @@ namespace ZXing.Datamatrix.Internal
          // Separate into data blocks
          DataBlock[] dataBlocks = DataBlock.getDataBlocks(codewords, parser.Version);
 
-         int dataBlocksCount = dataBlocks.Length;
-
          // Count total number of data bytes
          int totalBytes = 0;
          foreach (var db in dataBlocks)
@@ -94,6 +79,7 @@ namespace ZXing.Datamatrix.Internal
          byte[] resultBytes = new byte[totalBytes];
 
          // Error-correct and copy data blocks together into a stream of bytes
+         int dataBlocksCount = dataBlocks.Length;
          for (int j = 0; j < dataBlocksCount; j++)
          {
             DataBlock dataBlock = dataBlocks[j];

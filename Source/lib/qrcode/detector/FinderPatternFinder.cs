@@ -25,7 +25,7 @@ namespace ZXing.QrCode.Internal
    /// <p>This class attempts to find finder patterns in a QR Code. Finder patterns are the square
    /// markers at three corners of a QR Code.</p>
    /// 
-   /// <p>This class is thread-safe but not reentrant. Each thread must allocate its own object.
+   /// <p>This class is thread-safe but not reentrant. Each thread must allocate its own object.</p>
    /// </summary>
    /// <author>Sean Owen</author>
    internal class FinderPatternFinder
@@ -784,7 +784,7 @@ namespace ZXing.QrCode.Internal
          {
             float dA = Math.Abs(y.EstimatedModuleSize - average);
             float dB = Math.Abs(x.EstimatedModuleSize - average);
-            return dA < dB ? -1 : dA == dB ? 0 : 1;
+            return dA < dB ? -1 : dA > dB ? 1 : 0;
          }
       }
 
@@ -804,7 +804,7 @@ namespace ZXing.QrCode.Internal
             {
                float dA = Math.Abs(y.EstimatedModuleSize - average);
                float dB = Math.Abs(x.EstimatedModuleSize - average);
-               return dA < dB ? 1 : dA == dB ? 0 : -1;
+               return dA < dB ? 1 : dA > dB ? -1 : 0;
             }
             return y.Count - x.Count;
          }

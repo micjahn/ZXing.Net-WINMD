@@ -24,7 +24,7 @@ namespace ZXing.Datamatrix.Internal
    ///
    /// <author>bbrown@google.com (Brian Brown)</author>
    /// </summary>
-   public sealed class Version
+   internal sealed class Version
    {
       private static readonly Version[] VERSIONS = buildVersions();
 
@@ -61,31 +61,55 @@ namespace ZXing.Datamatrix.Internal
          this.totalCodewords = total;
       }
 
+      /// <summary>
+      /// returns the version numer
+      /// </summary>
+      /// <returns></returns>
       public int getVersionNumber()
       {
          return versionNumber;
       }
 
+      /// <summary>
+      /// returns the symbol size rows
+      /// </summary>
+      /// <returns></returns>
       public int getSymbolSizeRows()
       {
          return symbolSizeRows;
       }
 
+      /// <summary>
+      /// returns the symbols size columns
+      /// </summary>
+      /// <returns></returns>
       public int getSymbolSizeColumns()
       {
          return symbolSizeColumns;
       }
 
+      /// <summary>
+      /// retursn the data region size rows
+      /// </summary>
+      /// <returns></returns>
       public int getDataRegionSizeRows()
       {
          return dataRegionSizeRows;
       }
 
+      /// <summary>
+      /// returns the data region size columns
+      /// </summary>
+      /// <returns></returns>
       public int getDataRegionSizeColumns()
       {
          return dataRegionSizeColumns;
       }
 
+      /// <summary>
+      /// returns the total codewords count
+      /// </summary>
+      /// <returns></returns>
       public int getTotalCodewords()
       {
          return totalCodewords;
@@ -157,7 +181,7 @@ namespace ZXing.Datamatrix.Internal
       }
 
       /// <summary>
-      /// <p>Encapsualtes the parameters for one error-correction block in one symbol version.
+      /// <p>Encapsulates the parameters for one error-correction block in one symbol version.
       /// This includes the number of data codewords, and the number of times a block with these
       /// parameters is used consecutively in the Data Matrix code version's format.</p>
       /// </summary>
@@ -183,7 +207,11 @@ namespace ZXing.Datamatrix.Internal
          }
       }
 
-      override public String ToString()
+      /// <summary>
+      /// returns the version number as string
+      /// </summary>
+      /// <returns></returns>
+      public override String ToString()
       {
          return versionNumber.ToString();
       }

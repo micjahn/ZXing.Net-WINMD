@@ -25,7 +25,7 @@ using Windows.UI;
 using System.Windows.Media;
 #elif UNITY
 using UnityEngine;
-#elif !PORTABLE
+#elif !(PORTABLE || NETSTANDARD)
 using System.Drawing;
 #endif
 
@@ -36,26 +36,61 @@ namespace ZXing.Rendering
    /// <summary>
    /// Renders a barcode into a Svg image
    /// </summary>
-   public class SvgRenderer : IBarcodeRenderer<SvgRenderer.SvgImage>
+   public sealed class SvgRenderer : IBarcodeRendererSvg
    {
 #if !UNITY
-#if PORTABLE
+#if (PORTABLE || NETSTANDARD)
+      /// <summary>
+      /// represents a color value
+      /// </summary>
       public struct Color
       {
-         public static Color Black = new Color(0);
-         public static Color White = new Color(0x00FFFFFF);
+         /// <summary>
+         /// color black
+         /// </summary>
+         public static Color Black = new Color(255, 0, 0, 0);
+         /// <summary>
+         /// color white
+         /// </summary>
+         public static Color White = new Color(255, 255, 255, 255);
 
+         /// <summary>
+         /// alpha channel
+         /// </summary>
          public byte A;
+         /// <summary>
+         /// red channel
+         /// </summary>
          public byte R;
+         /// <summary>
+         /// green channel
+         /// </summary>
          public byte G;
+         /// <summary>
+         /// blur channel
+         /// </summary>
          public byte B;
 
+         /// <summary>
+         /// initializing constructor
+         /// </summary>
          public Color(int color)
          {
             A = (byte)((color & 0xFF000000) >> 24);
             R = (byte)((color & 0x00FF0000) >> 16);
             G = (byte)((color & 0x0000FF00) >> 8);
             B = (byte)((color & 0x000000FF));
+         }
+
+         /// <summary>
+         /// initializing constructor
+         /// </summary>
+         public Color(byte alpha, byte red, byte green, byte blue)
+         {
+            A = alpha;
+            R = red;
+            G = green;
+            B = blue;
          }
       }
 #endif
@@ -75,12 +110,14 @@ namespace ZXing.Rendering
       /// Gets or sets the foreground color.
       /// </summary>
       /// <value>The foreground color.</value>
+      [System.CLSCompliant(false)]
       public Color32 Foreground { get; set; }
 
       /// <summary>
       /// Gets or sets the background color.
       /// </summary>
       /// <value>The background color.</value>
+      [System.CLSCompliant(false)]
       public Color32 Background { get; set; }
 #endif
 
@@ -93,7 +130,7 @@ namespace ZXing.Rendering
          Foreground = Colors.Black;
          Background = Colors.White;
 #elif UNITY
-         Foreground = new Color(0, 0, 0, 255);
+         Foreground = new Color32(0, 0, 0, 255);
          Background = new Color32(255, 255, 255, 255);
 #else
          Foreground = Color.Black;
@@ -123,7 +160,7 @@ namespace ZXing.Rendering
       /// <returns></returns>
       public SvgImage Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
       {
-         var result = new SvgImage();
+         var result = new SvgImage(matrix.Width, matrix.Height);
 
          Create(result, matrix, format, content, options);
 
@@ -196,7 +233,7 @@ namespace ZXing.Rendering
 
       private static void FindMaximumRectangle(BitMatrix matrix, BitMatrix processed, int startPosX, int startPosY, int endPosY, out int endPosX)
       {
-         endPosX = startPosX + 1;
+         endPosX = startPosX;
 
          for (int x = startPosX + 1; x < matrix.Width; x++)
          {
@@ -213,142 +250,6 @@ namespace ZXing.Rendering
                processed[x, y] = true;
             }
          }
-      }
-
-      /// <summary>
-      /// Represents a barcode as a Svg image
-      /// </summary>
-      public class SvgImage
-      {
-         private readonly StringBuilder content;
-
-         /// <summary>
-         /// Gets or sets the content.
-         /// </summary>
-         /// <value>
-         /// The content.
-         /// </value>
-         public String Content
-         {
-            get { return content.ToString(); }
-            set { content.Length = 0; if (value != null) content.Append(value); }
-         }
-
-         /// <summary>
-         /// Initializes a new instance of the <see cref="SvgImage"/> class.
-         /// </summary>
-         public SvgImage()
-         {
-            content = new StringBuilder();
-         }
-
-         /// <summary>
-         /// Initializes a new instance of the <see cref="SvgImage"/> class.
-         /// </summary>
-         /// <param name="content">The content.</param>
-         public SvgImage(string content)
-         {
-            this.content = new StringBuilder(content);
-         }
-
-         /// <summary>
-         /// Gives the XML representation of the SVG image
-         /// </summary>
-         public override string ToString()
-         {
-            return content.ToString();
-         }
-
-         internal void AddHeader()
-         {
-            content.Append("<?xml version=\"1.0\" standalone=\"no\"?>");
-            content.Append(@"<!-- Created with ZXing.Net (http://zxingnet.codeplex.com/) -->");
-            content.Append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
-         }
-
-         internal void AddEnd()
-         {
-            content.Append("</svg>");
-         }
-
-         internal void AddTag(int displaysizeX, int displaysizeY, int viewboxSizeX, int viewboxSizeY, Color background, Color fill)
-         {
-
-            if (displaysizeX <= 0 || displaysizeY <= 0)
-               content.Append(string.Format("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"0 0 {0} {1}\" viewport-fill=\"rgb({2})\" viewport-fill-opacity=\"{3}\" fill=\"rgb({4})\" fill-opacity=\"{5}\" {6}>",
-                   viewboxSizeX,
-                   viewboxSizeY,
-                   GetColorRgb(background),
-                   ConvertAlpha(background),
-                   GetColorRgb(fill),
-                   ConvertAlpha(fill),
-                   GetBackgroundStyle(background)
-                   ));
-            else
-               content.Append(string.Format("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"0 0 {0} {1}\" viewport-fill=\"rgb({2})\" viewport-fill-opacity=\"{3}\" fill=\"rgb({4})\" fill-opacity=\"{5}\" {6} width=\"{7}\" height=\"{8}\">",
-                   viewboxSizeX,
-                   viewboxSizeY,
-                   GetColorRgb(background),
-                   ConvertAlpha(background),
-                   GetColorRgb(fill),
-                   ConvertAlpha(fill),
-                   GetBackgroundStyle(background),
-                   displaysizeX,
-                   displaysizeY));
-         }
-
-         internal void AddRec(int posX, int posY, int width, int height)
-         {
-            content.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "<rect x=\"{0}\" y=\"{1}\" width=\"{2}\" height=\"{3}\"/>", posX, posY, width, height);
-         }
-
-#if !UNITY
-         internal static double ConvertAlpha(Color alpha)
-         {
-            return Math.Round((((double)alpha.A) / (double)255), 2);
-         }
-
-         internal static string GetBackgroundStyle(Color color)
-         {
-            double alpha = ConvertAlpha(color);
-            return string.Format("style=\"background-color:rgb({0},{1},{2});background-color:rgba({3});\"",
-                color.R, color.G, color.B, alpha);
-         }
-
-         internal static string GetColorRgb(Color color)
-         {
-            return color.R + "," + color.G + "," + color.B;
-         }
-
-         internal static string GetColorRgba(Color color)
-         {
-            double alpha = ConvertAlpha(color);
-            return color.R + "," + color.G + "," + color.B + "," + alpha;
-         }
-#else
-         internal static double ConvertAlpha(Color32 alpha)
-         {
-            return Math.Round((((double)alpha.a) / (double)255), 2);
-         }
-
-         internal static string GetBackgroundStyle(Color32 color)
-         {
-            double alpha = ConvertAlpha(color);
-            return string.Format("style=\"background-color:rgb({0},{1},{2});background-color:rgba({3});\"",
-                color.r, color.g, color.b, alpha);
-         }
-
-         internal static string GetColorRgb(Color32 color)
-         {
-            return color.r + "," + color.g + "," + color.b;
-         }
-
-         internal static string GetColorRgba(Color32 color)
-         {
-            double alpha = ConvertAlpha(color);
-            return color.r + "," + color.g + "," + color.b + "," + alpha;
-         }
-#endif
       }
    }
 }

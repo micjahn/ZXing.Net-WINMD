@@ -37,7 +37,12 @@ namespace ZXing.Client.Result
    /// <author>Agustín Delgado, Servinform, S.A.</author>
    internal sealed class ExpandedProductResultParser : ResultParser
    {
-      override sealed public ParsedResult parse(ZXing.Result result)
+      /// <summary>
+      /// tries to parse a text representation to a specific result object
+      /// </summary>
+      /// <param name="result"></param>
+      /// <returns></returns>
+      public sealed override ParsedResult parse(ZXing.Result result)
       {
          BarcodeFormat format = result.BarcodeFormat;
          if (format != BarcodeFormat.RSS_EXPANDED)
@@ -188,14 +193,11 @@ namespace ZXing.Client.Result
             {
                return buf.ToString();
             }
-            else if (currentChar >= '0' && currentChar <= '9')
-            {
-               buf.Append(currentChar);
-            }
-            else
+            if (currentChar < '0' || currentChar > '9')
             {
                return null;
             }
+            buf.Append(currentChar);
          }
          return buf.ToString();
       }
@@ -210,16 +212,13 @@ namespace ZXing.Client.Result
             char c = rawTextAux[index];
             if (c == '(')
             {
-               // We look for a new AI. If it doesn't exist (ERROR), we coninue
+               // We look for a new AI. If it doesn't exist (ERROR), we continue
                // with the iteration
-               if (findAIvalue(index, rawTextAux) == null)
-               {
-                  buf.Append('(');
-               }
-               else
+               if (findAIvalue(index, rawTextAux) != null)
                {
                   break;
                }
+               buf.Append('(');
             }
             else
             {

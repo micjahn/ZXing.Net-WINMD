@@ -189,7 +189,7 @@ namespace ZXing.OneD.RSS
 
       private Pair decodePair(BitArray row, bool right, int rowNumber, IDictionary<DecodeHintType, object> hints)
       {
-         int[] startEnd = findFinderPattern(row, 0, right);
+         int[] startEnd = findFinderPattern(row, right);
          if (startEnd == null)
             return null;
          FinderPattern pattern = parseFoundFinderPattern(row, rowNumber, right, startEnd);
@@ -235,11 +235,14 @@ namespace ZXing.OneD.RSS
 
          if (outsideChar)
          {
-            recordPatternInReverse(row, pattern.StartEnd[0], counters);
+            if (!recordPatternInReverse(row, pattern.StartEnd[0], counters))
+               return null;
          }
          else
          {
-            recordPattern(row, pattern.StartEnd[1] + 1, counters);
+            if (!recordPattern(row, pattern.StartEnd[1] + 1, counters))
+               return null;
+            
             // reverse it
             for (int i = 0, j = counters.Length - 1; i < j; i++, j--)
             {
@@ -250,7 +253,7 @@ namespace ZXing.OneD.RSS
          }
 
          int numModules = outsideChar ? 16 : 15;
-         float elementWidth = (float)count(counters) / (float)numModules;
+         float elementWidth = (float)ZXing.Common.Detector.MathUtils.sum(counters) / (float)numModules;
 
          int[] oddCounts = this.getOddCounts();
          int[] evenCounts = this.getEvenCounts();
@@ -335,7 +338,7 @@ namespace ZXing.OneD.RSS
          }
       }
 
-      private int[] findFinderPattern(BitArray row, int rowOffset, bool rightFinderPattern)
+      private int[] findFinderPattern(BitArray row, bool rightFinderPattern)
       {
 
          int[] counters = getDecodeFinderCounters();
@@ -346,6 +349,7 @@ namespace ZXing.OneD.RSS
 
          int width = row.Size;
          bool isWhite = false;
+         int rowOffset = 0;
          while (rowOffset < width)
          {
             isWhite = !row[rowOffset];
@@ -361,7 +365,7 @@ namespace ZXing.OneD.RSS
          int patternStart = rowOffset;
          for (int x = rowOffset; x < width; x++)
          {
-            if (row[x] ^ isWhite)
+            if (row[x] != isWhite)
             {
                counters[counterPosition]++;
             }
@@ -397,7 +401,7 @@ namespace ZXing.OneD.RSS
          bool firstIsBlack = row[startEnd[0]];
          int firstElementStart = startEnd[0] - 1;
          // Locate element 1
-         while (firstElementStart >= 0 && firstIsBlack ^ row[firstElementStart])
+         while (firstElementStart >= 0 && firstIsBlack != row[firstElementStart])
          {
             firstElementStart--;
          }
@@ -423,8 +427,8 @@ namespace ZXing.OneD.RSS
 
       private bool adjustOddEvenCounts(bool outsideChar, int numModules)
       {
-         int oddSum = count(getOddCounts());
-         int evenSum = count(getEvenCounts());
+         int oddSum = ZXing.Common.Detector.MathUtils.sum(getOddCounts());
+         int evenSum = ZXing.Common.Detector.MathUtils.sum(getEvenCounts());
          int mismatch = oddSum + evenSum - numModules;
          bool oddParityBad = (oddSum & 0x01) == (outsideChar ? 1 : 0);
          bool evenParityBad = (evenSum & 0x01) == 1;

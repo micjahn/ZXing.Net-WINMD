@@ -28,12 +28,53 @@ namespace ZXing.QrCode.Internal
       /// <summary>
       /// Gets the name.
       /// </summary>
-      public String Name
+      public Names Name { get; private set; }
+
+      /// <summary>
+      /// enumeration for encoding modes
+      /// </summary>
+      public enum Names
       {
-         get
-         {
-            return name;
-         }
+         /// <summary>
+         /// 
+         /// </summary>
+         TERMINATOR,
+         /// <summary>
+         /// numeric encoding
+         /// </summary>
+         NUMERIC,
+         /// <summary>
+         /// alpha-numeric encoding
+         /// </summary>
+         ALPHANUMERIC,
+         /// <summary>
+         /// structured append
+         /// </summary>
+         STRUCTURED_APPEND,
+         /// <summary>
+         /// byte mode encoding
+         /// </summary>
+         BYTE,
+         /// <summary>
+         /// ECI segment
+         /// </summary>
+         ECI,
+         /// <summary>
+         /// Kanji mode
+         /// </summary>
+         KANJI,
+         /// <summary>
+         /// FNC1 char, first position
+         /// </summary>
+         FNC1_FIRST_POSITION,
+         /// <summary>
+         /// FNC1 char, second position
+         /// </summary>
+         FNC1_SECOND_POSITION,
+         /// <summary>
+         /// Hanzi mode
+         /// </summary>
+         HANZI
       }
 
       // No, we can't use an enum here. J2ME doesn't support it.
@@ -41,51 +82,49 @@ namespace ZXing.QrCode.Internal
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00, "TERMINATOR"); // Not really a mode...
+      public static readonly Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00, Names.TERMINATOR); // Not really a mode...
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode NUMERIC = new Mode(new int[] { 10, 12, 14 }, 0x01, "NUMERIC");
+      public static readonly Mode NUMERIC = new Mode(new int[] { 10, 12, 14 }, 0x01, Names.NUMERIC);
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode ALPHANUMERIC = new Mode(new int[] { 9, 11, 13 }, 0x02, "ALPHANUMERIC");
+      public static readonly Mode ALPHANUMERIC = new Mode(new int[] { 9, 11, 13 }, 0x02, Names.ALPHANUMERIC);
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode STRUCTURED_APPEND = new Mode(new int[] { 0, 0, 0 }, 0x03, "STRUCTURED_APPEND"); // Not supported
+      public static readonly Mode STRUCTURED_APPEND = new Mode(new int[] { 0, 0, 0 }, 0x03, Names.STRUCTURED_APPEND); // Not supported
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode BYTE = new Mode(new int[] { 8, 16, 16 }, 0x04, "BYTE");
+      public static readonly Mode BYTE = new Mode(new int[] { 8, 16, 16 }, 0x04, Names.BYTE);
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode ECI = new Mode(null, 0x07, "ECI"); // character counts don't apply
+      public static readonly Mode ECI = new Mode(null, 0x07, Names.ECI); // character counts don't apply
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode KANJI = new Mode(new int[] { 8, 10, 12 }, 0x08, "KANJI");
+      public static readonly Mode KANJI = new Mode(new int[] { 8, 10, 12 }, 0x08, Names.KANJI);
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode FNC1_FIRST_POSITION = new Mode(null, 0x05, "FNC1_FIRST_POSITION");
+      public static readonly Mode FNC1_FIRST_POSITION = new Mode(null, 0x05, Names.FNC1_FIRST_POSITION);
       /// <summary>
       /// 
       /// </summary>
-      public static readonly Mode FNC1_SECOND_POSITION = new Mode(null, 0x09, "FNC1_SECOND_POSITION");
+      public static readonly Mode FNC1_SECOND_POSITION = new Mode(null, 0x09, Names.FNC1_SECOND_POSITION);
       /// <summary>See GBT 18284-2000; "Hanzi" is a transliteration of this mode name.</summary>
-      public static readonly Mode HANZI = new Mode(new int[] { 8, 10, 12 }, 0x0D, "HANZI");
+      public static readonly Mode HANZI = new Mode(new int[] { 8, 10, 12 }, 0x0D, Names.HANZI);
 
       private readonly int[] characterCountBitsForVersions;
-      private readonly int bits;
-      private readonly String name;
 
-      private Mode(int[] characterCountBitsForVersions, int bits, System.String name)
+      private Mode(int[] characterCountBitsForVersions, int bits, Names name)
       {
          this.characterCountBitsForVersions = characterCountBitsForVersions;
-         this.bits = bits;
-         this.name = name;
+         Bits = bits;
+         Name = name;
       }
 
       /// <summary>
@@ -157,13 +196,7 @@ namespace ZXing.QrCode.Internal
       /// <summary>
       /// Gets the bits.
       /// </summary>
-      public int Bits
-      {
-         get
-         {
-            return bits;
-         }
-      }
+      public int Bits { get; private set; }
 
       /// <summary>
       /// Returns a <see cref="System.String"/> that represents this instance.
@@ -173,7 +206,7 @@ namespace ZXing.QrCode.Internal
       /// </returns>
       public override String ToString()
       {
-         return name;
+         return Name.ToString();
       }
    }
 }

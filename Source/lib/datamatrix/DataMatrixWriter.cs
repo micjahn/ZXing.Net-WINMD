@@ -30,11 +30,28 @@ namespace ZXing.Datamatrix
    /// <author>Guillaume Le Biller Added to zxing lib.</author>
    public sealed class DataMatrixWriter : Writer
    {
+      /// <summary>
+      /// encodes the content to a BitMatrix
+      /// </summary>
+      /// <param name="contents"></param>
+      /// <param name="format"></param>
+      /// <param name="width"></param>
+      /// <param name="height"></param>
+      /// <returns></returns>
       public BitMatrix encode(String contents, BarcodeFormat format, int width, int height)
       {
          return encode(contents, format, width, height, null);
       }
 
+      /// <summary>
+      /// encodes the content to a BitMatrix
+      /// </summary>
+      /// <param name="contents"></param>
+      /// <param name="format"></param>
+      /// <param name="width"></param>
+      /// <param name="height"></param>
+      /// <param name="hints"></param>
+      /// <returns></returns>
       public BitMatrix encode(String contents, BarcodeFormat format, int width, int height, IDictionary<EncodeHintType, object> hints)
       {
          if (String.IsNullOrEmpty(contents))
@@ -55,29 +72,42 @@ namespace ZXing.Datamatrix
          // Try to get force shape & min / max size
          var shape = SymbolShapeHint.FORCE_NONE;
          var defaultEncodation = (int)Encodation.ASCII;
-         var minSize = new Dimension(width, height);
+         Dimension minSize = null;
          Dimension maxSize = null;
          if (hints != null)
          {
-            var requestedShape = hints.ContainsKey(EncodeHintType.DATA_MATRIX_SHAPE) ? (SymbolShapeHint?)hints[EncodeHintType.DATA_MATRIX_SHAPE] : null;
-            if (requestedShape != null)
+            if (hints.ContainsKey(EncodeHintType.DATA_MATRIX_SHAPE))
             {
-               shape = requestedShape.Value;
+               var requestedShape = hints[EncodeHintType.DATA_MATRIX_SHAPE];
+               if (requestedShape is SymbolShapeHint)
+               {
+                  shape = (SymbolShapeHint)requestedShape;
+               }
+               else
+               {
+                  if (Enum.IsDefined(typeof(SymbolShapeHint), requestedShape.ToString()))
+                  {
+                     shape = (SymbolShapeHint)Enum.Parse(typeof(SymbolShapeHint), requestedShape.ToString(), true);
+                  } 
+               }
             }
-            var requestedMinSize = hints.ContainsKey(EncodeHintType.MIN_SIZE) ? (Dimension)hints[EncodeHintType.MIN_SIZE] : null;
+            var requestedMinSize = hints.ContainsKey(EncodeHintType.MIN_SIZE) ? hints[EncodeHintType.MIN_SIZE] as Dimension : null;
             if (requestedMinSize != null)
             {
                minSize = requestedMinSize;
             }
-            var requestedMaxSize = hints.ContainsKey(EncodeHintType.MAX_SIZE) ? (Dimension)hints[EncodeHintType.MAX_SIZE] : null;
+            var requestedMaxSize = hints.ContainsKey(EncodeHintType.MAX_SIZE) ? hints[EncodeHintType.MAX_SIZE] as Dimension : null;
             if (requestedMaxSize != null)
             {
                maxSize = requestedMaxSize;
             }
-            var requestedDefaultEncodation = hints.ContainsKey(EncodeHintType.DATA_MATRIX_DEFAULT_ENCODATION) ? (int?)hints[EncodeHintType.DATA_MATRIX_DEFAULT_ENCODATION] : (int?)null;
-            if (requestedDefaultEncodation != null)
+            if (hints.ContainsKey(EncodeHintType.DATA_MATRIX_DEFAULT_ENCODATION))
             {
-               defaultEncodation = requestedDefaultEncodation.Value;
+               var requestedDefaultEncodation = hints[EncodeHintType.DATA_MATRIX_DEFAULT_ENCODATION];
+               if (requestedDefaultEncodation != null)
+               {
+                  defaultEncodation = Convert.ToInt32(requestedDefaultEncodation.ToString());
+               }
             }
          }
 

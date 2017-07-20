@@ -134,7 +134,6 @@ namespace ZXing.PDF417.Internal
             {
                newMinY = 0;
             }
-            // TODO use existing points to better interpolate the new x positions
             ResultPoint newTop = new ResultPoint(top.X, newMinY);
             if (isLeft)
             {
@@ -154,7 +153,6 @@ namespace ZXing.PDF417.Internal
             {
                newMaxY = image.Height - 1;
             }
-            // TODO use existing points to better interpolate the new x positions
             ResultPoint newBottom = new ResultPoint(bottom.X, newMaxY);
             if (isLeft)
             {
@@ -171,7 +169,7 @@ namespace ZXing.PDF417.Internal
       }
 
       /// <summary>
-      /// Calculates the minimum and maximum X & Y values based on the corner points.
+      /// Calculates the minimum and maximum X &amp; Y values based on the corner points.
       /// </summary>
       private void calculateMinMaxValues()
       {

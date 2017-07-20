@@ -214,10 +214,10 @@ namespace ZXing.QrCode.Internal
       /// <summary> <p>Computes the dimension (number of modules on a size) of the QR Code based on the position
       /// of the finder patterns and estimated module size.</p>
       /// </summary>
-      private static bool computeDimension(FinderPattern topLeft, FinderPattern topRight, FinderPattern bottomLeft, float moduleSize, out int dimension)
+      private static bool computeDimension(ResultPoint topLeft, ResultPoint topRight, ResultPoint bottomLeft, float moduleSize, out int dimension)
       {
-         int tltrCentersDimension = MathUtils.round(FinderPattern.distance(topLeft, topRight) / moduleSize);
-         int tlblCentersDimension = MathUtils.round(FinderPattern.distance(topLeft, bottomLeft) / moduleSize);
+         int tltrCentersDimension = MathUtils.round(ResultPoint.distance(topLeft, topRight) / moduleSize);
+         int tlblCentersDimension = MathUtils.round(ResultPoint.distance(topLeft, bottomLeft) / moduleSize);
          dimension = ((tltrCentersDimension + tlblCentersDimension) >> 1) + 7;
          switch (dimension & 0x03)
          {
@@ -243,7 +243,7 @@ namespace ZXing.QrCode.Internal
       /// <param name="topRight">detected top-right finder pattern center</param>
       /// <param name="bottomLeft">detected bottom-left finder pattern center</param>
       /// <returns>estimated module size</returns>
-      protected internal virtual float calculateModuleSize(FinderPattern topLeft, FinderPattern topRight, FinderPattern bottomLeft)
+      protected internal virtual float calculateModuleSize(ResultPoint topLeft, ResultPoint topRight, ResultPoint bottomLeft)
       {
          // Take the average
          return (calculateModuleSizeOneWay(topLeft, topRight) + calculateModuleSizeOneWay(topLeft, bottomLeft)) / 2.0f;
@@ -253,7 +253,7 @@ namespace ZXing.QrCode.Internal
       /// {@link #sizeOfBlackWhiteBlackRunBothWays(int, int, int, int)} to figure the
       /// width of each, measuring along the axis between their centers.</p>
       /// </summary>
-      private float calculateModuleSizeOneWay(FinderPattern pattern, FinderPattern otherPattern)
+      private float calculateModuleSizeOneWay(ResultPoint pattern, ResultPoint otherPattern)
       {
          //UPGRADE_WARNING: Data types in Visual C# might be different.  Verify the accuracy of narrowing conversions. "ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?index='!DefaultContextWindowIndex'&keyword='jlca1042'"
          float moduleSizeEst1 = sizeOfBlackWhiteBlackRunBothWays((int)pattern.X, (int)pattern.Y, (int)otherPattern.X, (int)otherPattern.Y);

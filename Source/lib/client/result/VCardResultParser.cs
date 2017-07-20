@@ -26,10 +26,10 @@ namespace ZXing.Client.Result
    /// Parses contact information formatted according to the VCard (2.1) format. This is not a complete
    /// implementation but should parse information as commonly encoded in 2D barcodes.
    /// </summary>
-   /// <authorSean Owen</author>
+   /// <author>Sean Owen</author>
    sealed class VCardResultParser : ResultParser
    {
-#if SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE
+#if SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE || NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2
       private static readonly Regex BEGIN_VCARD = new Regex("BEGIN:VCARD", RegexOptions.IgnoreCase);
       private static readonly Regex VCARD_LIKE_DATE = new Regex(@"\A(?:" + "\\d{4}-?\\d{2}-?\\d{2}" + @")\z");
       private static readonly Regex CR_LF_SPACE_TAB = new Regex("\r\n[ \t]");
@@ -383,24 +383,28 @@ namespace ZXing.Client.Result
          List<String> result = new List<String>(lists.Count);
          foreach (var list in lists)
          {
-            String type = null;
-            for (int i = 1; i < list.Count; i++)
+            String value = list[0];
+            if (!String.IsNullOrEmpty(value))
             {
-               String metadatum = list[i];
-               int equals = metadatum.IndexOf('=');
-               if (equals < 0)
+               String type = null;
+               for (int i = 1; i < list.Count; i++)
                {
-                  // take the whole thing as a usable label
-                  type = metadatum;
-                  break;
+                  String metadatum = list[i];
+                  int equals = metadatum.IndexOf('=');
+                  if (equals < 0)
+                  {
+                     // take the whole thing as a usable label
+                     type = metadatum;
+                     break;
+                  }
+                  if (String.Compare("TYPE", metadatum.Substring(0, equals), StringComparison.OrdinalIgnoreCase) == 0)
+                  {
+                     type = metadatum.Substring(equals + 1);
+                     break;
+                  }
                }
-               if (String.Compare("TYPE", metadatum.Substring(0, equals), StringComparison.OrdinalIgnoreCase) == 0)
-               {
-                  type = metadatum.Substring(equals + 1);
-                  break;
-               }
+               result.Add(type);
             }
-            result.Add(type);
          }
          return SupportClass.toStringArray(result);
       }

@@ -21,7 +21,7 @@ namespace ZXing.Datamatrix.Encoder
    /// <summary>
    /// Symbol Character Placement Program. Adapted from Annex M.1 in ISO/IEC 16022:2000(E).
    /// </summary>
-   public sealed class DefaultPlacement
+   internal sealed class DefaultPlacement
    {
       private readonly String codewords;
       private readonly int numrows;
@@ -63,12 +63,12 @@ namespace ZXing.Datamatrix.Encoder
          return bits[row * numcols + col] == 1;
       }
 
-      public void setBit(int col, int row, bool bit)
+      private void setBit(int col, int row, bool bit)
       {
-         bits[row * numcols + col] = bit ? (byte)1 : (byte)0;
+         bits[row * numcols + col] = (byte)(bit ? 1 : 0);
       }
 
-      public bool hasBit(int col, int row)
+      private bool hasBit(int col, int row)
       {
          return bits[row * numcols + col] < 2;
       }

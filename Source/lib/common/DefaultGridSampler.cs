@@ -13,7 +13,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-using System;
 
 namespace ZXing.Common
 {
@@ -24,6 +23,28 @@ namespace ZXing.Common
    /// </author>
    internal sealed class DefaultGridSampler : GridSampler
    {
+      /// <summary>
+      /// </summary>
+      /// <param name="image"></param>
+      /// <param name="dimensionX"></param>
+      /// <param name="dimensionY"></param>
+      /// <param name="p1ToX"></param>
+      /// <param name="p1ToY"></param>
+      /// <param name="p2ToX"></param>
+      /// <param name="p2ToY"></param>
+      /// <param name="p3ToX"></param>
+      /// <param name="p3ToY"></param>
+      /// <param name="p4ToX"></param>
+      /// <param name="p4ToY"></param>
+      /// <param name="p1FromX"></param>
+      /// <param name="p1FromY"></param>
+      /// <param name="p2FromX"></param>
+      /// <param name="p2FromY"></param>
+      /// <param name="p3FromX"></param>
+      /// <param name="p3FromY"></param>
+      /// <param name="p4FromX"></param>
+      /// <param name="p4FromY"></param>
+      /// <returns></returns>
       public override BitMatrix sampleGrid(BitMatrix image, int dimensionX, int dimensionY, float p1ToX, float p1ToY, float p2ToX, float p2ToY, float p3ToX, float p3ToY, float p4ToX, float p4ToY, float p1FromX, float p1FromY, float p2FromX, float p2FromY, float p3FromX, float p3FromY, float p4FromX, float p4FromY)
       {
          PerspectiveTransform transform = PerspectiveTransform.quadrilateralToQuadrilateral(
@@ -32,6 +53,13 @@ namespace ZXing.Common
          return sampleGrid(image, dimensionX, dimensionY, transform);
       }
 
+      /// <summary>
+      /// </summary>
+      /// <param name="image"></param>
+      /// <param name="dimensionX"></param>
+      /// <param name="dimensionY"></param>
+      /// <param name="transform"></param>
+      /// <returns></returns>
       public override BitMatrix sampleGrid(BitMatrix image, int dimensionX, int dimensionY, PerspectiveTransform transform)
       {
          if (dimensionX <= 0 || dimensionY <= 0)
@@ -58,14 +86,26 @@ namespace ZXing.Common
                return null;
             try
             {
+               var imageWidth = image.Width;
+               var imageHeight = image.Height;
+
                for (int x = 0; x < max; x += 2)
                {
-                  //UPGRADE_WARNING: Data types in Visual C# might be different.  Verify the accuracy of narrowing conversions. "ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?index='!DefaultContextWindowIndex'&keyword='jlca1042'"
-                  bits[x >> 1, y] = image[(int)points[x], (int)points[x + 1]];
+                  var imagex = (int)points[x];
+                  var imagey = (int)points[x + 1];
+
+                  if (imagex < 0 || imagex >= imageWidth || imagey < 0 || imagey >= imageHeight)
+                  {
+                     return null;
+                  }
+
+                  bits[x >> 1, y] = image[imagex, imagey];
                }
             }
             catch (System.IndexOutOfRangeException)
             {
+               // java version:
+               // 
                // This feels wrong, but, sometimes if the finder patterns are misidentified, the resulting
                // transform gets "twisted" such that it maps a straight line of points to a set of points
                // whose endpoints are in bounds, but others are not. There is probably some mathematical

@@ -26,7 +26,7 @@ namespace ZXing.Common.ReedSolomon
    ///   </p>
    /// </summary>
    /// <author>Sean Owen</author>
-   public sealed class GenericGF
+   internal sealed class GenericGF
    {
       internal static GenericGF AZTEC_DATA_12 = new GenericGF(0x1069, 4096, 1); // x^12 + x^6 + x^5 + x^3 + 1
       internal static GenericGF AZTEC_DATA_10 = new GenericGF(0x409, 1024, 1); // x^10 + x^3 + 1

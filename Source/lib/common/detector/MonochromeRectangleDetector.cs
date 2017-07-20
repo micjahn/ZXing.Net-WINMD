@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+using System;
+
 namespace ZXing.Common.Detector
 {
    /// <summary> <p>A somewhat generic detector that looks for a barcode-like rectangular region within an image.
@@ -21,26 +23,28 @@ namespace ZXing.Common.Detector
    /// black. It returns the four corners of the region, as best it can determine.</p>
    /// 
    /// </summary>
-   /// <author>  Sean Owen
-   /// </author>
-   /// <author>www.Redivivus.in (suraj.supekar@redivivus.in) - Ported from ZXING Java Source 
-   /// </author>
+   /// <author>Sean Owen</author>
+   [Obsolete]
    internal sealed class MonochromeRectangleDetector
    {
       private const int MAX_MODULES = 32;
 
-      private BitMatrix image;
+      private readonly BitMatrix image;
 
+      /// <summary>
+      /// initializing constructor
+      /// </summary>
+      /// <param name="image"></param>
       public MonochromeRectangleDetector(BitMatrix image)
       {
          this.image = image;
       }
 
-      /// <summary> <p>Detects a rectangular region of black and white -- mostly black -- with a region of mostly
+      /// <summary>
+      /// <p>Detects a rectangular region of black and white -- mostly black -- with a region of mostly
       /// white, in an image.</p>
-      /// 
       /// </summary>
-      /// <returns> {@link ResultPoint}[] describing the corners of the rectangular region. The first and
+      /// <returns><see cref="ResultPoint"/>[] describing the corners of the rectangular region. The first and
       /// last points are opposed on the diagonal, as are the second and third. The first point will be
       /// the topmost point and the last, the bottommost. The second point will be leftmost and the
       /// third, the rightmost
@@ -107,7 +111,7 @@ namespace ZXing.Common.Detector
       /// <param name="maxWhiteRun">maximum run of white pixels that can still be considered to be within
       /// the barcode
       /// </param>
-      /// <returns> a {@link com.google.zxing.ResultPoint} encapsulating the corner that was found
+      /// <returns> a <see cref="ResultPoint"/> encapsulating the corner that was found
       /// </returns>
       private ResultPoint findCornerFromCenter(int centerX, int deltaX, int left, int right, int centerY, int deltaY, int top, int bottom, int maxWhiteRun)
       {
@@ -140,7 +144,7 @@ namespace ZXing.Common.Detector
                      if (lastRange[1] > centerX)
                      {
                         // straddle, choose one or the other based on direction
-                        return new ResultPoint(deltaY > 0 ? lastRange[0] : lastRange[1], lastY);
+                        return new ResultPoint(lastRange[deltaY > 0 ? 0 : 1], lastY);
                      }
                      return new ResultPoint(lastRange[0], lastY);
                   }
@@ -156,7 +160,7 @@ namespace ZXing.Common.Detector
                   {
                      if (lastRange[1] > centerY)
                      {
-                        return new ResultPoint(lastX, deltaX < 0 ? lastRange[0] : lastRange[1]);
+                        return new ResultPoint(lastX, lastRange[deltaX < 0 ? 0 : 1]);
                      }
                      return new ResultPoint(lastX, lastRange[0]);
                   }

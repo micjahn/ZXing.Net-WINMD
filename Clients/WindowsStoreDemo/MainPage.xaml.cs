@@ -76,7 +76,7 @@ namespace WindowsStoreDemo
                   //   }
                }
          };
-         var result = barcodeReader.Decode(writeableBmp);
+         var result = barcodeReader.DecodeBitmap(writeableBmp);
 
          if (result != null)
          {

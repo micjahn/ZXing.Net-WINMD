@@ -24,7 +24,7 @@ namespace ZXing.OneD
    /// This object renders a UPC-A code as a <see cref="BitMatrix"/>.
    /// <author>qwandor@google.com (Andrew Walbran)</author>
    /// </summary>
-   public sealed class UPCAWriter : Writer
+   internal sealed class UPCAWriter : Writer
    {
       private readonly EAN13Writer subWriter = new EAN13Writer();
 
@@ -63,32 +63,8 @@ namespace ZXing.OneD
          {
             throw new ArgumentException("Can only encode UPC-A, but got " + format);
          }
-         return subWriter.encode(preencode(contents), BarcodeFormat.EAN_13, width, height, hints);
-      }
-
-      /// <summary>
-      /// Transform a UPC-A code into the equivalent EAN-13 code, and add a check digit if it is not
-      /// already present.
-      /// </summary>
-      private static String preencode(String contents)
-      {
-         int length = contents.Length;
-         if (length == 11)
-         {
-            // No check digit present, calculate it and add it
-            int sum = 0;
-            for (int i = 0; i < 11; ++i)
-            {
-               sum += (contents[i] - '0') * (i % 2 == 0 ? 3 : 1);
-            }
-            contents += (1000 - sum) % 10;
-         }
-         else if (length != 12)
-         {
-            throw new ArgumentException(
-                "Requested contents should be 11 or 12 digits long, but got " + contents.Length);
-         }
-         return '0' + contents;
+         // Transform a UPC-A code into the equivalent EAN-13 code and write it that way
+         return subWriter.encode('0' + contents, BarcodeFormat.EAN_13, width, height, hints); 
       }
    }
 }

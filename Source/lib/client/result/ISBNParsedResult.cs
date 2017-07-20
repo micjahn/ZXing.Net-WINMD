@@ -18,6 +18,9 @@ using System;
 
 namespace ZXing.Client.Result
 {
+   /// <summary>
+   /// Represents a parsed result that encodes a product ISBN number.
+   /// </summary>
    /// <author>jbreiden@google.com (Jeff Breidenbach)</author>
    internal sealed class ISBNParsedResult : ParsedResult
    {
@@ -28,6 +31,9 @@ namespace ZXing.Client.Result
          displayResultValue = isbn;
       }
 
+      /// <summary>
+      /// the ISBN number
+      /// </summary>
       public String ISBN { get; private set; }
    }
 }

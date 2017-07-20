@@ -27,11 +27,14 @@ namespace ZXing
    /// <summary>
    /// A smart class to decode the barcode inside a bitmap object
    /// </summary>
-   public sealed class BarcodeReader : IBarcodeReader // , IMultipleBarcodeReader
+   public sealed class BarcodeReader : IBarcodeReader
    {
       private static readonly Func<LuminanceSource, Binarizer> defaultCreateBinarizer =
          (luminanceSource) => new HybridBinarizer(luminanceSource);
 
+      /// <summary>
+      /// represents the default function which is called to get a <see cref="RGBLuminanceSource"/> instance from a raw byte array
+      /// </summary>
       private static readonly Func<byte[], int, int, BitmapFormat, LuminanceSource> defaultCreateRGBLuminanceSource =
          (rawBytes, width, height, format) => new RGBLuminanceSource(rawBytes, width, height, format);
       private static readonly Func<WriteableBitmap, LuminanceSource> defaultCreateLuminanceSource =
@@ -52,8 +55,28 @@ namespace ZXing
       /// </value>
       public DecodingOptions Options
       {
-         get { return options ?? (options = new DecodingOptions()); }
-         set { options = value; }
+         get
+         {
+            if (options == null)
+            {
+               options = new DecodingOptions();
+               options.ValueChanged += (o, args) => usePreviousState = false;
+            }
+            return options;
+         }
+         set
+         {
+            if (value != null)
+            {
+               options = value;
+               options.ValueChanged += (o, args) => usePreviousState = false;
+            }
+            else
+            {
+               options = null;
+            }
+            usePreviousState = false;
+         }
       }
 
       /// <summary>
@@ -109,59 +132,6 @@ namespace ZXing
       /// event is executed if a result was found via decode
       /// </summary>
       public event EventHandler<Result> ResultFound;
-
-      /// <summary>
-      /// Gets or sets a flag which cause a deeper look into the bitmap
-      /// </summary>
-      /// <value>
-      ///   <c>true</c> if [try harder]; otherwise, <c>false</c>.
-      /// </value>
-      [Obsolete("Please use the Options.TryHarder property instead.")]
-      public bool TryHarder
-      {
-         get { return Options.TryHarder; }
-         set { Options.TryHarder = value; }
-      }
-
-      /// <summary>
-      /// Image is a pure monochrome image of a barcode.
-      /// </summary>
-      /// <value>
-      ///   <c>true</c> if monochrome image of a barcode; otherwise, <c>false</c>.
-      /// </value>
-      [Obsolete("Please use the Options.PureBarcode property instead.")]
-      public bool PureBarcode
-      {
-         get { return Options.PureBarcode; }
-         set { Options.PureBarcode = value; }
-      }
-
-      /// <summary>
-      /// Specifies what character encoding to use when decoding, where applicable (type String)
-      /// </summary>
-      /// <value>
-      /// The character set.
-      /// </value>
-      [Obsolete("Please use the Options.CharacterSet property instead.")]
-      public string CharacterSet
-      {
-         get { return Options.CharacterSet; }
-         set { Options.CharacterSet = value; }
-      }
-
-      /// <summary>
-      /// Image is known to be of one of a few possible formats.
-      /// Maps to a {@link java.util.List} of {@link BarcodeFormat}s.
-      /// </summary>
-      /// <value>
-      /// The possible formats.
-      /// </value>
-      [Obsolete("Please use the Options.PossibleFormats property instead.")]
-      public BarcodeFormat[] PossibleFormats
-      {
-         get { return Options.PossibleFormats; }
-         set { Options.PossibleFormats = value; }
-      }
 
       /// <summary>
       /// Gets or sets a value indicating whether the image should be automatically rotated.
@@ -258,7 +228,6 @@ namespace ZXing
          this.createLuminanceSource = createLuminanceSource ?? defaultCreateLuminanceSource;
          this.createBinarizer = createBinarizer ?? defaultCreateBinarizer;
          this.createRGBLuminanceSource = createRGBLuminanceSource ?? defaultCreateRGBLuminanceSource;
-         Options.ValueChanged += (o, args) => usePreviousState = false;
          usePreviousState = false;
       }
 
@@ -267,7 +236,7 @@ namespace ZXing
       /// </summary>
       /// <param name="barcodeBitmap">The barcode bitmap.</param>
       /// <returns>the result data or null</returns>
-      public Result Decode(WriteableBitmap barcodeBitmap)
+      public Result DecodeBitmap(WriteableBitmap barcodeBitmap)
       {
          if (CreateLuminanceSource == null)
          {
@@ -375,7 +344,7 @@ namespace ZXing
       /// </summary>
       /// <param name="barcodeBitmap">The barcode bitmap.</param>
       /// <returns>the result data or null</returns>
-      public Result[] DecodeMultiple(WriteableBitmap barcodeBitmap)
+      public Result[] DecodeMultipleBitmap(WriteableBitmap barcodeBitmap)
       {
          if (CreateLuminanceSource == null)
          {
@@ -472,6 +441,10 @@ namespace ZXing
          return results;
       }
 
+      /// <summary>
+      /// raises the ResultFound event
+      /// </summary>
+      /// <param name="results"></param>
       private void OnResultsFound(IEnumerable<Result> results)
       {
          if (ResultFound != null)
@@ -483,6 +456,10 @@ namespace ZXing
          }
       }
 
+      /// <summary>
+      /// raises the ResultFound event
+      /// </summary>
+      /// <param name="result"></param>
       private void OnResultFound(Result result)
       {
          if (ResultFound != null)
@@ -491,6 +468,10 @@ namespace ZXing
          }
       }
 
+      /// <summary>
+      /// calls the explicitResultPointFound action
+      /// </summary>
+      /// <param name="resultPoint"></param>
       private void OnResultPointFound(ResultPoint resultPoint)
       {
          if (explicitResultPointFound != null)

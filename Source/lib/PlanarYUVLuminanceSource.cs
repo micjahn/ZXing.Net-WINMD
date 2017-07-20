@@ -152,7 +152,7 @@ namespace ZXing
             for (int y = 0; y < height; y++)
             {
                int outputOffset = y * width;
-               Array.Copy(yuv, inputOffset, matrix, outputOffset, width);
+               Array.Copy(yuvData, inputOffset, matrix, outputOffset, width);
                inputOffset += dataWidth;
             }
             return matrix;
@@ -252,6 +252,13 @@ namespace ZXing
          }
       }
 
+      /// <summary>
+      /// creates a new instance
+      /// </summary>
+      /// <param name="newLuminances"></param>
+      /// <param name="width"></param>
+      /// <param name="height"></param>
+      /// <returns></returns>
       protected override LuminanceSource CreateLuminanceSource(byte[] newLuminances, int width, int height)
       {
          return new PlanarYUVLuminanceSource(newLuminances, width, height);

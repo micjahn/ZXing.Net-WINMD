@@ -43,10 +43,12 @@ namespace ZXing
          formatMap = new Dictionary<BarcodeFormat, Func<Writer>>
                         {
                            {BarcodeFormat.EAN_8, () => new EAN8Writer()},
+                           {BarcodeFormat.UPC_E, () => new UPCEWriter()},
                            {BarcodeFormat.EAN_13, () => new EAN13Writer()},
                            {BarcodeFormat.UPC_A, () => new UPCAWriter()},
                            {BarcodeFormat.QR_CODE, () => new QRCodeWriter()},
                            {BarcodeFormat.CODE_39, () => new Code39Writer()},
+                           {BarcodeFormat.CODE_93, () => new Code93Writer()},
                            {BarcodeFormat.CODE_128, () => new Code128Writer()},
                            {BarcodeFormat.ITF, () => new ITFWriter()},
                            {BarcodeFormat.PDF_417, () => new PDF417Writer()},
@@ -66,11 +68,28 @@ namespace ZXing
          get { return formatMap.Keys; }
       }
 
+      /// <summary>
+      /// encode the given data
+      /// </summary>
+      /// <param name="contents"></param>
+      /// <param name="format"></param>
+      /// <param name="width"></param>
+      /// <param name="height"></param>
+      /// <returns></returns>
       public BitMatrix encode(String contents, BarcodeFormat format, int width, int height)
       {
          return encode(contents, format, width, height, null);
       }
 
+      /// <summary>
+      /// encode the given data
+      /// </summary>
+      /// <param name="contents"></param>
+      /// <param name="format"></param>
+      /// <param name="width"></param>
+      /// <param name="height"></param>
+      /// <param name="hints"></param>
+      /// <returns></returns>
       public BitMatrix encode(String contents, BarcodeFormat format, int width, int height, IDictionary<EncodeHintType, object> hints)
       {
          if (!formatMap.ContainsKey(format))
