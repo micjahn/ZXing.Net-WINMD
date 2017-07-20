@@ -24,7 +24,7 @@ namespace ZXing.OneD
    /// This object renders a UPC-A code as a <see cref="BitMatrix"/>.
    /// <author>qwandor@google.com (Andrew Walbran)</author>
    /// </summary>
-   public sealed class UPCAWriter : Writer
+   internal sealed class UPCAWriter : Writer
    {
       private readonly EAN13Writer subWriter = new EAN13Writer();
 

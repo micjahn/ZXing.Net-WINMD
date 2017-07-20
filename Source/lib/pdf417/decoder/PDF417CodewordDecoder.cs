@@ -29,7 +29,7 @@ namespace ZXing.PDF417.Internal
       private static readonly float[][] RATIOS_TABLE; // = new float[PDF417Common.SYMBOL_TABLE.Length][PDF417Common.BARS_IN_MODULE];
 
       /// <summary>
-      /// Initializes the <see cref="ZXing.PDF417.Internal.PDF417CodewordDecoder"/> class & Pre-computes the symbol ratio table.
+      /// Initializes the <see cref="ZXing.PDF417.Internal.PDF417CodewordDecoder"/> class &amp; Pre-computes the symbol ratio table.
       /// </summary>
       static PDF417CodewordDecoder()
       {
@@ -139,9 +139,12 @@ namespace ZXing.PDF417.Internal
       {
          int bitCountSum = ZXing.Common.Detector.MathUtils.sum(moduleBitCount);
          float[] bitCountRatios = new float[PDF417Common.BARS_IN_MODULE];
-         for (int i = 0; i < bitCountRatios.Length; i++)
+         if (bitCountSum > 1)
          {
-            bitCountRatios[i] = moduleBitCount[i]/(float) bitCountSum;
+            for (int i = 0; i < bitCountRatios.Length; i++)
+            {
+               bitCountRatios[i] = moduleBitCount[i] / (float)bitCountSum;
+            }
          }
          float bestMatchError = float.MaxValue;
          int bestMatch = PDF417Common.INVALID_CODEWORD;
