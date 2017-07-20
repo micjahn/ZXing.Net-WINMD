@@ -21,7 +21,7 @@ namespace ZXing.Datamatrix.Encoder
    /// <summary>
    /// Symbol Character Placement Program. Adapted from Annex M.1 in ISO/IEC 16022:2000(E).
    /// </summary>
-   public sealed class DefaultPlacement
+   internal sealed class DefaultPlacement
    {
       private readonly String codewords;
       private readonly int numrows;
