@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Generic;
 
 using ZXing.Common;
@@ -92,7 +93,7 @@ namespace ZXing.Aztec
             }
          }
 
-         var result = new Result(decoderResult.Text, decoderResult.RawBytes, decoderResult.NumBits, points, BarcodeFormat.AZTEC);
+         var result = new Result(decoderResult.Text, decoderResult.RawBytes, decoderResult.NumBits, points, BarcodeFormat.AZTEC, DateTime.Now.Ticks);
 
          IList<byte[]> byteSegments = decoderResult.ByteSegments;
          if (byteSegments != null)
