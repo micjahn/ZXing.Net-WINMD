@@ -14,35 +14,31 @@
  * limitations under the License.
  */
 
-using Windows.UI.Xaml.Media.Imaging;
-
 namespace ZXing.Rendering
 {
-   public sealed class PixelData
+   /// <summary>
+   /// represents the generated code as a byte array with pixel data (4 byte per pixel, BGRA)
+   /// </summary>
+   public sealed partial class PixelData
    {
-      internal PixelData(int width, int heigth, byte[] pixel)
+      internal PixelData(int width, int height, byte[] pixels)
       {
-         Heigth = heigth;
+         Height = height;
          Width = width;
-         Pixel = pixel;
+         Pixels = pixels;
       }
 
-      public byte[] Pixel { get; private set; }
+      /// <summary>
+      /// the generated code as byte array of BGRA pixels
+      /// </summary>
+      public byte[] Pixels { get; private set; }
+      /// <summary>
+      /// the width of the image
+      /// </summary>
       public int Width { get; private set; }
-      public int Heigth { get; private set; }
-
-      public object ToBitmap()
-      {
-         var bmp = new WriteableBitmap(Width, Heigth);
-
-         // Copy data back
-         using (var stream = System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBufferExtensions.AsStream(bmp.PixelBuffer))
-         {
-            stream.Write(Pixel, 0, Pixel.Length);
-         }
-         bmp.Invalidate();
-
-         return bmp;
-      }
+      /// <summary>
+      /// the height of the image
+      /// </summary>
+      public int Height { get; private set; }
    }
 }

@@ -15,12 +15,20 @@
  */
 
 using System;
-using System.Windows;
-#if NETFX_CORE
+#if UNITY
+using UnityEngine;
+using Color = UnityEngine.Color32;
+#elif MONOANDROID
+using Android.Graphics;
+#elif (PORTABLE || NETSTANDARD)
+#elif (NET47 || NET46 || NET45 || NET40 || NET35 || NET20 || WindowsCE)
+using System.Drawing;
+#elif NETFX_CORE
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 #else
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 #endif
@@ -35,12 +43,57 @@ namespace ZXing.Rendering
    /// </summary>
    public sealed class PixelDataRenderer : IBarcodeRenderer
    {
+#if (PORTABLE || NETSTANDARD)
+      /// <summary>
+      /// represents a color defined as ARGB byte data
+      /// </summary>
+      public struct Color
+      {
+         /// <summary>
+         /// the color black
+         /// </summary>
+         public static Color Black = new Color(0);
+         /// <summary>
+         /// the color white
+         /// </summary>
+         public static Color White = new Color(0x00FFFFFF);
+
+         /// <summary>
+         /// value of the alpha channel
+         /// </summary>
+         public byte A;
+         /// <summary>
+         /// value of the red channel
+         /// </summary>
+         public byte R;
+         /// <summary>
+         /// value of the green channel
+         /// </summary>
+         public byte G;
+         /// <summary>
+         /// value of the blue channel
+         /// </summary>
+         public byte B;
+
+         /// <summary>
+         /// Initializes a new instance of the <see cref="Color"/> struct.
+         /// </summary>
+         public Color(int color)
+         {
+            A = (byte)((color & 0xFF000000) >> 24);
+            R = (byte)((color & 0x00FF0000) >> 16);
+            G = (byte)((color & 0x0000FF00) >> 8);
+            B = (byte)((color & 0x000000FF));
+         }
+      }
+#endif
       /// <summary>
       /// Gets or sets the foreground color.
       /// </summary>
       /// <value>
       /// The foreground color.
       /// </value>
+      [System.CLSCompliant(false)]
       public Color Foreground { get; set; }
       /// <summary>
       /// Gets or sets the background color.
@@ -48,61 +101,23 @@ namespace ZXing.Rendering
       /// <value>
       /// The background color.
       /// </value>
+      [System.CLSCompliant(false)]
       public Color Background { get; set; }
-      /// <summary>
-      /// Gets or sets the font family.
-      /// </summary>
-      /// <value>
-      /// The font family.
-      /// </value>
-      public FontFamily FontFamily { get; set; }
-      /// <summary>
-      /// Gets or sets the size of the font.
-      /// </summary>
-      /// <value>
-      /// The size of the font.
-      /// </value>
-      public double FontSize { get; set; }
-
-#if !NETFX_CORE
-      /// <summary>
-      /// Gets or sets the font stretch.
-      /// </summary>
-      /// <value>
-      /// The font stretch.
-      /// </value>
-      public FontStretch FontStretch { get; set; }
-      /// <summary>
-      /// Gets or sets the font style.
-      /// </summary>
-      /// <value>
-      /// The font style.
-      /// </value>
-      public FontStyle FontStyle { get; set; }
-      /// <summary>
-      /// Gets or sets the font weight.
-      /// </summary>
-      /// <value>
-      /// The font weight.
-      /// </value>
-      public FontWeight FontWeight { get; set; }
-#endif
-
-      private static readonly FontFamily DefaultFontFamily = null;
 
       /// <summary>
       /// Initializes a new instance of the <see cref="PixelDataRenderer"/> class.
       /// </summary>
       public PixelDataRenderer()
       {
+#if UNITY
+         Foreground = UnityEngine.Color.black;
+         Background = UnityEngine.Color.white;
+#elif (NET47 || NET46 || NET45 || NET40 || NET35 || NET20 || WindowsCE || PORTABLE || NETSTANDARD || MONOANDROID)
+         Foreground = Color.Black;
+         Background = Color.White;
+#else
          Foreground = Colors.Black;
          Background = Colors.White;
-         FontFamily = DefaultFontFamily;
-         FontSize = 10.0;
-#if !NETFX_CORE
-         FontStretch = FontStretches.Normal;
-         FontStyle = FontStyles.Normal;
-         FontWeight = FontWeights.Normal;
 #endif
       }
 
@@ -173,18 +188,32 @@ namespace ZXing.Rendering
                   var color = matrix[x, y] ? Foreground : Background;
                   for (var pixelsizeWidth = 0; pixelsizeWidth < pixelsize; pixelsizeWidth++)
                   {
+#if UNITY
                      pixels[index++] = color.B;
                      pixels[index++] = color.G;
                      pixels[index++] = color.R;
                      pixels[index++] = color.A;
+#else
+                     pixels[index++] = color.B;
+                     pixels[index++] = color.G;
+                     pixels[index++] = color.R;
+                     pixels[index++] = color.A;
+#endif
                   }
                }
                for (var x = pixelsize * matrix.Width; x < width; x++)
                {
+#if UNITY
+                  pixels[index++] = Background.b;
+                  pixels[index++] = Background.g;
+                  pixels[index++] = Background.r;
+                  pixels[index++] = Background.a;
+#else
                   pixels[index++] = Background.B;
                   pixels[index++] = Background.G;
                   pixels[index++] = Background.R;
                   pixels[index++] = Background.A;
+#endif
                }
             }
          }
@@ -192,10 +221,17 @@ namespace ZXing.Rendering
          {
             for (var x = 0; x < width; x++)
             {
+#if UNITY
+               pixels[index++] = Background.b;
+               pixels[index++] = Background.g;
+               pixels[index++] = Background.r;
+               pixels[index++] = Background.a;
+#else
                pixels[index++] = Background.B;
                pixels[index++] = Background.G;
                pixels[index++] = Background.R;
                pixels[index++] = Background.A;
+#endif
             }
          }
 

@@ -25,7 +25,7 @@ using Windows.UI;
 using System.Windows.Media;
 #elif UNITY
 using UnityEngine;
-#elif !PORTABLE
+#elif !(PORTABLE || NETSTANDARD)
 using System.Drawing;
 #endif
 
@@ -39,23 +39,58 @@ namespace ZXing.Rendering
    public sealed class SvgRenderer : IBarcodeRendererSvg
    {
 #if !UNITY
-#if PORTABLE
+#if (PORTABLE || NETSTANDARD)
+      /// <summary>
+      /// represents a color value
+      /// </summary>
       public struct Color
       {
-         public static Color Black = new Color(0);
-         public static Color White = new Color(0x00FFFFFF);
+         /// <summary>
+         /// color black
+         /// </summary>
+         public static Color Black = new Color(255, 0, 0, 0);
+         /// <summary>
+         /// color white
+         /// </summary>
+         public static Color White = new Color(255, 255, 255, 255);
 
+         /// <summary>
+         /// alpha channel
+         /// </summary>
          public byte A;
+         /// <summary>
+         /// red channel
+         /// </summary>
          public byte R;
+         /// <summary>
+         /// green channel
+         /// </summary>
          public byte G;
+         /// <summary>
+         /// blur channel
+         /// </summary>
          public byte B;
 
+         /// <summary>
+         /// initializing constructor
+         /// </summary>
          public Color(int color)
          {
             A = (byte)((color & 0xFF000000) >> 24);
             R = (byte)((color & 0x00FF0000) >> 16);
             G = (byte)((color & 0x0000FF00) >> 8);
             B = (byte)((color & 0x000000FF));
+         }
+
+         /// <summary>
+         /// initializing constructor
+         /// </summary>
+         public Color(byte alpha, byte red, byte green, byte blue)
+         {
+            A = alpha;
+            R = red;
+            G = green;
+            B = blue;
          }
       }
 #endif
@@ -125,7 +160,7 @@ namespace ZXing.Rendering
       /// <returns></returns>
       public SvgImage Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
       {
-         var result = new SvgImage();
+         var result = new SvgImage(matrix.Width, matrix.Height);
 
          Create(result, matrix, format, content, options);
 

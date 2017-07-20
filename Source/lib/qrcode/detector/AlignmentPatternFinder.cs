@@ -64,6 +64,7 @@ namespace ZXing.QrCode.Internal
       /// </param>
       /// <param name="moduleSize">estimated module size so far
       /// </param>
+      /// <param name="resultPointCallback">callback function which is called, when a result point is found</param>
       internal AlignmentPatternFinder(BitMatrix image, int startX, int startY, int width, int height, float moduleSize, ResultPointCallback resultPointCallback)
       {
          this.image = image;
@@ -81,8 +82,7 @@ namespace ZXing.QrCode.Internal
       /// it's pretty performance-critical and so is written to be fast foremost.</p>
       /// 
       /// </summary>
-      /// <returns> {@link AlignmentPattern} if found
-      /// </returns>
+      /// <returns><see cref="AlignmentPattern"/> if found</returns>
       internal AlignmentPattern find()
       {
          int startX = this.startX;
@@ -315,7 +315,7 @@ namespace ZXing.QrCode.Internal
             possibleCenters.Add(point);
             if (resultPointCallback != null)
             {
-               resultPointCallback(new ResultPoint(point.X, point.Y));
+               resultPointCallback(point);
             }
          }
          return null;

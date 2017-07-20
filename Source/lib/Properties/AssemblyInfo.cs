@@ -19,6 +19,15 @@ using System.Runtime.InteropServices;
 #if NET40
 [assembly: AssemblyTitle("zxing.net for .net 4.0")]
 #endif
+#if NET45
+[assembly: AssemblyTitle("zxing.net for .net 4.5")]
+#endif
+#if NET46
+[assembly: AssemblyTitle("zxing.net for .net 4.6")]
+#endif
+#if NET47
+[assembly: AssemblyTitle("zxing.net for .net 4.7")]
+#endif
 #if SILVERLIGHT4
 [assembly: AssemblyTitle("zxing.net for silverlight 4")]
 #endif
@@ -43,16 +52,22 @@ using System.Runtime.InteropServices;
 #if MONOTOUCH
 [assembly: AssemblyTitle("zxing.net for mono touch")]
 #endif
+#if WINDOWS_UWP
+[assembly: AssemblyTitle("zxing.net for windows uwp")]
+#endif
+#if NETSTANDARD
+[assembly: AssemblyTitle("zxing.net for .net core standard")]
+#endif
 #if NETFX_CORE
 [assembly: AssemblyTitle("zxing.net for windows rt")]
 #endif
-[assembly: AssemblyDescription("port of the java based barcode scanning library for .net (java zxing 27.02.2017 19:21:59)")]
+[assembly: AssemblyDescription("port of the java based barcode scanning library for .net (java zxing 06.04.2017 15:31:14)")]
 [assembly: AssemblyCompany("ZXing.Net Development")]
 [assembly: AssemblyProduct("ZXing.Net")]
 [assembly: AssemblyCopyright("Copyright © 2012-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-#if !PORTABLE
+#if !PORTABLE && !NETSTANDARD1_0
 [assembly: Guid("ECE3AB74-9DD1-4CFB-9D48-FCBFB30E06D6")]
 #endif
 
@@ -66,9 +81,9 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("0.15.0.0")]
+[assembly: AssemblyVersion("0.16.0.0")]
 #if !WindowsCE
-[assembly: AssemblyFileVersion("0.15.0.0")]
+[assembly: AssemblyFileVersion("0.16.0.0")]
 #endif
 
 [assembly: CLSCompliant(true)]

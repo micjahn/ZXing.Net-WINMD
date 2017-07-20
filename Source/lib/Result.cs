@@ -77,15 +77,15 @@ namespace ZXing
       /// </summary>
       /// <param name="text">The text.</param>
       /// <param name="rawBytes">The raw bytes.</param>
-      /// <param name="numBits"></param>
       /// <param name="resultPoints">The result points.</param>
       /// <param name="format">The format.</param>
+      /// <param name="timestamp">The timestamp.</param>
       public Result(String text,
-                    [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawBytes,
-                    int numBits,
-                    [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] ResultPoint[] resultPoints,
-                    BarcodeFormat format)
-         : this(text, rawBytes, numBits, resultPoints, format, DateTime.Now.Ticks)
+         [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawBytes, 
+         [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] ResultPoint[] resultPoints, 
+         BarcodeFormat format,
+         long timestamp)
+         : this(text, rawBytes, rawBytes == null ? 0 : 8 * rawBytes.Length, resultPoints, format, timestamp)
       {
       }
 
@@ -98,7 +98,7 @@ namespace ZXing
       /// <param name="resultPoints">The result points.</param>
       /// <param name="format">The format.</param>
       /// <param name="timestamp">The timestamp.</param>
-      public Result(String text, [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawBytes, int numBits, [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] ResultPoint[] resultPoints, BarcodeFormat format, long timestamp)
+      public Result(String text, [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawBytes, int numBits, [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]  ResultPoint[] resultPoints, BarcodeFormat format, long timestamp)
       {
          if (text == null && rawBytes == null)
          {

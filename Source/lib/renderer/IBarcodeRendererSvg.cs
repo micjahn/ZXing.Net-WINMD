@@ -68,11 +68,31 @@ namespace ZXing.Rendering
       }
 
       /// <summary>
+      /// The original height of the bitmatrix for the barcode
+      /// </summary>
+      public int Height { get; set; }
+
+      /// <summary>
+      /// The original width of the bitmatrix for the barcode
+      /// </summary>
+      public int Width { get; set; }
+
+      /// <summary>
       /// Initializes a new instance of the <see cref="SvgImage"/> class.
       /// </summary>
       public SvgImage()
       {
          content = new StringBuilder();
+      }
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="SvgImage"/> class.
+      /// </summary>
+      public SvgImage(int width, int height)
+      {
+         content = new StringBuilder();
+         Width = width;
+         Height = height;
       }
 
       /// <summary>
@@ -108,7 +128,7 @@ namespace ZXing.Rendering
       {
 
          if (displaysizeX <= 0 || displaysizeY <= 0)
-            content.Append(string.Format("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"0 0 {0} {1}\" viewport-fill=\"rgb({2})\" viewport-fill-opacity=\"{3}\" fill=\"rgb({4})\" fill-opacity=\"{5}\" {6}>",
+            content.Append(string.Format("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" shape-rendering=\"crispEdges\" viewBox=\"0 0 {0} {1}\" viewport-fill=\"rgb({2})\" viewport-fill-opacity=\"{3}\" fill=\"rgb({4})\" fill-opacity=\"{5}\" {6}>",
                 viewboxSizeX,
                 viewboxSizeY,
                 GetColorRgb(background),
@@ -118,7 +138,7 @@ namespace ZXing.Rendering
                 GetBackgroundStyle(background)
                 ));
          else
-            content.Append(string.Format("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"0 0 {0} {1}\" viewport-fill=\"rgb({2})\" viewport-fill-opacity=\"{3}\" fill=\"rgb({4})\" fill-opacity=\"{5}\" {6} width=\"{7}\" height=\"{8}\">",
+            content.Append(string.Format("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" shape-rendering=\"crispEdges\" viewBox=\"0 0 {0} {1}\" viewport-fill=\"rgb({2})\" viewport-fill-opacity=\"{3}\" fill=\"rgb({4})\" fill-opacity=\"{5}\" {6} width=\"{7}\" height=\"{8}\">",
                 viewboxSizeX,
                 viewboxSizeY,
                 GetColorRgb(background),
