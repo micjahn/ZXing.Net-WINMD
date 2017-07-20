@@ -100,7 +100,7 @@ void WindowsStoreCppDemo::MainPage::btnDecode_Click(Platform::Object^ sender, Wi
    possibleFormats[0] = BarcodeFormat::QR_CODE;
    barcodeReader->Options->PossibleFormats = possibleFormats;
    
-   Result^ result = barcodeReader->Decode(this->lastBitmap);
+   Result^ result = barcodeReader->DecodeBitmap(this->lastBitmap);
    if (result != nullptr)
    {
       txtDecodedText->Text = result->Text;
