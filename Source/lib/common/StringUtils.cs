@@ -27,8 +27,18 @@ namespace ZXing.Common
    /// <author>Alex Dupre</author>
    internal static class StringUtils
    {
-      private static String PLATFORM_DEFAULT_ENCODING = "UTF-8";
+#if (WINDOWS_PHONE || SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE || NETSTANDARD)
+      private const String PLATFORM_DEFAULT_ENCODING = "UTF-8";
+#else
+      private static String PLATFORM_DEFAULT_ENCODING = Encoding.Default.WebName;
+#endif
+      /// <summary>
+      /// SJIS
+      /// </summary>
       public static String SHIFT_JIS = "SJIS";
+      /// <summary>
+      /// GB2312
+      /// </summary>
       public static String GB2312 = "GB2312";
       private const String EUC_JP = "EUC-JP";
       private const String UTF8 = "UTF-8";

@@ -27,6 +27,9 @@ namespace ZXing.Common
       private int[] bits;
       private int size;
 
+      /// <summary>
+      /// size of the array, number of elements
+      /// </summary>
       public int Size
       {
          get
@@ -35,6 +38,9 @@ namespace ZXing.Common
          }
       }
 
+      /// <summary>
+      /// size of the array in bytes
+      /// </summary>
       public int SizeInBytes
       {
          get
@@ -43,11 +49,21 @@ namespace ZXing.Common
          }
       }
 
+      /// <summary>
+      /// index accessor
+      /// </summary>
+      /// <param name="i"></param>
+      /// <returns></returns>
       public bool get(int i)
       {
          return this[i];
       }
 
+      /// <summary>
+      /// index accessor
+      /// </summary>
+      /// <param name="i"></param>
+      /// <returns></returns>
       internal bool this[int i]
       {
          get
@@ -61,12 +77,19 @@ namespace ZXing.Common
          }
       }
 
+      /// <summary>
+      /// default constructor
+      /// </summary>
       public BitArray()
       {
          this.size = 0;
          this.bits = new int[1];
       }
 
+      /// <summary>
+      /// initializing constructor
+      /// </summary>
+      /// <param name="size">desired size of the array</param>
       public BitArray(int size)
       {
          if (size < 1)
@@ -94,8 +117,8 @@ namespace ZXing.Common
          }
       }
 
-      /// <summary> Flips bit i.
-      /// 
+      /// <summary>
+      /// Flips bit i.
       /// </summary>
       /// <param name="i">bit to set
       /// </param>
@@ -233,9 +256,8 @@ namespace ZXing.Common
       /// </param>
       /// <param name="value">if true, checks that bits in range are set, otherwise checks that they are not set
       /// </param>
-      /// <returns> true iff all bits are set or not set in range, according to value argument
-      /// </returns>
-      /// <throws>  IllegalArgumentException if end is less than start or the range is not contained in the array</throws>
+      /// <returns> true iff all bits are set or not set in range, according to value argument</returns>
+      /// <throws><exception cref="ArgumentException" /> if end is less than start or the range is not contained in the array</throws>
       public bool isRange(int start, int end, bool val)
       {
          if (end < start || start < 0 || end > size)
@@ -308,6 +330,10 @@ namespace ZXing.Common
          }
       }
 
+      /// <summary>
+      /// adds the array to the end
+      /// </summary>
+      /// <param name="other"></param>
       public void appendBitArray(BitArray other)
       {
          int otherSize = other.size;
@@ -318,6 +344,10 @@ namespace ZXing.Common
          }
       }
 
+      /// <summary>
+      /// XOR operation
+      /// </summary>
+      /// <param name="other"></param>
       public void xor(BitArray other)
       {
          if (size != other.size)
@@ -333,7 +363,7 @@ namespace ZXing.Common
       }
 
       /// <summary>
-      /// Toes the bytes.
+      /// converts to bytes.
       /// </summary>
       /// <param name="bitOffset">first bit to start writing</param>
       /// <param name="array">array to write into. Bytes are written most-significant byte first. This is the opposite

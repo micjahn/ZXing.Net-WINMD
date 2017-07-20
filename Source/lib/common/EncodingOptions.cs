@@ -34,7 +34,9 @@ namespace ZXing.Common
       /// <summary>
       /// Gets the data container for all options
       /// </summary>
+#if !UNITY
       [Browsable(false)]
+#endif
       public IDictionary<EncodeHintType, object> Hints { get; private set; }
 
       /// <summary>
