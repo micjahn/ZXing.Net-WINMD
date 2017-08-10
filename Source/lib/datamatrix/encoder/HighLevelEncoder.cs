@@ -206,13 +206,11 @@ namespace ZXing.Datamatrix.Encoder
          int len = context.Codewords.Length;
          context.updateSymbolInfo();
          int capacity = context.SymbolInfo.dataCapacity;
-         if (len < capacity)
+         if (len < capacity &&
+             encodingMode != (int)Encodation.ASCII &&
+             encodingMode != (int)Encodation.BASE256)
          {
-            if (encodingMode != (int)Encodation.ASCII && encodingMode != (int)Encodation.BASE256)
-            {
-               context.writeCodeword('\u00fe'); //Unlatch (254)
-            }
-         }
+            context.writeCodeword('\u00fe'); //Unlatch (254)
          //Padding
          StringBuilder codewords = context.Codewords;
          if (codewords.Length < capacity)
