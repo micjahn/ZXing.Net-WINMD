@@ -150,6 +150,13 @@ namespace ZXing.Rendering
                 displaysizeY));
       }
 
+      internal void AddText(string text, string fontName, int fontSize)
+      {
+         content.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+            "<text x=\"50%\" y=\"98%\" style=\"font-family: {0}; font-size: {1}px\" text-anchor=\"middle\">{2}</text>",
+            fontName, fontSize, text);
+      }
+
       internal void AddRec(int posX, int posY, int width, int height)
       {
          content.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "<rect x=\"{0}\" y=\"{1}\" width=\"{2}\" height=\"{3}\"/>", posX, posY, width, height);
