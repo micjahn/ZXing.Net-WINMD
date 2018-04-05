@@ -322,6 +322,7 @@
     <Compile Include="pdf417\encoder\Compaction.cs" />
     <Compile Include="pdf417\encoder\Dimensions.cs" />
     <Compile Include="pdf417\encoder\PDF417.cs" />
+    <Compile Include="pdf417\encoder\PDF417AspectRatio.cs" />
     <Compile Include="pdf417\encoder\PDF417EncodingOptions.cs" />
     <Compile Include="pdf417\encoder\PDF417ErrorCorrection.cs" />
     <Compile Include="pdf417\encoder\PDF417HighLevelEncoder.cs" />

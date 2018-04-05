@@ -29,7 +29,7 @@ namespace ZXing.Client.Result
    /// <author>Sean Owen</author>
    sealed class VCardResultParser : ResultParser
    {
-#if SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE || NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2
+#if SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE || UNITY || NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2
       private static readonly Regex BEGIN_VCARD = new Regex("BEGIN:VCARD", RegexOptions.IgnoreCase);
       private static readonly Regex VCARD_LIKE_DATE = new Regex(@"\A(?:" + "\\d{4}-?\\d{2}-?\\d{2}" + @")\z");
       private static readonly Regex CR_LF_SPACE_TAB = new Regex("\r\n[ \t]");
@@ -140,6 +140,7 @@ namespace ZXing.Client.Result
             List<String> metadata = null;
             bool quotedPrintable = false;
             String quotedPrintableCharset = null;
+            String valueType = null;
             if (metadataString != null)
             {
                foreach (String metadatum in SEMICOLON.Split(metadataString))
@@ -155,13 +156,17 @@ namespace ZXing.Client.Result
                      String key = metadatumTokens[0];
                      String value = metadatumTokens[1];
                      if (String.Compare("ENCODING", key, StringComparison.OrdinalIgnoreCase) == 0 &&
-                        String.Compare("QUOTED-PRINTABLE", value, StringComparison.OrdinalIgnoreCase) == 0)
+                         String.Compare("QUOTED-PRINTABLE", value, StringComparison.OrdinalIgnoreCase) == 0)
                      {
                         quotedPrintable = true;
                      }
                      else if (String.Compare("CHARSET", key, StringComparison.OrdinalIgnoreCase) == 0)
                      {
                         quotedPrintableCharset = value;
+                     }
+                     else if (String.Compare("VALUE", key, StringComparison.OrdinalIgnoreCase) == 0)
+                     {
+                        valueType = value;
                      }
                   }
                }
@@ -170,14 +175,15 @@ namespace ZXing.Client.Result
             int matchStart = i; // Found the start of a match here
 
             while ((i = rawText.IndexOf('\n', i)) >= 0)
-            { // Really, end in \r\n
-               if (i < rawText.Length - 1 &&           // But if followed by tab or space,
-                   (rawText[i + 1] == ' ' ||        // this is only a continuation
+            {
+               // Really, end in \r\n
+               if (i < rawText.Length - 1 && // But if followed by tab or space,
+                   (rawText[i + 1] == ' ' || // this is only a continuation
                     rawText[i + 1] == '\t'))
                {
                   i += 2; // Skip \n and continutation whitespace
                }
-               else if (quotedPrintable &&             // If preceded by = in quoted printable
+               else if (quotedPrintable && // If preceded by = in quoted printable
                         ((i >= 1 && rawText[i - 1] == '=') || // this is a continuation
                          (i >= 2 && rawText[i - 2] == '=')))
                {
@@ -227,6 +233,24 @@ namespace ZXing.Client.Result
                   element = CR_LF_SPACE_TAB.Replace(element, "");
                   element = NEWLINE_ESCAPE.Replace(element, "\n");
                   element = VCARD_ESCAPES.Replace(element, "$1");
+               }
+               // Only handle VALUE=uri specially
+               if ("uri".Equals(valueType))
+               {
+                  // Don't actually support dereferencing URIs, but use scheme-specific part not URI
+                  // as value, to support tel: and mailto:
+                  try
+                  {
+                     Uri uri;
+                     if (Uri.TryCreate(element, UriKind.RelativeOrAbsolute, out uri))
+                     {
+                        element = uri.AbsoluteUri.Replace(uri.Scheme + ':', "");
+                     }
+                  }
+                  catch (Exception)
+                  {
+                     // ignore
+                  }
                }
                if (metadata == null)
                {

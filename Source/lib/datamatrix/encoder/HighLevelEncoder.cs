@@ -208,9 +208,11 @@ namespace ZXing.Datamatrix.Encoder
          int capacity = context.SymbolInfo.dataCapacity;
          if (len < capacity &&
              encodingMode != (int)Encodation.ASCII &&
-             encodingMode != (int)Encodation.BASE256)
+             encodingMode != (int)Encodation.BASE256 &&
+             encodingMode != (int)Encodation.EDIFACT)
          {
             context.writeCodeword('\u00fe'); //Unlatch (254)
+         }
          //Padding
          StringBuilder codewords = context.Codewords;
          if (codewords.Length < capacity)
@@ -476,7 +478,7 @@ namespace ZXing.Datamatrix.Encoder
 
       internal static bool isNativeText(char ch)
       {
-         return (ch == ' ') || (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'z');
+         return (ch == ' ') || (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'z') || ch == 0x001d;
       }
 
       internal static bool isNativeX12(char ch)

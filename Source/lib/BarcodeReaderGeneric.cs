@@ -123,7 +123,7 @@ namespace ZXing
       /// event is executed if a result was found via decode
       /// </summary>
       public event Action<Result> ResultFound;
-
+      
       /// <summary>
       /// Gets or sets a value indicating whether the image should be automatically rotated.
       /// Rotation is supported for 90, 180 and 270 degrees

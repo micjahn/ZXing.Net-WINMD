@@ -75,7 +75,13 @@ namespace ZXing.Datamatrix.Encoder
                context.updateSymbolInfo();
                int available = context.SymbolInfo.dataCapacity - context.CodewordCount;
                int remaining = context.RemainingCharacters;
-               if (remaining == 0 && available <= 2)
+               // The following two lines are a hack inspired by the 'fix' from https://sourceforge.net/p/barcode4j/svn/221/
+               if (remaining > available)
+               {
+                  context.updateSymbolInfo(context.CodewordCount + 1);
+                  available = context.SymbolInfo.dataCapacity - context.CodewordCount;
+               }
+               if (remaining <= available && available <= 2)
                {
                   return; //No unlatch
                }

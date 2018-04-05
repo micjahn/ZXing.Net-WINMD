@@ -54,16 +54,6 @@ namespace ZXing.Common
       /// </summary>
       /// <param name="i"></param>
       /// <returns></returns>
-      public bool get(int i)
-      {
-         return this[i];
-      }
-
-      /// <summary>
-      /// index accessor
-      /// </summary>
-      /// <param name="i"></param>
-      /// <returns></returns>
       internal bool this[int i]
       {
          get
@@ -493,6 +483,16 @@ namespace ZXing.Common
       public object Clone()
       {
          return new BitArray((int[])bits.Clone(), size);
+      }
+
+      /// <summary>
+      /// index accessor
+      /// </summary>
+      /// <param name="i"></param>
+      /// <returns></returns>
+      public bool get(int i)
+      {
+         return this[i];
       }
    }
 }

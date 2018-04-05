@@ -29,24 +29,24 @@ namespace ZXing.Client.Result
    {
       private static readonly Regex RFC2445_DURATION =
          new Regex(@"\A(?:" + "P(?:(\\d+)W)?(?:(\\d+)D)?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?)?" + @")\z"
-#if !(SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE || NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2)
-                                                                 , RegexOptions.Compiled);
+#if !(SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE || UNITY || NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2)
+            , RegexOptions.Compiled);
 #else
 );
 #endif
 
       private static readonly long[] RFC2445_DURATION_FIELD_UNITS =
-         {
-            7*24*60*60*1000L, // 1 week
-            24*60*60*1000L, // 1 day
-            60*60*1000L, // 1 hour
-            60*1000L, // 1 minute
-            1000L, // 1 second
-         };
+      {
+         7*24*60*60*1000L, // 1 week
+         24*60*60*1000L, // 1 day
+         60*60*1000L, // 1 hour
+         60*1000L, // 1 minute
+         1000L, // 1 second
+      };
 
       private static readonly Regex DATE_TIME = new Regex(@"\A(?:" + "[0-9]{8}(T[0-9]{6}Z?)?" + @")\z"
-#if !(SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE || NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2)
-                                                          , RegexOptions.Compiled);
+#if !(SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || PORTABLE || UNITY || NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2)
+         , RegexOptions.Compiled);
 #else
 );
 #endif
@@ -214,9 +214,9 @@ namespace ZXing.Client.Result
             // format.setTimeZone(TimeZone.getTimeZone("GMT"));
             return DateTime.ParseExact(when, "yyyyMMdd", CultureInfo.InvariantCulture);
          }
-            // The when string can be local time, or UTC if it ends with a Z
-            if (when.Length == 16 && when[15] == 'Z')
-            {
+         // The when string can be local time, or UTC if it ends with a Z
+         if (when.Length == 16 && when[15] == 'Z')
+         {
             var milliseconds = parseDateTimeString(when.Substring(0, 15));
             //Calendar calendar = new GregorianCalendar();
             // Account for time zone difference

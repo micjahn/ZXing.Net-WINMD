@@ -27,8 +27,10 @@ namespace ZXing.OneD
    /// </summary>
    internal sealed class Code128Writer : OneDimensionalCodeWriter
    {
+      private const int CODE_START_A = 103;
       private const int CODE_START_B = 104;
       private const int CODE_START_C = 105;
+      private const int CODE_CODE_A = 101;
       private const int CODE_CODE_B = 100;
       private const int CODE_CODE_C = 99;
       private const int CODE_STOP = 106;
@@ -42,6 +44,7 @@ namespace ZXing.OneD
       private const int CODE_FNC_1 = 102;   // Code A, Code B, Code C
       private const int CODE_FNC_2 = 97;    // Code A, Code B
       private const int CODE_FNC_3 = 96;    // Code A, Code B
+      private const int CODE_FNC_4_A = 101; // Code A
       private const int CODE_FNC_4_B = 100; // Code B
 
       // Results of minimal lookahead for code C
@@ -70,6 +73,16 @@ namespace ZXing.OneD
                           hints.ContainsKey(EncodeHintType.CODE128_FORCE_CODESET_B) &&
                           hints[EncodeHintType.CODE128_FORCE_CODESET_B] != null &&
                           Convert.ToBoolean(hints[EncodeHintType.CODE128_FORCE_CODESET_B].ToString()));
+;
+         if (hints != null &&
+             hints.ContainsKey(EncodeHintType.GS1_FORMAT) &&
+             hints[EncodeHintType.GS1_FORMAT] != null &&
+             Convert.ToBoolean(hints[EncodeHintType.GS1_FORMAT].ToString()))
+         {
+            // append the FNC1 character at the first position if not already present
+            if (!string.IsNullOrEmpty(contents) && contents[0] != ESCAPE_FNC_1)
+               contents = ESCAPE_FNC_1 + contents;
+         }
 
          return base.encode(contents, format, width, height, hints);
       }
@@ -87,18 +100,18 @@ namespace ZXing.OneD
          for (int i = 0; i < length; i++)
          {
             char c = contents[i];
-            if (c < ' ' || c > '~')
+            switch (c)
             {
-               switch (c)
-               {
-                  case ESCAPE_FNC_1:
-                  case ESCAPE_FNC_2:
-                  case ESCAPE_FNC_3:
-                  case ESCAPE_FNC_4:
-                     break;
-                  default:
+               case ESCAPE_FNC_1:
+               case ESCAPE_FNC_2:
+               case ESCAPE_FNC_3:
+               case ESCAPE_FNC_4:
+                  break;
+               default:
+                  if (c > 127)
+                     // support for FNC4 isn't implemented, no full Latin-1 character set available at the moment
                      throw new ArgumentException("Bad character in input: " + c);
-               }
+                  break;
             }
          }
 
@@ -111,17 +124,7 @@ namespace ZXing.OneD
          while (position < length)
          {
             //Select code to use
-            int requiredDigitCount = codeSet == CODE_CODE_C ? 2 : 4;
             int newCodeSet = chooseCode(contents, position, codeSet);
-            //int newCodeSet;
-            //if (isDigits(contents, position, requiredDigitCount))
-            //{
-            //   newCodeSet = forceCodesetB ? CODE_CODE_B : CODE_CODE_C;
-            //}
-            //else
-            //{
-            //   newCodeSet = CODE_CODE_B;
-            //}
 
             //Get the pattern index
             int patternIndex;
@@ -141,18 +144,30 @@ namespace ZXing.OneD
                      patternIndex = CODE_FNC_3;
                      break;
                   case ESCAPE_FNC_4:
-                     patternIndex = CODE_FNC_4_B; // FIXME if this ever outputs Code A
+                     if (newCodeSet == CODE_CODE_A)
+                        patternIndex = CODE_FNC_4_A;
+                     else
+                        patternIndex = CODE_FNC_4_B;
                      break;
                   default:
                      // Then handle normal characters otherwise
-                     if (codeSet == CODE_CODE_B)
-                     {
-                        patternIndex = contents[position] - ' ';
-                     }
-                     else
-                     { // CODE_CODE_C
-                        patternIndex = Int32.Parse(contents.Substring(position, 2));
-                        position++; // Also incremented below
+                     switch (codeSet) {
+                        case CODE_CODE_A:
+                           patternIndex = contents[position] - ' ';
+                           if (patternIndex < 0)
+                           {
+                              // everything below a space character comes behind the underscore in the code patterns table
+                              patternIndex += '`';
+                           }
+                           break;
+                        case CODE_CODE_B:
+                           patternIndex = contents[position] - ' ';
+                           break;
+                        default:
+                           // CODE_CODE_C
+                           patternIndex = Int32.Parse(contents.Substring(position, 2));
+                           position++; // Also incremented below
+                           break;
                      }
                      break;
                }
@@ -165,14 +180,17 @@ namespace ZXing.OneD
                if (codeSet == 0)
                {
                   // No, we don't have a code set
-                  if (newCodeSet == CODE_CODE_B)
+                  switch (newCodeSet)
                   {
-                     patternIndex = CODE_START_B;
-                  }
-                  else
-                  {
-                     // CODE_CODE_C
-                     patternIndex = CODE_START_C;
+                     case CODE_CODE_A:
+                        patternIndex = CODE_START_A;
+                        break;
+                     case CODE_CODE_B:
+                        patternIndex = CODE_START_B;
+                        break;
+                     default:
+                        patternIndex = CODE_START_C;
+                        break;
                   }
                }
                else
@@ -254,12 +272,24 @@ namespace ZXing.OneD
       private int chooseCode(String value, int start, int oldCode)
       {
          CType lookahead = findCType(value, start);
-         if (lookahead == CType.UNCODABLE || lookahead == CType.ONE_DIGIT)
+         if (lookahead == CType.ONE_DIGIT)
          {
+            return CODE_CODE_B;
+         }
+         if (lookahead == CType.UNCODABLE)
+         {
+            if (start < value.Length)
+            {
+               var c = value[start];
+               if (c < ' ' || (oldCode == CODE_CODE_A && c < '`'))
+                  // can continue in code A, encodes ASCII 0 to 95
+                  return CODE_CODE_A;
+            }
             return CODE_CODE_B; // no choice
          }
          if (oldCode == CODE_CODE_C)
-         { // can continue in code C
+         {
+            // can continue in code C
             return CODE_CODE_C;
          }
          if (oldCode == CODE_CODE_B)

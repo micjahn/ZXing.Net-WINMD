@@ -241,7 +241,6 @@ namespace ZXing.Multi.QrCode.Internal
       public FinderPatternInfo[] findMulti(IDictionary<DecodeHintType, object> hints)
       {
          bool tryHarder = hints != null && hints.ContainsKey(DecodeHintType.TRY_HARDER);
-         bool pureBarcode = hints != null && hints.ContainsKey(DecodeHintType.PURE_BARCODE);
          BitMatrix image = Image;
          int maxI = image.Height;
          int maxJ = image.Width;
@@ -252,7 +251,7 @@ namespace ZXing.Multi.QrCode.Internal
          // image, and then account for the center being 3 modules in size. This gives the smallest
          // number of pixels the center could be, so skip this often. When trying harder, look for all
          // QR versions regardless of how dense they are.
-         int iSkip = (int)(maxI / (MAX_MODULES * 4.0f) * 3);
+         int iSkip = (3 * maxI) / (4 * MAX_MODULES);
          if (iSkip < MIN_SKIP || tryHarder)
          {
             iSkip = MIN_SKIP;
@@ -262,11 +261,7 @@ namespace ZXing.Multi.QrCode.Internal
          for (int i = iSkip - 1; i < maxI; i += iSkip)
          {
             // Get a row of black/white values
-            stateCount[0] = 0;
-            stateCount[1] = 0;
-            stateCount[2] = 0;
-            stateCount[3] = 0;
-            stateCount[4] = 0;
+            clearCounts(stateCount);
             int currentState = 0;
             for (int j = 0; j < maxJ; j++)
             {
@@ -285,23 +280,15 @@ namespace ZXing.Multi.QrCode.Internal
                   { // Counting black pixels
                      if (currentState == 4)
                      { // A winner?
-                        if (foundPatternCross(stateCount) && handlePossibleCenter(stateCount, i, j, pureBarcode))
+                        if (foundPatternCross(stateCount) && handlePossibleCenter(stateCount, i, j))
                         { // Yes
                            // Clear state to start looking again
                            currentState = 0;
-                           stateCount[0] = 0;
-                           stateCount[1] = 0;
-                           stateCount[2] = 0;
-                           stateCount[3] = 0;
-                           stateCount[4] = 0;
+                           clearCounts(stateCount);
                         }
                         else
                         { // No, shift counts back by two
-                           stateCount[0] = stateCount[2];
-                           stateCount[1] = stateCount[3];
-                           stateCount[2] = stateCount[4];
-                           stateCount[3] = 1;
-                           stateCount[4] = 0;
+                           shiftCounts2(stateCount);
                            currentState = 3;
                         }
                      }
@@ -319,7 +306,7 @@ namespace ZXing.Multi.QrCode.Internal
 
             if (foundPatternCross(stateCount))
             {
-               handlePossibleCenter(stateCount, i, maxJ, pureBarcode);
+               handlePossibleCenter(stateCount, i, maxJ);
             } // end if foundPatternCross
          } // for i=iSkip-1 ...
          FinderPattern[][] patternInfo = selectMutipleBestPatterns();

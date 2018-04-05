@@ -29,6 +29,25 @@ namespace ZXing.OneD
    public sealed class Code128EncodingOptions : IEncodingOptions
    {
       /// <summary>
+      /// if true, don't switch to codeset C for numbers
+      /// </summary>
+      public bool ForceCodesetB
+      {
+         get
+         {
+            if (Hints.ContainsKey(EncodeHintType.CODE128_FORCE_CODESET_B))
+            {
+               return (bool)Hints[EncodeHintType.CODE128_FORCE_CODESET_B];
+            }
+            return false;
+         }
+         set
+         {
+            Hints[EncodeHintType.CODE128_FORCE_CODESET_B] = value;
+         }
+      }
+
+      /// <summary>
       /// Gets the data container for all options
       /// </summary>
       [Browsable(false)]
@@ -112,25 +131,6 @@ namespace ZXing.OneD
          }
       }
       
-      /// <summary>
-      /// if true, don't switch to codeset C for numbers
-      /// </summary>
-      public bool ForceCodesetB
-      {
-         get
-         {
-            if (Hints.ContainsKey(EncodeHintType.CODE128_FORCE_CODESET_B))
-            {
-               return (bool)Hints[EncodeHintType.CODE128_FORCE_CODESET_B];
-            }
-            return false;
-         }
-         set
-         {
-            Hints[EncodeHintType.CODE128_FORCE_CODESET_B] = value;
-         }
-      }
-
       /// <summary>
       /// Initializes a new instance of the <see cref="Code128EncodingOptions"/> class.
       /// </summary>
