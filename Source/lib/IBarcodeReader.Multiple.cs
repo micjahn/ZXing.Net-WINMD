@@ -41,6 +41,6 @@ namespace ZXing
       /// </summary>
       /// <param name="luminanceSource">The luminance source.</param>
       /// <returns></returns>
-      Result[] DecodeMultipleLuminanceSource(LuminanceSource luminanceSource);
+      //Result[] DecodeMultipleLuminanceSource(LuminanceSource luminanceSource);
    }
 }

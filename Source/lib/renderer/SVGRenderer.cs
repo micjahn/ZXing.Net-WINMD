@@ -39,8 +39,15 @@ namespace ZXing.Rendering
    /// </summary>
    public sealed class SvgRenderer : IBarcodeRendererSvg
    {
-      public const string DefaultFontName = "Arial";
-      public const int DefaultFontSize = 10;
+      public static string DefaultFontName
+      {
+         get { return "Arial"; }
+      }
+
+      public static int DefaultFontSize
+      {
+         get { return 10; }
+      }
 
 #if !UNITY
 #if (PORTABLE || NETSTANDARD)
