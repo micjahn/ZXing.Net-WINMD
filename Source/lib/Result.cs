@@ -77,23 +77,6 @@ namespace ZXing
       /// </summary>
       /// <param name="text">The text.</param>
       /// <param name="rawBytes">The raw bytes.</param>
-      /// <param name="numBits"></param>
-      /// <param name="resultPoints">The result points.</param>
-      /// <param name="format">The format.</param>
-      public Result(String text,
-                    [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawBytes,
-                    int numBits,
-                    [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] ResultPoint[] resultPoints,
-                    BarcodeFormat format)
-         : this(text, rawBytes, numBits, resultPoints, format, DateTime.Now.Ticks)
-      {
-      }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="Result"/> class.
-      /// </summary>
-      /// <param name="text">The text.</param>
-      /// <param name="rawBytes">The raw bytes.</param>
       /// <param name="resultPoints">The result points.</param>
       /// <param name="format">The format.</param>
       /// <param name="timestamp">The timestamp.</param>
