@@ -103,7 +103,8 @@ namespace ZXing.PDF417
       }
 
       /// <summary>
-      /// Specifies what degree of error correction to use
+        /// Specifies the aspect ratio of the smallest codeword.
+        /// (Width of narrowest bar / Row Height)
       /// </summary>
       public PDF417AspectRatio AspectRatio
       {
@@ -127,6 +128,27 @@ namespace ZXing.PDF417
         }
 
       /// <summary>
+        /// Specifies the desired output image aspect ratio (Width / Height).
+        /// The actual aspect ratio is calculated based on the necessary number of codewords.
+        /// </summary>
+        public float ImageAspectRatio
+        {
+            get
+            {
+                if (Hints.ContainsKey(EncodeHintType.PDF417_IMAGE_ASPECT_RATIO))
+                {
+                    var value = Hints[EncodeHintType.PDF417_IMAGE_ASPECT_RATIO];
+                    if (value is float)
+                    {
+                        return (float)value;
+                    }
+                }
+                return PDF417.Internal.PDF417.DEFAULT_PREFERRED_RATIO;
+            }
+            set { Hints[EncodeHintType.PDF417_IMAGE_ASPECT_RATIO] = value; }
+        }
+
+        /// <summary>
       /// Specifies what character encoding to use where applicable (type {@link String})
       /// </summary>
       public string CharacterSet
