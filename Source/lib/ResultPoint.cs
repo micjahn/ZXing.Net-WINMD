@@ -17,6 +17,7 @@
 using System;
 
 using ZXing.Common.Detector;
+using ZXing.QrCode.Internal;
 
 namespace ZXing
 {
@@ -125,14 +126,14 @@ namespace ZXing
       /// BC is less than AC and the angle between BC and BA is less than 180 degrees.
       /// </summary>
       /// <param name="patterns">array of three <see cref="ResultPoint" /> to order</param>
-      internal static void orderBestPatterns(ResultPoint[] patterns)
+      internal static void orderBestPatterns(FinderPattern[] patterns)
       {
          // Find distances between pattern centers
          float zeroOneDistance = distance(patterns[0], patterns[1]);
          float oneTwoDistance = distance(patterns[1], patterns[2]);
          float zeroTwoDistance = distance(patterns[0], patterns[2]);
 
-         ResultPoint pointA, pointB, pointC;
+         FinderPattern pointA, pointB, pointC;
          // Assume one closest to other two is B; A and C will just be guesses at first
          if (oneTwoDistance >= zeroOneDistance && oneTwoDistance >= zeroTwoDistance)
          {
@@ -159,7 +160,7 @@ namespace ZXing
          // should swap A and C.
          if (crossProductZ(pointA, pointB, pointC) < 0.0f)
          {
-            ResultPoint temp = pointA;
+            FinderPattern temp = pointA;
             pointA = pointC;
             pointC = temp;
          }

@@ -55,8 +55,8 @@ namespace ZXing.Aztec.Internal
       private static readonly String[] MIXED_TABLE =
       {
          "CTRL_PS", " ", "\x1", "\x2", "\x3", "\x4", "\x5", "\x6", "\x7", "\b", "\t", "\n",
-         "\xD", "\f", "\r", "\x21", "\x22", "\x23", "\x24", "\x25", "@", "\\", "^", "_",
-         "`", "|", "~", "\xB1", "CTRL_LL", "CTRL_UL", "CTRL_PL", "CTRL_BS"
+         "\xB", "\f", "\r", "\x1B", "\x1C", "\x1D", "\x1E", "\x1F", "@", "\\", "^", "_",
+         "`", "|", "~", "\x7F", "CTRL_LL", "CTRL_UL", "CTRL_PL", "CTRL_BS"
       };
 
       private static readonly String[] PUNCT_TABLE =
@@ -169,7 +169,7 @@ namespace ZXing.Aztec.Internal
                      break;
                   }
                   int code = readCode(correctedBits, index, 8);
-                  result.Append((char) code);
+                        result.Append((char)code);
                   index += 8;
                }
                // Go back to whatever mode we had been in
@@ -267,11 +267,11 @@ namespace ZXing.Aztec.Internal
          }
 
          int numDataCodewords = ddata.NbDatablocks;
-         int numCodewords = rawbits.Length/codewordSize;
+            int numCodewords = rawbits.Length / codewordSize;
          if (numCodewords < numDataCodewords)
             return null;
 
-         int offset = rawbits.Length%codewordSize;
+            int offset = rawbits.Length % codewordSize;
          int numECCodewords = numCodewords - numDataCodewords;
 
          int[] dataWords = new int[numCodewords];
@@ -301,7 +301,7 @@ namespace ZXing.Aztec.Internal
             }
          }
          // Now, actually unpack the bits and remove the stuffing
-         bool[] correctedBits = new bool[numDataCodewords*codewordSize - stuffedBits];
+            bool[] correctedBits = new bool[numDataCodewords * codewordSize - stuffedBits];
          int index = 0;
          for (int i = 0; i < numDataCodewords; i++)
          {
@@ -336,7 +336,7 @@ namespace ZXing.Aztec.Internal
       {
          bool compact = ddata.Compact;
          int layers = ddata.NbLayers;
-         int baseMatrixSize = (compact ? 11 : 14) + layers*4; // not including alignment lines
+            int baseMatrixSize = (compact ? 11 : 14) + layers * 4; // not including alignment lines
          int[] alignmentMap = new int[baseMatrixSize];
          bool[] rawbits = new bool[totalBitsInLayer(layers, compact)];
 
@@ -349,44 +349,44 @@ namespace ZXing.Aztec.Internal
          }
          else
          {
-            int matrixSize = baseMatrixSize + 1 + 2*((baseMatrixSize/2 - 1)/15);
-            int origCenter = baseMatrixSize/2;
-            int center = matrixSize/2;
+                int matrixSize = baseMatrixSize + 1 + 2 * ((baseMatrixSize / 2 - 1) / 15);
+                int origCenter = baseMatrixSize / 2;
+                int center = matrixSize / 2;
             for (int i = 0; i < origCenter; i++)
             {
-               int newOffset = i + i/15;
+                    int newOffset = i + i / 15;
                alignmentMap[origCenter - i - 1] = center - newOffset - 1;
                alignmentMap[origCenter + i] = center + newOffset + 1;
             }
          }
          for (int i = 0, rowOffset = 0; i < layers; i++)
          {
-            int rowSize = (layers - i)*4 + (compact ? 9 : 12);
+                int rowSize = (layers - i) * 4 + (compact ? 9 : 12);
             // The top-left most point of this layer is <low, low> (not including alignment lines)
-            int low = i*2;
+                int low = i * 2;
             // The bottom-right most point of this layer is <high, high> (not including alignment lines)
             int high = baseMatrixSize - 1 - low;
             // We pull bits from the two 2 x rowSize columns and two rowSize x 2 rows
             for (int j = 0; j < rowSize; j++)
             {
-               int columnOffset = j*2;
+                    int columnOffset = j * 2;
                for (int k = 0; k < 2; k++)
                {
                   // left column
                   rawbits[rowOffset + columnOffset + k] =
                      matrix[alignmentMap[low + k], alignmentMap[low + j]];
                   // bottom row
-                  rawbits[rowOffset + 2*rowSize + columnOffset + k] =
+                        rawbits[rowOffset + 2 * rowSize + columnOffset + k] =
                      matrix[alignmentMap[low + j], alignmentMap[high - k]];
                   // right column
-                  rawbits[rowOffset + 4*rowSize + columnOffset + k] =
+                        rawbits[rowOffset + 4 * rowSize + columnOffset + k] =
                      matrix[alignmentMap[high - k], alignmentMap[high - j]];
                   // top row
-                  rawbits[rowOffset + 6*rowSize + columnOffset + k] =
+                        rawbits[rowOffset + 6 * rowSize + columnOffset + k] =
                      matrix[alignmentMap[high - j], alignmentMap[low + k]];
                }
             }
-            rowOffset += rowSize*8;
+                rowOffset += rowSize * 8;
          }
          return rawbits;
       }
@@ -406,7 +406,7 @@ namespace ZXing.Aztec.Internal
             res <<= 1;
             if (rawbits[i])
             {
-               res++;
+                    res |= 1;
             }
          }
          return res;
@@ -423,9 +423,9 @@ namespace ZXing.Aztec.Internal
          int n = rawbits.Length - startIndex;
          if (n >= 8)
          {
-            return (byte) readCode(rawbits, startIndex, 8);
+                return (byte)readCode(rawbits, startIndex, 8);
          }
-         return (byte) (readCode(rawbits, startIndex, n) << (8 - n));
+            return (byte)(readCode(rawbits, startIndex, n) << (8 - n));
       }
 
       /// <summary>
@@ -435,17 +435,17 @@ namespace ZXing.Aztec.Internal
       /// <returns></returns>
       internal static byte[] convertBoolArrayToByteArray(bool[] boolArr)
       {
-         byte[] byteArr = new byte[(boolArr.Length + 7)/8];
+            byte[] byteArr = new byte[(boolArr.Length + 7) / 8];
          for (int i = 0; i < byteArr.Length; i++)
          {
-            byteArr[i] = readByte(boolArr, 8*i);
+                byteArr[i] = readByte(boolArr, 8 * i);
          }
          return byteArr;
       }
 
       private static int totalBitsInLayer(int layers, bool compact)
       {
-         return ((compact ? 88 : 112) + 16*layers)*layers;
+            return ((compact ? 88 : 112) + 16 * layers) * layers;
       }
    }
 }

@@ -37,6 +37,7 @@ namespace ZXing
       /// </summary>
       private static readonly Func<byte[], int, int, BitmapFormat, LuminanceSource> defaultCreateRGBLuminanceSource =
          (rawBytes, width, height, format) => new RGBLuminanceSource(rawBytes, width, height, format);
+
       private static readonly Func<WriteableBitmap, LuminanceSource> defaultCreateLuminanceSource =
          (bitmap) => new BitmapLuminanceSource(bitmap);
 
@@ -87,10 +88,7 @@ namespace ZXing
       /// </value>
       internal Reader Reader
       {
-         get
-         {
-            return reader ?? (reader = new MultiFormatReader());
-         }
+         get { return reader ?? (reader = new MultiFormatReader()); }
       }
 
       /// <summary>
@@ -125,6 +123,7 @@ namespace ZXing
             usePreviousState = false;
          }
       }
+
       private readonly IDictionary<EventRegistrationToken, EventHandler<ResultPoint>> registeredResultPointHandlers = new Dictionary<EventRegistrationToken, EventHandler<ResultPoint>>();
       private event EventHandler<ResultPoint> explicitResultPointFound;
 
@@ -161,10 +160,7 @@ namespace ZXing
       /// </value>
       internal Func<WriteableBitmap, LuminanceSource> CreateLuminanceSource
       {
-         get
-         {
-            return createLuminanceSource ?? defaultCreateLuminanceSource;
-         }
+         get { return createLuminanceSource ?? defaultCreateLuminanceSource; }
       }
 
       /// <summary>
@@ -176,10 +172,7 @@ namespace ZXing
       /// </value>
       internal Func<LuminanceSource, Binarizer> CreateBinarizer
       {
-         get
-         {
-            return createBinarizer ?? defaultCreateBinarizer;
-         }
+         get { return createBinarizer ?? defaultCreateBinarizer; }
       }
 
       /// <summary>
@@ -314,23 +307,25 @@ namespace ZXing
                 !AutoRotate)
                break;
 
-            binaryBitmap = new BinaryBitmap(CreateBinarizer(luminanceSource.rotateCounterClockwise()));
+            luminanceSource = luminanceSource.rotateCounterClockwise();
+            binarizer = CreateBinarizer(luminanceSource);
+            binaryBitmap = new BinaryBitmap(binarizer);
          }
 
          if (result != null)
          {
             if (result.ResultMetadata == null)
             {
-               result.putMetadata(ResultMetadataType.ORIENTATION, rotationCount * 90);
+               result.putMetadata(ResultMetadataType.ORIENTATION, rotationCount*90);
             }
             else if (!result.ResultMetadata.ContainsKey(ResultMetadataType.ORIENTATION))
             {
-               result.ResultMetadata[ResultMetadataType.ORIENTATION] = rotationCount * 90;
+               result.ResultMetadata[ResultMetadataType.ORIENTATION] = rotationCount*90;
             }
             else
             {
                // perhaps the core decoder rotates the image already (can happen if TryHarder is specified)
-               result.ResultMetadata[ResultMetadataType.ORIENTATION] = ((int)(result.ResultMetadata[ResultMetadataType.ORIENTATION]) + rotationCount * 90) % 360;
+               result.ResultMetadata[ResultMetadataType.ORIENTATION] = ((int) (result.ResultMetadata[ResultMetadataType.ORIENTATION]) + rotationCount*90)%360;
             }
 
             OnResultFound(result);
@@ -421,17 +416,17 @@ namespace ZXing
             {
                if (result.ResultMetadata == null)
                {
-                  result.putMetadata(ResultMetadataType.ORIENTATION, rotationCount * 90);
+                  result.putMetadata(ResultMetadataType.ORIENTATION, rotationCount*90);
                }
                else if (!result.ResultMetadata.ContainsKey(ResultMetadataType.ORIENTATION))
                {
-                  result.ResultMetadata[ResultMetadataType.ORIENTATION] = rotationCount * 90;
+                  result.ResultMetadata[ResultMetadataType.ORIENTATION] = rotationCount*90;
                }
                else
                {
                   // perhaps the core decoder rotates the image already (can happen if TryHarder is specified)
                   result.ResultMetadata[ResultMetadataType.ORIENTATION] =
-                     ((int)(result.ResultMetadata[ResultMetadataType.ORIENTATION]) + rotationCount * 90) % 360;
+                     ((int) (result.ResultMetadata[ResultMetadataType.ORIENTATION]) + rotationCount*90)%360;
                }
             }
 
@@ -490,11 +485,11 @@ namespace ZXing
       /// <returns>
       /// the result data or null
       /// </returns>
-      public Result Decode([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] rawRGB, int width, int height, BitmapFormat format)
+      public Result Decode([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawRGB, int width, int height, BitmapFormat format)
       {
          if (rawRGB == null)
             throw new ArgumentNullException("rawRGB");
-         
+
          var luminanceSource = createRGBLuminanceSource(rawRGB, width, height, format);
 
          return Decode(luminanceSource);
@@ -510,11 +505,11 @@ namespace ZXing
       /// <returns>
       /// the result data or null
       /// </returns>
-      public Result[] DecodeMultiple([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]byte[] rawRGB, int width, int height, BitmapFormat format)
+      public Result[] DecodeMultiple([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray] byte[] rawRGB, int width, int height, BitmapFormat format)
       {
          if (rawRGB == null)
             throw new ArgumentNullException("rawRGB");
-         
+
          var luminanceSource = createRGBLuminanceSource(rawRGB, width, height, format);
 
          return DecodeMultiple(luminanceSource);

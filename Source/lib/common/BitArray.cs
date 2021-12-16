@@ -32,10 +32,7 @@ namespace ZXing.Common
       /// </summary>
       public int Size
       {
-         get
-         {
-            return size;
-         }
+         get { return size; }
       }
 
       /// <summary>
@@ -43,10 +40,7 @@ namespace ZXing.Common
       /// </summary>
       public int SizeInBytes
       {
-         get
-         {
-            return (size + 7) >> 3;
-         }
+         get { return (size + 7) >> 3; }
       }
 
       /// <summary>
@@ -56,10 +50,7 @@ namespace ZXing.Common
       /// <returns></returns>
       internal bool this[int i]
       {
-         get
-         {
-            return (bits[i >> 5] & (1 << (i & 0x1F))) != 0;
-         }
+         get { return (bits[i >> 5] & (1 << (i & 0x1F))) != 0; }
          set
          {
             if (value)
@@ -126,10 +117,10 @@ namespace ZXing.Common
       }
 
       private static readonly int[] _lookup =
-         {
-            32, 0, 1, 26, 2, 23, 27, 0, 3, 16, 24, 30, 28, 11, 0, 13, 4, 7, 17,
-            0, 25, 22, 31, 15, 29, 10, 12, 6, 0, 21, 14, 9, 5, 20, 8, 19, 18
-         };
+      {
+         32, 0, 1, 26, 2, 23, 27, 0, 3, 16, 24, 30, 28, 11, 0, 13, 4, 7, 17,
+         0, 25, 22, 31, 15, 29, 10, 12, 6, 0, 21, 14, 9, 5, 20, 8, 19, 18
+      };
 
       /// <summary>
       /// Gets the next set.
@@ -146,7 +137,7 @@ namespace ZXing.Common
          int bitsOffset = from >> 5;
          int currentBits = bits[bitsOffset];
          // mask off lesser bits first
-         currentBits &= ~((1 << (from & 0x1F)) - 1);
+         currentBits &= -(1 << (from & 0x1F));
          while (currentBits == 0)
          {
             if (++bitsOffset == bits.Length)
@@ -173,7 +164,7 @@ namespace ZXing.Common
          int bitsOffset = from >> 5;
          int currentBits = ~bits[bitsOffset];
          // mask off lesser bits first
-         currentBits &= ~((1 << (from & 0x1F)) - 1);
+         currentBits &= -(1 << (from & 0x1F));
          while (currentBits == 0)
          {
             if (++bitsOffset == bits.Length)
@@ -222,7 +213,7 @@ namespace ZXing.Common
             int firstBit = i > firstInt ? 0 : start & 0x1F;
             int lastBit = i < lastInt ? 31 : end & 0x1F;
             // Ones from firstBit to lastBit, inclusive
-            int mask = (2 << lastBit) - (1 << firstBit); 
+            int mask = (2 << lastBit) - (1 << firstBit);
             bits[i] |= mask;
          }
       }
@@ -266,7 +257,7 @@ namespace ZXing.Common
             int firstBit = i > firstInt ? 0 : start & 0x1F;
             int lastBit = i < lastInt ? 31 : end & 0x1F;
             // Ones from firstBit to lastBit, inclusive
-            int mask = (2 << lastBit) - (1 << firstBit); 
+            int mask = (2 << lastBit) - (1 << firstBit);
 
             // Return false if we're looking for 1s and the masked bits[i] isn't all 1s (that is,
             // equals the mask, or we're looking for 0s and the masked portion is not all 0s
@@ -373,7 +364,7 @@ namespace ZXing.Common
                }
                bitOffset++;
             }
-            array[offset + i] = (byte)theByte;
+            array[offset + i] = (byte) theByte;
          }
       }
 
@@ -386,13 +377,13 @@ namespace ZXing.Common
          var oldBitsLen = len + 1;
          for (var i = 0; i < oldBitsLen; i++)
          {
-            var x = (long)bits[i];
-            x = ((x >>  1) & 0x55555555u) | ((x & 0x55555555u) <<  1);
-            x = ((x >>  2) & 0x33333333u) | ((x & 0x33333333u) <<  2);
-            x = ((x >>  4) & 0x0f0f0f0fu) | ((x & 0x0f0f0f0fu) <<  4);
-            x = ((x >>  8) & 0x00ff00ffu) | ((x & 0x00ff00ffu) <<  8);
+            var x = (long) bits[i];
+            x = ((x >> 1) & 0x55555555u) | ((x & 0x55555555u) << 1);
+            x = ((x >> 2) & 0x33333333u) | ((x & 0x33333333u) << 2);
+            x = ((x >> 4) & 0x0f0f0f0fu) | ((x & 0x0f0f0f0fu) << 4);
+            x = ((x >> 8) & 0x00ff00ffu) | ((x & 0x00ff00ffu) << 8);
             x = ((x >> 16) & 0x0000ffffu) | ((x & 0x0000ffffu) << 16);
-            newBits[len - i] = (int)x;
+            newBits[len - i] = (int) x;
          }
          // now correct the int's if the bit size isn't a multiple of 32
          if (size != oldBitsLen*32)
@@ -449,7 +440,7 @@ namespace ZXing.Common
          var hash = size;
          foreach (var bit in bits)
          {
-            hash = 31 * hash + bit.GetHashCode();
+            hash = 31*hash + bit.GetHashCode();
          }
          return hash;
       }
@@ -462,7 +453,7 @@ namespace ZXing.Common
       /// </returns>
       public override String ToString()
       {
-         var result = new System.Text.StringBuilder(size);
+         var result = new System.Text.StringBuilder(size + (size/8) + 1);
          for (int i = 0; i < size; i++)
          {
             if ((i & 0x07) == 0)
@@ -482,7 +473,7 @@ namespace ZXing.Common
       /// </returns>
       public object Clone()
       {
-         return new BitArray((int[])bits.Clone(), size);
+         return new BitArray((int[]) bits.Clone(), size);
       }
 
       /// <summary>
