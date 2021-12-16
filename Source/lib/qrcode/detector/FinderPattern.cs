@@ -47,6 +47,9 @@ namespace ZXing.QrCode.Internal
          this.count = count;
          this.x = posX;
          this.y = posY;
+         // calculate only once for GetHashCode
+         bytesX = BitConverter.GetBytes(x);
+         bytesY = BitConverter.GetBytes(y);
       }
 
       /// <summary>
