@@ -22,14 +22,14 @@ namespace ZXing.Datamatrix.Encoder
     /// <summary>
     /// Error Correction Code for ECC200.
     /// </summary>
-   internal static class ErrorCorrection
+    internal static class ErrorCorrection
     {
         /// <summary>
         /// Lookup table which factors to use for which number of error correction codewords.
         /// See FACTORS.
         /// </summary>
         private static readonly int[] FACTOR_SETS
-            = {5, 7, 10, 11, 12, 14, 18, 20, 24, 28, 36, 42, 48, 56, 62, 68};
+            = { 5, 7, 10, 11, 12, 14, 18, 20, 24, 28, 36, 42, 48, 56, 62, 68 };
 
         /// <summary>
         /// Precomputed polynomial factors for ECC 200.
@@ -207,11 +207,6 @@ namespace ZXing.Datamatrix.Encoder
 
         private static String createECCBlock(String codewords, int numECWords)
         {
-            return createECCBlock(codewords, 0, codewords.Length, numECWords);
-        }
-
-        private static String createECCBlock(String codewords, int start, int len, int numECWords)
-        {
             int table = -1;
             for (int i = 0; i < FACTOR_SETS.Length; i++)
             {
@@ -230,16 +225,17 @@ namespace ZXing.Datamatrix.Encoder
             char[] ecc = new char[numECWords];
             for (int i = 0; i < numECWords; i++)
             {
-                ecc[i] = (char) 0;
+                ecc[i] = (char)0;
             }
-            for (int i = start; i < start + len; i++)
+            var len = codewords.Length;
+            for (int i = 0; i < len; i++)
             {
                 int m = ecc[numECWords - 1] ^ codewords[i];
                 for (int k = numECWords - 1; k > 0; k--)
                 {
                     if (m != 0 && poly[k] != 0)
                     {
-                        ecc[k] = (char) (ecc[k - 1] ^ ALOG[(LOG[m] + LOG[poly[k]]) % 255]);
+                        ecc[k] = (char)(ecc[k - 1] ^ ALOG[(LOG[m] + LOG[poly[k]]) % 255]);
                     }
                     else
                     {
@@ -248,11 +244,11 @@ namespace ZXing.Datamatrix.Encoder
                 }
                 if (m != 0 && poly[0] != 0)
                 {
-                    ecc[0] = (char) ALOG[(LOG[m] + LOG[poly[0]]) % 255];
+                    ecc[0] = (char)ALOG[(LOG[m] + LOG[poly[0]]) % 255];
                 }
                 else
                 {
-                    ecc[0] = (char) 0;
+                    ecc[0] = (char)0;
                 }
             }
             char[] eccReversed = new char[numECWords];

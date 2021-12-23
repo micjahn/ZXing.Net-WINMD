@@ -157,6 +157,12 @@ namespace ZXing.PDF417
                 {
                     encoder.setDisableEci(Convert.ToBoolean(hints[EncodeHintType.DISABLE_ECI].ToString()));
                 }
+
+                // Check for PDF417 Macro options
+                if (hints.ContainsKey(EncodeHintType.PDF417_MACRO_META_DATA))
+                {
+                    encoder.setMetaData((PDF417MacroMetadata)hints[EncodeHintType.PDF417_MACRO_META_DATA]);
+                }
             }
 
             return bitMatrixFromEncoder(encoder, contents, errorCorrectionLevel, width, height, margin, aspectRatio);
@@ -169,7 +175,6 @@ namespace ZXing.PDF417
         /// <param name="format">The barcode format to generate</param>
         /// <param name="width">The preferred width in pixels</param>
         /// <param name="height">The preferred height in pixels</param>
-        /// <param name="aspectRatio">The height of a row in the barcode</param>
         /// <returns>
         /// The generated barcode as a Matrix of unsigned bytes (0 == black, 255 == white)
         /// </returns>

@@ -16,25 +16,47 @@
 
 namespace ZXing.PDF417.Internal
 {
-   /// <summary>
-   /// Metadata about a PDF417 Barcode
-   /// </summary>
-   /// <author>Guenther Grau</author>
-   internal sealed class BarcodeMetadata
-   {
-      public int ColumnCount { get; private set; }
-      public int ErrorCorrectionLevel { get; private set; }
-      public int RowCountUpper { get; private set; }
-      public int RowCountLower { get; private set; }
-      public int RowCount { get; private set; }
+    /// <summary>
+    /// Metadata about a PDF417 Barcode
+    /// </summary>
+    /// <author>Guenther Grau</author>
+    internal sealed class BarcodeMetadata
+    {
+        /// <summary>
+        /// column count
+        /// </summary>
+        public int ColumnCount { get; private set; }
+        /// <summary>
+        /// error correction level
+        /// </summary>
+        public int ErrorCorrectionLevel { get; private set; }
+        /// <summary>
+        /// row count upper
+        /// </summary>
+        public int RowCountUpper { get; private set; }
+        /// <summary>
+        /// row count lower
+        /// </summary>
+        public int RowCountLower { get; private set; }
+        /// <summary>
+        /// row count
+        /// </summary>
+        public int RowCount { get; private set; }
 
-      public BarcodeMetadata(int columnCount, int rowCountUpperPart, int rowCountLowerPart, int errorCorrectionLevel)
-      {
-         this.ColumnCount = columnCount;
-         this.ErrorCorrectionLevel = errorCorrectionLevel;
-         this.RowCountUpper = rowCountUpperPart;
-         this.RowCountLower = rowCountLowerPart;
-         this.RowCount = rowCountLowerPart + rowCountUpperPart;
-      }
-   }
+        /// <summary>
+        /// initializing constructor
+        /// </summary>
+        /// <param name="columnCount"></param>
+        /// <param name="rowCountUpperPart"></param>
+        /// <param name="rowCountLowerPart"></param>
+        /// <param name="errorCorrectionLevel"></param>
+        public BarcodeMetadata(int columnCount, int rowCountUpperPart, int rowCountLowerPart, int errorCorrectionLevel)
+        {
+            this.ColumnCount = columnCount;
+            this.ErrorCorrectionLevel = errorCorrectionLevel;
+            this.RowCountUpper = rowCountUpperPart;
+            this.RowCountLower = rowCountLowerPart;
+            this.RowCount = rowCountLowerPart + rowCountUpperPart;
+        }
+    }
 }

@@ -23,6 +23,17 @@ namespace ZXing.PDF417
     public sealed class PDF417ResultMetadata
     {
         /// <summary>
+        /// default constructor
+        /// </summary>
+        public PDF417ResultMetadata()
+        {
+            SegmentCount = -1;
+            FileSize = -1;
+            Timestamp = -1;
+            Checksum = -1;
+        }
+
+        /// <summary>
         /// The Segment ID represents the segment of the whole file distributed over different symbols.
         /// </summary>
         public int SegmentIndex { get; set; }
@@ -45,8 +56,14 @@ namespace ZXing.PDF417
         /// </summary>
         public int SegmentCount { get; set; }
 
+        /// <summary>
+        /// sender
+        /// </summary>
         public string Sender { get; set; }
 
+        /// <summary>
+        /// address
+        /// </summary>
         public string Addressee { get; set; }
 
         /// <summary>
@@ -71,5 +88,15 @@ namespace ZXing.PDF417
         /// returns elapsed seconds, -1 if not set
         /// </summary>
         public long Timestamp { get; set; }
+
+        /// <summary>
+        /// string represenation of that instance
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("SegmentIndex:{0};SegmentCount:{1};IsLastSegment:{2};FileSize:{3};Checksum:{4};Timestamp:{5};FileId:{6};FileName:{7};Sender:{8};Addressee:{9};", SegmentIndex, SegmentCount, IsLastSegment, FileSize, Checksum, Timestamp, FileId, FileName, Sender, Addressee);
+        }
+
     }
 }

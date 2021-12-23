@@ -200,30 +200,50 @@ namespace ZXing
          if (readers != null)
          {
             var rpCallback = hints != null && hints.ContainsKey(DecodeHintType.NEED_RESULT_POINT_CALLBACK)
-                                ? (ResultPointCallback) hints[DecodeHintType.NEED_RESULT_POINT_CALLBACK]
+                                    ? (ResultPointCallback)hints[DecodeHintType.NEED_RESULT_POINT_CALLBACK]
                                 : null;
 
-            for (var index = 0; index < readers.Count; index++)
-            {
-               var reader = readers[index];
-               reader.reset();
-               var result = reader.decode(image, hints);
+                var result = decodeInternal(image, rpCallback);
                if (result != null)
-               {
-                  // found a barcode, pushing the successful reader up front
-                  // I assume that the same type of barcode is read multiple times
-                  // so the reordering of the readers list should speed up the next reading
-                  // a little bit
-                  readers.RemoveAt(index);
-                  readers.Insert(0, reader);
                   return result;
-               }
-               if (rpCallback != null)
-                  rpCallback(null);
+
+                if (hints != null
+                    && hints.ContainsKey(DecodeHintType.ALSO_INVERTED)
+                    && true.Equals(hints[DecodeHintType.ALSO_INVERTED]))
+                {
+                    // Calling all readers again with inverted image
+                    image.BlackMatrix.flip();
+                    result = decodeInternal(image, rpCallback);
+                    if (result != null)
+                        return result;
             }
          }
 
          return null;
       }
-   }
+
+        private Result decodeInternal(BinaryBitmap image, ResultPointCallback rpCallback)
+        {
+            for (var index = 0; index < readers.Count; index++)
+            {
+                var reader = readers[index];
+                reader.reset();
+                var result = reader.decode(image, hints);
+                if (result != null)
+                {
+                    // found a barcode, pushing the successful reader up front
+                    // I assume that the same type of barcode is read multiple times
+                    // so the reordering of the readers list should speed up the next reading
+                    // a little bit
+                    readers.RemoveAt(index);
+                    readers.Insert(0, reader);
+                    return result;
+                }
+                if (rpCallback != null)
+                    rpCallback(null);
+            }
+
+            return null;
+        }
+    }
 }

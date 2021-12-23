@@ -229,6 +229,7 @@ namespace ZXing
       /// </summary>
       /// <param name="barcodeBitmap">The barcode bitmap.</param>
       /// <returns>the result data or null</returns>
+      [CLSCompliant(false)]
       public Result DecodeBitmap(WriteableBitmap barcodeBitmap)
       {
          if (CreateLuminanceSource == null)
@@ -339,6 +340,7 @@ namespace ZXing
       /// </summary>
       /// <param name="barcodeBitmap">The barcode bitmap.</param>
       /// <returns>the result data or null</returns>
+      [CLSCompliant(false)]
       public Result[] DecodeMultipleBitmap(WriteableBitmap barcodeBitmap)
       {
          if (CreateLuminanceSource == null)

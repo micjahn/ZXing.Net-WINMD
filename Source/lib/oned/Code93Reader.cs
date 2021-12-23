@@ -26,7 +26,7 @@ namespace ZXing.OneD
     /// 	<author>Sean Owen</author>
     /// <see cref="Code39Reader" />
     /// </summary>
-   internal sealed class Code93Reader : OneDReader
+    internal sealed class Code93Reader : OneDReader
     {
         // Note that 'abcd' are dummy characters in place of control characters.
         internal const String ALPHABET_STRING = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%abcd*";
@@ -144,7 +144,7 @@ namespace ZXing.OneD
                 resultPointCallback(new ResultPoint(right, rowNumber));
             }
 
-            return new Result(
+            var resultObject = new Result(
                resultString,
                null,
                new[]
@@ -153,6 +153,8 @@ namespace ZXing.OneD
                   new ResultPoint(right, rowNumber)
                   },
                BarcodeFormat.CODE_93);
+            resultObject.putMetadata(ResultMetadataType.SYMBOLOGY_IDENTIFIER, "]G0");
+            return resultObject;
         }
 
         private int[] findAsteriskPattern(BitArray row)

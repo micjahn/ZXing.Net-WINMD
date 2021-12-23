@@ -24,7 +24,7 @@ namespace ZXing.OneD
     /// <summary>
     /// This object renders a Plessey code as a <see cref="BitMatrix"/>.
     /// </summary>
-   internal sealed class PlesseyWriter : OneDimensionalCodeWriter
+    internal sealed class PlesseyWriter : OneDimensionalCodeWriter
     {
         private const String ALPHABET_STRING = "0123456789ABCDEF";
         private static readonly int[] startWidths = new[] { 14, 11, 14, 11, 5, 20, 14, 11 };
@@ -55,6 +55,9 @@ namespace ZXing.OneD
 
         private static readonly IList<BarcodeFormat> supportedWriteFormats = new List<BarcodeFormat> { BarcodeFormat.PLESSEY };
 
+        /// <summary>
+        /// returns the list of supported formats
+        /// </summary>
         protected override IList<BarcodeFormat> SupportedWriteFormats
         {
             get { return supportedWriteFormats; }

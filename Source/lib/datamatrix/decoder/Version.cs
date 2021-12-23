@@ -18,211 +18,211 @@ using System;
 
 namespace ZXing.Datamatrix.Internal
 {
-   /// <summary>
-   /// The Version object encapsulates attributes about a particular
-   /// size Data Matrix Code.
-   ///
-   /// <author>bbrown@google.com (Brian Brown)</author>
-   /// </summary>
-   internal sealed class Version
-   {
-      private static readonly Version[] VERSIONS = buildVersions();
+    /// <summary>
+    /// The Version object encapsulates attributes about a particular
+    /// size Data Matrix Code.
+    ///
+    /// <author>bbrown@google.com (Brian Brown)</author>
+    /// </summary>
+    internal sealed class Version
+    {
+        private static readonly Version[] VERSIONS = buildVersions();
 
-      private readonly int versionNumber;
-      private readonly int symbolSizeRows;
-      private readonly int symbolSizeColumns;
-      private readonly int dataRegionSizeRows;
-      private readonly int dataRegionSizeColumns;
-      private readonly ECBlocks ecBlocks;
-      private readonly int totalCodewords;
+        private readonly int versionNumber;
+        private readonly int symbolSizeRows;
+        private readonly int symbolSizeColumns;
+        private readonly int dataRegionSizeRows;
+        private readonly int dataRegionSizeColumns;
+        private readonly ECBlocks ecBlocks;
+        private readonly int totalCodewords;
 
-      internal Version(int versionNumber,
-                      int symbolSizeRows,
-                      int symbolSizeColumns,
-                      int dataRegionSizeRows,
-                      int dataRegionSizeColumns,
-                      ECBlocks ecBlocks)
-      {
-         this.versionNumber = versionNumber;
-         this.symbolSizeRows = symbolSizeRows;
-         this.symbolSizeColumns = symbolSizeColumns;
-         this.dataRegionSizeRows = dataRegionSizeRows;
-         this.dataRegionSizeColumns = dataRegionSizeColumns;
-         this.ecBlocks = ecBlocks;
+        internal Version(int versionNumber,
+                        int symbolSizeRows,
+                        int symbolSizeColumns,
+                        int dataRegionSizeRows,
+                        int dataRegionSizeColumns,
+                        ECBlocks ecBlocks)
+        {
+            this.versionNumber = versionNumber;
+            this.symbolSizeRows = symbolSizeRows;
+            this.symbolSizeColumns = symbolSizeColumns;
+            this.dataRegionSizeRows = dataRegionSizeRows;
+            this.dataRegionSizeColumns = dataRegionSizeColumns;
+            this.ecBlocks = ecBlocks;
 
-         // Calculate the total number of codewords
-         int total = 0;
-         int ecCodewords = ecBlocks.ECCodewords;
-         ECB[] ecbArray = ecBlocks.ECBlocksValue;
-         foreach (ECB ecBlock in ecbArray)
-         {
-            total += ecBlock.Count * (ecBlock.DataCodewords + ecCodewords);
-         }
-         this.totalCodewords = total;
-      }
-
-      /// <summary>
-      /// returns the version numer
-      /// </summary>
-      /// <returns></returns>
-      public int getVersionNumber()
-      {
-         return versionNumber;
-      }
-
-      /// <summary>
-      /// returns the symbol size rows
-      /// </summary>
-      /// <returns></returns>
-      public int getSymbolSizeRows()
-      {
-         return symbolSizeRows;
-      }
-
-      /// <summary>
-      /// returns the symbols size columns
-      /// </summary>
-      /// <returns></returns>
-      public int getSymbolSizeColumns()
-      {
-         return symbolSizeColumns;
-      }
-
-      /// <summary>
-      /// retursn the data region size rows
-      /// </summary>
-      /// <returns></returns>
-      public int getDataRegionSizeRows()
-      {
-         return dataRegionSizeRows;
-      }
-
-      /// <summary>
-      /// returns the data region size columns
-      /// </summary>
-      /// <returns></returns>
-      public int getDataRegionSizeColumns()
-      {
-         return dataRegionSizeColumns;
-      }
-
-      /// <summary>
-      /// returns the total codewords count
-      /// </summary>
-      /// <returns></returns>
-      public int getTotalCodewords()
-      {
-         return totalCodewords;
-      }
-
-      internal ECBlocks getECBlocks()
-      {
-         return ecBlocks;
-      }
-
-      /// <summary>
-      /// <p>Deduces version information from Data Matrix dimensions.</p>
-      ///
-      /// <param name="numRows">Number of rows in modules</param>
-      /// <param name="numColumns">Number of columns in modules</param>
-      /// <returns>Version for a Data Matrix Code of those dimensions</returns>
-      /// <exception cref="FormatException">if dimensions do correspond to a valid Data Matrix size</exception>
-      /// </summary>
-      public static Version getVersionForDimensions(int numRows, int numColumns)
-      {
-         if ((numRows & 0x01) != 0 || (numColumns & 0x01) != 0)
-         {
-            return null;
-         }
-
-         foreach (var version in VERSIONS)
-         {
-            if (version.symbolSizeRows == numRows && version.symbolSizeColumns == numColumns)
+            // Calculate the total number of codewords
+            int total = 0;
+            int ecCodewords = ecBlocks.ECCodewords;
+            ECB[] ecbArray = ecBlocks.ECBlocksValue;
+            foreach (ECB ecBlock in ecbArray)
             {
-               return version;
+                total += ecBlock.Count * (ecBlock.DataCodewords + ecCodewords);
             }
-         }
+            this.totalCodewords = total;
+        }
 
-         return null;
-      }
+        /// <summary>
+        /// returns the version numer
+        /// </summary>
+        /// <returns></returns>
+        public int getVersionNumber()
+        {
+            return versionNumber;
+        }
 
-      /// <summary>
-      /// <p>Encapsulates a set of error-correction blocks in one symbol version. Most versions will
-      /// use blocks of differing sizes within one version, so, this encapsulates the parameters for
-      /// each set of blocks. It also holds the number of error-correction codewords per block since it
-      /// will be the same across all blocks within one version.</p>
-      /// </summary>
-      internal sealed class ECBlocks
-      {
-         private readonly int ecCodewords;
-         private readonly ECB[] _ecBlocksValue;
+        /// <summary>
+        /// returns the symbol size rows
+        /// </summary>
+        /// <returns></returns>
+        public int getSymbolSizeRows()
+        {
+            return symbolSizeRows;
+        }
 
-         internal ECBlocks(int ecCodewords, ECB ecBlocks)
-         {
-            this.ecCodewords = ecCodewords;
-            this._ecBlocksValue = new ECB[] { ecBlocks };
-         }
+        /// <summary>
+        /// returns the symbols size columns
+        /// </summary>
+        /// <returns></returns>
+        public int getSymbolSizeColumns()
+        {
+            return symbolSizeColumns;
+        }
 
-         internal ECBlocks(int ecCodewords, ECB ecBlocks1, ECB ecBlocks2)
-         {
-            this.ecCodewords = ecCodewords;
-            this._ecBlocksValue = new ECB[] { ecBlocks1, ecBlocks2 };
-         }
+        /// <summary>
+        /// retursn the data region size rows
+        /// </summary>
+        /// <returns></returns>
+        public int getDataRegionSizeRows()
+        {
+            return dataRegionSizeRows;
+        }
 
-         internal int ECCodewords
-         {
-            get { return ecCodewords; }
-         }
+        /// <summary>
+        /// returns the data region size columns
+        /// </summary>
+        /// <returns></returns>
+        public int getDataRegionSizeColumns()
+        {
+            return dataRegionSizeColumns;
+        }
 
-         internal ECB[] ECBlocksValue
-         {
-            get { return _ecBlocksValue; }
-         }
-      }
+        /// <summary>
+        /// returns the total codewords count
+        /// </summary>
+        /// <returns></returns>
+        public int getTotalCodewords()
+        {
+            return totalCodewords;
+        }
 
-      /// <summary>
-      /// <p>Encapsulates the parameters for one error-correction block in one symbol version.
-      /// This includes the number of data codewords, and the number of times a block with these
-      /// parameters is used consecutively in the Data Matrix code version's format.</p>
-      /// </summary>
-      internal sealed class ECB
-      {
-         private readonly int count;
-         private readonly int dataCodewords;
+        internal ECBlocks getECBlocks()
+        {
+            return ecBlocks;
+        }
 
-         internal ECB(int count, int dataCodewords)
-         {
-            this.count = count;
-            this.dataCodewords = dataCodewords;
-         }
+        /// <summary>
+        /// <p>Deduces version information from Data Matrix dimensions.</p>
+        ///
+        /// <param name="numRows">Number of rows in modules</param>
+        /// <param name="numColumns">Number of columns in modules</param>
+        /// <returns>Version for a Data Matrix Code of those dimensions</returns>
+        /// <exception cref="FormatException">if dimensions do correspond to a valid Data Matrix size</exception>
+        /// </summary>
+        public static Version getVersionForDimensions(int numRows, int numColumns)
+        {
+            if ((numRows & 0x01) != 0 || (numColumns & 0x01) != 0)
+            {
+                return null;
+            }
 
-         internal int Count
-         {
-            get { return count; }
-         }
+            foreach (var version in VERSIONS)
+            {
+                if (version.symbolSizeRows == numRows && version.symbolSizeColumns == numColumns)
+                {
+                    return version;
+                }
+            }
 
-         internal int DataCodewords
-         {
-            get { return dataCodewords; }
-         }
-      }
+            return null;
+        }
 
-      /// <summary>
-      /// returns the version number as string
-      /// </summary>
-      /// <returns></returns>
-      public override String ToString()
-      {
-         return versionNumber.ToString();
-      }
+        /// <summary>
+        /// <p>Encapsulates a set of error-correction blocks in one symbol version. Most versions will
+        /// use blocks of differing sizes within one version, so, this encapsulates the parameters for
+        /// each set of blocks. It also holds the number of error-correction codewords per block since it
+        /// will be the same across all blocks within one version.</p>
+        /// </summary>
+        internal sealed class ECBlocks
+        {
+            private readonly int ecCodewords;
+            private readonly ECB[] _ecBlocksValue;
 
-      /// <summary>
-      /// See ISO 16022:2006 5.5.1 Table 7
-      /// </summary>
-      private static Version[] buildVersions()
-      {
-         return new Version[]
-                   {
+            internal ECBlocks(int ecCodewords, ECB ecBlocks)
+            {
+                this.ecCodewords = ecCodewords;
+                this._ecBlocksValue = new ECB[] { ecBlocks };
+            }
+
+            internal ECBlocks(int ecCodewords, ECB ecBlocks1, ECB ecBlocks2)
+            {
+                this.ecCodewords = ecCodewords;
+                this._ecBlocksValue = new ECB[] { ecBlocks1, ecBlocks2 };
+            }
+
+            internal int ECCodewords
+            {
+                get { return ecCodewords; }
+            }
+
+            internal ECB[] ECBlocksValue
+            {
+                get { return _ecBlocksValue; }
+            }
+        }
+
+        /// <summary>
+        /// <p>Encapsulates the parameters for one error-correction block in one symbol version.
+        /// This includes the number of data codewords, and the number of times a block with these
+        /// parameters is used consecutively in the Data Matrix code version's format.</p>
+        /// </summary>
+        internal sealed class ECB
+        {
+            private readonly int count;
+            private readonly int dataCodewords;
+
+            internal ECB(int count, int dataCodewords)
+            {
+                this.count = count;
+                this.dataCodewords = dataCodewords;
+            }
+
+            internal int Count
+            {
+                get { return count; }
+            }
+
+            internal int DataCodewords
+            {
+                get { return dataCodewords; }
+            }
+        }
+
+        /// <summary>
+        /// returns the version number as string
+        /// </summary>
+        /// <returns></returns>
+        public override String ToString()
+        {
+            return versionNumber.ToString();
+        }
+
+        /// <summary>
+        /// See ISO 16022:2006 5.5.1 Table 7
+        /// </summary>
+        private static Version[] buildVersions()
+        {
+            return new Version[]
+                      {
                       new Version(1, 10, 10, 8, 8,
                                   new ECBlocks(5, new ECB(1, 3))),
                       new Version(2, 12, 12, 10, 10,
@@ -282,8 +282,47 @@ namespace ZXing.Datamatrix.Internal
                       new Version(29, 16, 36, 14, 16,
                                   new ECBlocks(24, new ECB(1, 32))),
                       new Version(30, 16, 48, 14, 22,
-                                  new ECBlocks(28, new ECB(1, 49)))
-                   };
-      }
-   }
+                                  new ECBlocks(28, new ECB(1, 49))),
+
+                      // extended forms as specified in
+                      // ISO 21471:2020 (DMRE) 5.5.1 Table 7
+                      new Version(31, 8, 48, 6, 22,
+                                  new ECBlocks(15, new ECB(1, 18))),
+                      new Version(32, 8, 64, 6, 14,
+                                  new ECBlocks(18, new ECB(1, 24))),
+                      new Version(33, 8, 80, 6, 18,
+                                  new ECBlocks(22, new ECB(1, 32))),
+                      new Version(34, 8, 96, 6, 22,
+                                  new ECBlocks(28, new ECB(1, 38))),
+                      new Version(35, 8, 120, 6, 18,
+                                  new ECBlocks(32, new ECB(1, 49))),
+                      new Version(36, 8, 144, 6, 22,
+                                  new ECBlocks(36, new ECB(1, 63))),
+                      new Version(37, 12, 64, 10, 14,
+                                  new ECBlocks(27, new ECB(1, 43))),
+                      new Version(38, 12, 88, 10, 20,
+                                  new ECBlocks(36, new ECB(1, 64))),
+                      new Version(39, 16, 64, 14, 14,
+                                  new ECBlocks(36, new ECB(1, 62))),
+                      new Version(40, 20, 36, 18, 16,
+                                  new ECBlocks(28, new ECB(1, 44))),
+                      new Version(41, 20, 44, 18, 20,
+                                  new ECBlocks(34, new ECB(1, 56))),
+                      new Version(42, 20, 64, 18, 14,
+                                  new ECBlocks(42, new ECB(1, 84))),
+                      new Version(43, 22, 48, 20, 22,
+                                  new ECBlocks(38, new ECB(1, 72))),
+                      new Version(44, 24, 48, 22, 22,
+                                  new ECBlocks(41, new ECB(1, 80))),
+                      new Version(45, 24, 64, 22, 14,
+                                  new ECBlocks(46, new ECB(1, 108))),
+                      new Version(46, 26, 40, 24, 18,
+                                  new ECBlocks(38, new ECB(1, 70))),
+                      new Version(47, 26, 48, 24, 22,
+                                  new ECBlocks(42, new ECB(1, 90))),
+                      new Version(48, 26, 64, 24, 14,
+                                  new ECBlocks(50, new ECB(1, 118)))
+                      };
+        }
+    }
 }

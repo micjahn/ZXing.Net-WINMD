@@ -26,24 +26,24 @@ using ZXing.Rendering;
 
 namespace ZXing.Common
 {
-   public sealed partial class BitMatrix
-   {
-      [Obsolete("Use BarcodeWriter instead")]
-      public PixelData ToBitmap()
-      {
-         var writer = new BarcodeWriter { Format = BarcodeFormat.EAN_8 };
-         return writer.Write(this);
-      }
+    public sealed partial class BitMatrix
+    {
+        [Obsolete("Use BarcodeWriter instead")]
+        public PixelData ToBitmap()
+        {
+            var renderer = new PixelDataRenderer();
+            return renderer.Render(this, BarcodeFormat.EAN_8, string.Empty);
+        }
 
-      /// <summary>
-      /// Converts this ByteMatrix to a black and white bitmap.
-      /// </summary>
-      /// <returns>A black and white bitmap converted from this ByteMatrix.</returns>
-      [Obsolete("Use BarcodeWriter instead")]
-      public PixelData ToBitmap(BarcodeFormat format, String content)
-      {
-         var writer = new BarcodeWriter { Format = format };
-         return writer.Write(content);
-      }
-   }
+        /// <summary>
+        /// Converts this ByteMatrix to a black and white bitmap.
+        /// </summary>
+        /// <returns>A black and white bitmap converted from this ByteMatrix.</returns>
+        [Obsolete("Use BarcodeWriter instead")]
+        public PixelData ToBitmap(BarcodeFormat format, String content)
+        {
+            var renderer = new PixelDataRenderer();
+            return renderer.Render(this, format, content);
+        }
+    }
 }

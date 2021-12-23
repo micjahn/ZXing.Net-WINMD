@@ -24,7 +24,7 @@ namespace ZXing.Maxicode
     /// <summary>
     /// This implementation can detect and decode a MaxiCode in an image.
     /// </summary>
-   internal sealed class MaxiCodeReader : Reader
+    internal sealed class MaxiCodeReader : Reader
     {
         private static readonly ResultPoint[] NO_POINTS = new ResultPoint[0];
         private const int MATRIX_WIDTH = 30;
@@ -75,7 +75,9 @@ namespace ZXing.Maxicode
             }
             return result;
         }
-
+        /// <summary>
+        /// does nothing here
+        /// </summary>
         public void reset()
         {
             // do nothing
@@ -104,14 +106,22 @@ namespace ZXing.Maxicode
             int width = enclosingRectangle[2];
             int height = enclosingRectangle[3];
 
+            // correct corner cases: the enclosing rectangle borders the right or bottom edge
+            if (left + width >= image.Width)
+                width = image.Width - left - 1;
+            if (top + height >= image.Height)
+                height = image.Height - top - 1;
+
             // Now just read off the bits
             BitMatrix bits = new BitMatrix(MATRIX_WIDTH, MATRIX_HEIGHT);
             for (int y = 0; y < MATRIX_HEIGHT; y++)
             {
-                int iy = top + (y * height + height / 2) / MATRIX_HEIGHT;
+                int iy = System.Math.Min(top + (y * height + height / 2) / MATRIX_HEIGHT, height - 1);
                 for (int x = 0; x < MATRIX_WIDTH; x++)
                 {
-                    int ix = left + (x * width + width / 2 + (y & 0x01) * width / 2) / MATRIX_WIDTH;
+                    // srowen: I don't quite understand why the formula below is necessary, but it
+                    // can walk off the image if left + width = the right boundary. So cap it.
+                    int ix = left + System.Math.Min((x * width + width / 2 + (y & 0x01) * width / 2) / MATRIX_WIDTH, width - 1);
                     if (image[ix, iy])
                     {
                         bits[x, y] = true;

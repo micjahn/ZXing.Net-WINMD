@@ -42,6 +42,9 @@ namespace ZXing.Common
       /// <summary>
       /// Specifies the height of the barcode image
       /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Output dimensions"), DescriptionAttribute("Height in pixels.")]
+#endif
       public int Height
       {
          get
@@ -61,6 +64,9 @@ namespace ZXing.Common
       /// <summary>
       /// Specifies the width of the barcode image
       /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Output dimensions"), DescriptionAttribute("Width in pixels.")]
+#endif
       public int Width
       {
          get
@@ -80,6 +86,9 @@ namespace ZXing.Common
       /// <summary>
       /// Don't put the content string into the output image.
       /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Output options"), DescriptionAttribute("Output only barcode, no Human Readable Interpretation.")]
+#endif
       public bool PureBarcode
       {
          get
@@ -101,13 +110,18 @@ namespace ZXing.Common
       /// by format; for example it controls margin before and after the barcode horizontally for
       /// most 1D formats.
       /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Output dimensions"), DescriptionAttribute("Specifies margin, in pixels, to use " +
+            "when generating the barcode. The meaning can vary by format; for example it controls margin " +
+            "before and after the barcode horizontally for most 1D formats.")]
+#endif
       public int Margin
       {
          get
          {
             if (Hints.ContainsKey(EncodeHintType.MARGIN))
             {
-               return (int) Hints[EncodeHintType.MARGIN];
+                    return (int)Hints[EncodeHintType.MARGIN];
             }
             return 0;
          }
@@ -121,6 +135,10 @@ namespace ZXing.Common
       /// Specifies whether the data should be encoded to the GS1 standard;
       /// FNC1 character is added in front of the data
       /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Standard"), DescriptionAttribute("Specifies whether the data should be encoded " +
+            "to the GS1 standard; if so a FNC1 character is added in front of the data.")]
+#endif
       public bool GS1Format
       {
          get

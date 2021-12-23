@@ -26,7 +26,7 @@ namespace ZXing.Multi.QrCode
     /// <summary>
     /// This implementation can detect and decode multiple QR Codes in an image.
     /// </summary>
-   internal sealed class QRCodeMultiReader : QRCodeReader, MultipleBarcodeReader
+    internal sealed class QRCodeMultiReader : QRCodeReader, MultipleBarcodeReader
     {
         private static readonly ResultPoint[] NO_POINTS = new ResultPoint[0];
 
@@ -121,7 +121,7 @@ namespace ZXing.Multi.QrCode
                     newRawBytes.Write(saBytes, 0, saBytes.Length);
                     if (saResult.ResultMetadata.ContainsKey(ResultMetadataType.BYTE_SEGMENTS))
                     {
-                        var byteSegments = (IEnumerable<byte[]>) saResult.ResultMetadata[ResultMetadataType.BYTE_SEGMENTS];
+                        var byteSegments = (IEnumerable<byte[]>)saResult.ResultMetadata[ResultMetadataType.BYTE_SEGMENTS];
                         if (byteSegments != null)
                         {
                             foreach (byte[] segment in byteSegments)
@@ -146,8 +146,8 @@ namespace ZXing.Multi.QrCode
 
         private static int SaSequenceSort(Result a, Result b)
         {
-            var aNumber = (int) (a.ResultMetadata[ResultMetadataType.STRUCTURED_APPEND_SEQUENCE]);
-            var bNumber = (int) (b.ResultMetadata[ResultMetadataType.STRUCTURED_APPEND_SEQUENCE]);
+            var aNumber = (int)(a.ResultMetadata[ResultMetadataType.STRUCTURED_APPEND_SEQUENCE]);
+            var bNumber = (int)(b.ResultMetadata[ResultMetadataType.STRUCTURED_APPEND_SEQUENCE]);
             return aNumber - bNumber;
         }
     }

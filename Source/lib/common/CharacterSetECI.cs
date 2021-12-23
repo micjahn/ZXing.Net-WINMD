@@ -30,7 +30,9 @@ namespace ZXing.Common
       internal static readonly IDictionary<string, CharacterSetECI> NAME_TO_ECI;
 
       private readonly String encodingName;
-
+        /// <summary>
+        /// encoding name
+        /// </summary>
       public String EncodingName
       {
          get
@@ -104,18 +106,99 @@ namespace ZXing.Common
       /// <returns><see cref="CharacterSetECI"/> representing ECI of given value, or null if it is legal but unsupported</returns>
       public static CharacterSetECI getCharacterSetECIByValue(int value)
       {
-         if (value < 0 || value >= 900)
-         {
-            return null;
-         }
-         return VALUE_TO_ECI[value];
+            if (!VALUE_TO_ECI.ContainsKey(value))
+                return null;
+            return VALUE_TO_ECI[value];
       }
 
       /// <param name="name">character set ECI encoding name</param>
-      /// <returns><see cref="CharacterSetECI"/> representing ECI for character encoding, or null if it is legalbut unsupported</returns>
+        /// <returns><see cref="CharacterSetECI"/> representing ECI for character encoding, or null if it is legal but unsupported</returns>
       public static CharacterSetECI getCharacterSetECIByName(String name)
       {
-         return NAME_TO_ECI[name.ToUpper()];
-      }
-   }
+            var upperName = name.ToUpper();
+            if (!NAME_TO_ECI.ContainsKey(upperName))
+                return null;
+            return NAME_TO_ECI[upperName];
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="encoding">encoding</param>
+        /// <returns>CharacterSetECI representing ECI for character encoding, or null if it is legal but unsupported</returns>
+        public static CharacterSetECI getCharacterSetECI(System.Text.Encoding encoding)
+        {
+            var name = encoding.WebName.ToUpper();
+            if (!NAME_TO_ECI.ContainsKey(name))
+                return null;
+            return NAME_TO_ECI[name];
+        }
+
+        /// <summary>
+        /// returns the encoding object fo the specified charset
+        /// </summary>
+        /// <param name="charsetECI"></param>
+        /// <returns></returns>
+        public static System.Text.Encoding getEncoding(CharacterSetECI charsetECI)
+        {
+            if (charsetECI == null)
+                return null;
+            return getEncoding(charsetECI.EncodingName);
+        }
+
+        /// <summary>
+        /// returns the encoding object fo the specified name
+        /// </summary>
+        /// <param name="encodingName"></param>
+        /// <returns></returns>
+        public static System.Text.Encoding getEncoding(string encodingName)
+        {
+            System.Text.Encoding encoding = null;
+
+            try
+            {
+                encoding = System.Text.Encoding.GetEncoding(encodingName);
+            }
+#if (WINDOWS_PHONE70 || WINDOWS_PHONE71 || SILVERLIGHT4 || SILVERLIGHT5 || NETFX_CORE || NETSTANDARD || MONOANDROID || MONOTOUCH)
+            catch (ArgumentException)
+            {
+                try
+                {
+                    // Silverlight only supports a limited number of character sets, trying fallback to UTF-8
+                    encoding = System.Text.Encoding.GetEncoding(StringUtils.UTF8);
+                }
+                catch (Exception)
+                {
+                }
+            }
+#endif
+#if WindowsCE
+            catch (PlatformNotSupportedException)
+            {
+                try
+                {
+                    // WindowsCE doesn't support all encodings. But it is device depended.
+                    // So we try here the some different ones
+                    if (encodingName == StringUtils.ISO88591)
+                    {
+                        encoding = System.Text.Encoding.GetEncoding(1252);
+                    }
+                    else
+                    {
+                        encoding = System.Text.Encoding.GetEncoding(StringUtils.UTF8);
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+#endif
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return encoding;
+        }
+
+    }
 }

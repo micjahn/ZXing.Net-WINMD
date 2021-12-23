@@ -25,11 +25,33 @@ namespace ZXing.OneD
     ///   <p>Encapsulates functionality and implementation that is common to one-dimensional barcodes.</p>
     ///   <author>dsbnatut@gmail.com (Kazuki Nishiura)</author>
     /// </summary>
-   internal abstract class OneDimensionalCodeWriter : Writer
+    internal abstract class OneDimensionalCodeWriter : Writer
     {
         private static readonly System.Text.RegularExpressions.Regex NUMERIC = new System.Text.RegularExpressions.Regex("[0-9]+");
 
+        /// <summary>
+        /// returns supported formats
+        /// </summary>
         protected abstract IList<BarcodeFormat> SupportedWriteFormats { get; }
+
+        /// <summary>
+        /// Encode the contents to boolean array expression of one-dimensional barcode.
+        /// Start code and end code should be included in result, and side margins should not be included.
+        /// </summary>
+        /// <param name="contents">barcode contents to encode</param>
+        /// <returns>a <c>bool[]</c> of horizontal pixels (false = white, true = black)</returns>
+        public abstract bool[] encode(String contents);
+
+        /// <summary>
+        /// Can be overwritten if the encode requires to read the hints map. Otherwise it defaults to {@code encode}.
+        /// </summary>
+        /// <param name="contents">barcode contents to encode</param>
+        /// <param name="hints">encoding hints</param>
+        /// <returns>a <c>bool[]</c> of horizontal pixels (false = white, true = black)</returns>
+        protected virtual bool[] encode(String contents, IDictionary<EncodeHintType, object> hints)
+        {
+            return encode(contents);
+        }
 
         /// <summary>
         /// Encode a barcode using the default settings.
@@ -72,7 +94,7 @@ namespace ZXing.OneD
             var supportedFormats = SupportedWriteFormats;
             if (supportedFormats != null && !supportedFormats.Contains(format))
             {
-#if WindowsCE || WINDOWS_PHONE70 || NET20 || NET35 || UNITY
+#if WindowsCE || WINDOWS_PHONE70 || NET20 || NET35 || UNITY || PORTABLE
                 var supportedFormatsArray = new string[supportedFormats.Count];
                 for (var i = 0; i < supportedFormats.Count; i++)
                     supportedFormatsArray[i] = supportedFormats[i].ToString();
@@ -92,7 +114,7 @@ namespace ZXing.OneD
                 }
             }
 
-            var code = encode(contents);
+            var code = encode(contents, hints);
             return renderResult(code, width, height, sidesMargin);
         }
 
@@ -170,14 +192,6 @@ namespace ZXing.OneD
                 return 10;
             }
         }
-
-        /// <summary>
-        /// Encode the contents to bool array expression of one-dimensional barcode.
-        /// Start code and end code should be included in result, and side margins should not be included.
-        /// </summary>
-        /// <param name="contents">barcode contents to encode</param>
-        /// <returns>a <c>bool[]</c> of horizontal pixels (false = white, true = black)</returns>
-        public abstract bool[] encode(String contents);
 
         /// <summary>
         /// Calculates the checksum digit modulo10.

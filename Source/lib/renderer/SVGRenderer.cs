@@ -34,13 +34,19 @@ using ZXing.OneD;
 
 namespace ZXing.Rendering
 {
-   /// <summary>
-   /// Renders a barcode into a Svg image
-   /// </summary>
-   public sealed class SvgRenderer : IBarcodeRendererSvg
-   {
-      internal const string DefaultFontName = "Arial";
-      internal const int DefaultFontSize = 10;
+    /// <summary>
+    /// Renders a barcode into a Svg image
+    /// </summary>
+    public sealed class SvgRenderer : IBarcodeRendererSvg
+    {
+        /// <summary>
+        /// the default font name if nothing else is set (Arial)
+        /// </summary>
+        internal const string DefaultFontName = "Arial";
+        /// <summary>
+        /// the default font size if nothing else is set (10)
+        /// </summary>
+        internal const int DefaultFontSize = 10;
 
 #if !UNITY
 #if (PORTABLE || NETSTANDARD)
@@ -98,19 +104,19 @@ namespace ZXing.Rendering
          }
       }
 #endif
-      /// <summary>
-      /// Gets or sets the foreground color.
-      /// </summary>
-      /// <value>The foreground color.</value>
-      [CLSCompliant(false)]
-      public Color Foreground { get; set; }
+        /// <summary>
+        /// Gets or sets the foreground color.
+        /// </summary>
+        /// <value>The foreground color.</value>
+        [CLSCompliant(false)]
+        public Color Foreground { get; set; }
 
-      /// <summary>
-      /// Gets or sets the background color.
-      /// </summary>
-      /// <value>The background color.</value>
-      [CLSCompliant(false)]
-      public Color Background { get; set; }
+        /// <summary>
+        /// Gets or sets the background color.
+        /// </summary>
+        /// <value>The background color.</value>
+        [CLSCompliant(false)]
+        public Color Background { get; set; }
 #else
       /// <summary>
       /// Gets or sets the foreground color.
@@ -127,26 +133,26 @@ namespace ZXing.Rendering
       public Color32 Background { get; set; }
 #endif
 
-      /// <summary>
-      /// Gets or sets the font family name
-      /// </summary>
-      /// <value>The font family name.</value>
-      public string FontName { get; set; }
+        /// <summary>
+        /// Gets or sets the font family name
+        /// </summary>
+        /// <value>The font family name.</value>
+        public string FontName { get; set; }
 
-      /// <summary>
-      /// Gets or sets the font size in pixel
-      /// </summary>
-      /// <value>The font size in pixel.</value>
-      public int FontSize { get; set; }
+        /// <summary>
+        /// Gets or sets the font size in pixel
+        /// </summary>
+        /// <value>The font size in pixel.</value>
+        public int FontSize { get; set; }
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SvgRenderer"/> class.
-      /// </summary>
-      public SvgRenderer()
-      {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SvgRenderer"/> class.
+        /// </summary>
+        public SvgRenderer()
+        {
 #if NETFX_CORE || SILVERLIGHT
-         Foreground = Colors.Black;
-         Background = Colors.White;
+            Foreground = Colors.Black;
+            Background = Colors.White;
 #elif UNITY
          Foreground = new Color32(0, 0, 0, 255);
          Background = new Color32(255, 255, 255, 255);
@@ -154,170 +160,184 @@ namespace ZXing.Rendering
          Foreground = Color.Black;
          Background = Color.White;
 #endif
-      }
+        }
 
-      /// <summary>
-      /// Renders the specified matrix.
-      /// </summary>
-      /// <param name="matrix">The matrix.</param>
-      /// <param name="format">The format.</param>
-      /// <param name="content">The content.</param>
-      /// <returns></returns>
-      public SvgImage Render(BitMatrix matrix, BarcodeFormat format, string content)
-      {
-         return Render(matrix, format, content, null);
-      }
+        /// <summary>
+        /// Renders the specified matrix.
+        /// </summary>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="format">The format.</param>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        public SvgImage Render(BitMatrix matrix, BarcodeFormat format, string content)
+        {
+            return Render(matrix, format, content, null);
+        }
 
-      /// <summary>
-      /// Renders the specified matrix.
-      /// </summary>
-      /// <param name="matrix">The matrix.</param>
-      /// <param name="format">The format.</param>
-      /// <param name="content">The content.</param>
-      /// <param name="options">The options.</param>
-      /// <returns></returns>
-      public SvgImage Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
-      {
-         var result = new SvgImage(matrix.Width, matrix.Height);
+        /// <summary>
+        /// Renders the specified matrix.
+        /// </summary>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="format">The format.</param>
+        /// <param name="content">The content.</param>
+        /// <param name="options">The options.</param>
+        /// <returns></returns>
+        public SvgImage Render(BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
+        {
+            var result = new SvgImage(matrix.Width, matrix.Height);
 
-         Create(result, matrix, format, content, options);
+            Create(result, matrix, format, content, options);
 
-         return result;
-      }
+            return result;
+        }
 
-      private void Create(SvgImage image, BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
-      {
-         if (matrix == null)
-            return;
+        private void Create(SvgImage image, BitMatrix matrix, BarcodeFormat format, string content, EncodingOptions options)
+        {
+            if (matrix == null)
+                return;
 
-         const int spaceBetweenMatrixAndText = 3;
-         int width = matrix.Width;
-         int height = matrix.Height;
-         var outputContent = (options == null || !options.PureBarcode) &&
-                    !String.IsNullOrEmpty(content) &&
-                    (format == BarcodeFormat.CODE_39 ||
-                     format == BarcodeFormat.CODE_93 ||
-                     format == BarcodeFormat.CODE_128 ||
-                     format == BarcodeFormat.EAN_13 ||
-                     format == BarcodeFormat.EAN_8 ||
-                     format == BarcodeFormat.CODABAR ||
-                     format == BarcodeFormat.ITF ||
-                     format == BarcodeFormat.UPC_A ||
-                     format == BarcodeFormat.UPC_E ||
-                     format == BarcodeFormat.MSI ||
-                     format == BarcodeFormat.PLESSEY);
+            const int spaceBetweenMatrixAndText = 3;
+            int width = matrix.Width;
+            int height = matrix.Height;
+            var outputContent = (options == null || !options.PureBarcode) &&
+                       !String.IsNullOrEmpty(content) &&
+                       (format == BarcodeFormat.CODE_39 ||
+                        format == BarcodeFormat.CODE_93 ||
+                        format == BarcodeFormat.CODE_128 ||
+                        format == BarcodeFormat.EAN_13 ||
+                        format == BarcodeFormat.EAN_8 ||
+                        format == BarcodeFormat.CODABAR ||
+                        format == BarcodeFormat.ITF ||
+                        format == BarcodeFormat.UPC_A ||
+                        format == BarcodeFormat.UPC_E ||
+                        format == BarcodeFormat.MSI ||
+                        format == BarcodeFormat.PLESSEY);
 
-         if (outputContent)
-         {
-            var fontSize = FontSize < 1 ? DefaultFontSize : FontSize;
-            height += fontSize + spaceBetweenMatrixAndText;
-         }
-
-         image.AddHeader();
-         image.AddTag(0, 0, width, height, Background, Foreground);
-         AppendDarkCell(image, matrix, 0, 0);
-
-         if (outputContent)
-         {
-            var fontName = String.IsNullOrEmpty(FontName) ? DefaultFontName : FontName;
-            var fontSize = FontSize < 1 ? DefaultFontSize : FontSize;
-
-            content = ModifyContentDependingOnBarcodeFormat(format, content);
-
-            image.AddText(content, fontName, fontSize);
-         }
-
-         image.AddEnd();
-      }
-
-      private string ModifyContentDependingOnBarcodeFormat(BarcodeFormat format, string content)
-      {
-         switch (format)
-         {
-            case BarcodeFormat.EAN_8:
-               if (content.Length < 8)
-                  content = OneDimensionalCodeWriter.CalculateChecksumDigitModulo10(content);
-               content = content.Insert(4, "   ");
-               break;
-            case BarcodeFormat.EAN_13:
-               if (content.Length < 13)
-                  content = OneDimensionalCodeWriter.CalculateChecksumDigitModulo10(content);
-               content = content.Insert(7, "   ");
-               content = content.Insert(1, "   ");
-               break;
-         }
-
-         return content;
-      }
-
-      private static void AppendDarkCell(SvgImage image, BitMatrix matrix, int offsetX, int offSetY)
-      {
-         if (matrix == null)
-            return;
-
-         int width = matrix.Width;
-         int height = matrix.Height;
-         var processed = new BitMatrix(width, height);
-         bool currentIsBlack = false;
-         int startPosX = 0;
-         int startPosY = 0;
-         for (int x = 0; x < width; x++)
-         {
-            int endPosX;
-            for (int y = 0; y < height; y++)
+            if (outputContent)
             {
-               if (processed[x, y])
-                  continue;
-
-               processed[x, y] = true;
-
-               if (matrix[x, y])
-               {
-                  if (!currentIsBlack)
-                  {
-                     startPosX = x;
-                     startPosY = y;
-                     currentIsBlack = true;
-                  }
-               }
-               else
-               {
-                  if (currentIsBlack)
-                  {
-                     FindMaximumRectangle(matrix, processed, startPosX, startPosY, y, out endPosX);
-                     image.AddRec(startPosX + offsetX, startPosY + offSetY, endPosX - startPosX + 1, y - startPosY);
-                     currentIsBlack = false;
-                  }
-               }
+                var fontSize = FontSize < 1 ? DefaultFontSize : FontSize;
+                height += fontSize + spaceBetweenMatrixAndText;
             }
-            if (currentIsBlack)
+
+            image.AddHeader();
+            image.AddTag(0, 0, width, height, Background, Foreground);
+            AppendDarkCell(image, matrix, 0, 0);
+
+            if (outputContent)
             {
-               FindMaximumRectangle(matrix, processed, startPosX, startPosY, height, out endPosX);
-               image.AddRec(startPosX + offsetX, startPosY + offSetY, endPosX - startPosX + 1, height - startPosY);
-               currentIsBlack = false;
-            }
-         }
-      }
+                var fontName = String.IsNullOrEmpty(FontName) ? DefaultFontName : FontName;
+                var fontSize = FontSize < 1 ? DefaultFontSize : FontSize;
 
-      private static void FindMaximumRectangle(BitMatrix matrix, BitMatrix processed, int startPosX, int startPosY, int endPosY, out int endPosX)
-      {
-         endPosX = startPosX;
+                content = ModifyContentDependingOnBarcodeFormat(format, content);
 
-         for (int x = startPosX + 1; x < matrix.Width; x++)
-         {
-            for (int y = startPosY; y < endPosY; y++)
-            {
-               if (!matrix[x, y])
-               {
-                  return;
-               }
+                image.AddText(content, fontName, fontSize);
             }
-            endPosX = x;
-            for (int y = startPosY; y < endPosY; y++)
+
+            image.AddEnd();
+        }
+
+        private string ModifyContentDependingOnBarcodeFormat(BarcodeFormat format, string content)
+        {
+            switch (format)
             {
-               processed[x, y] = true;
+                case BarcodeFormat.UPC_E:
+                case BarcodeFormat.EAN_8:
+                    if (content.Length < 8)
+                        content = OneDimensionalCodeWriter.CalculateChecksumDigitModulo10(content);
+                    if (content.Length > 4)
+                        content = content.Insert(4, "   ");
+                    break;
+                case BarcodeFormat.EAN_13:
+                    if (content.Length < 13)
+                        content = OneDimensionalCodeWriter.CalculateChecksumDigitModulo10(content);
+                    if (content.Length > 7)
+                        content = content.Insert(7, "   ");
+                    if (content.Length > 1)
+                        content = content.Insert(1, "   ");
+                    break;
+                case BarcodeFormat.UPC_A:
+                    if (content.Length < 12)
+                        content = OneDimensionalCodeWriter.CalculateChecksumDigitModulo10(content);
+                    if (content.Length > 11)
+                        content = content.Insert(11, "   ");
+                    if (content.Length > 6)
+                        content = content.Insert(6, "   ");
+                    if (content.Length > 1)
+                        content = content.Insert(1, "   ");
+                    break;
             }
-         }
-      }
-   }
+
+            return content;
+        }
+
+        private static void AppendDarkCell(SvgImage image, BitMatrix matrix, int offsetX, int offSetY)
+        {
+            if (matrix == null)
+                return;
+
+            int width = matrix.Width;
+            int height = matrix.Height;
+            var processed = new BitMatrix(width, height);
+            bool currentIsBlack = false;
+            int startPosX = 0;
+            int startPosY = 0;
+            for (int x = 0; x < width; x++)
+            {
+                int endPosX;
+                for (int y = 0; y < height; y++)
+                {
+                    if (processed[x, y])
+                        continue;
+
+                    processed[x, y] = true;
+
+                    if (matrix[x, y])
+                    {
+                        if (!currentIsBlack)
+                        {
+                            startPosX = x;
+                            startPosY = y;
+                            currentIsBlack = true;
+                        }
+                    }
+                    else
+                    {
+                        if (currentIsBlack)
+                        {
+                            FindMaximumRectangle(matrix, processed, startPosX, startPosY, y, out endPosX);
+                            image.AddRec(startPosX + offsetX, startPosY + offSetY, endPosX - startPosX + 1, y - startPosY);
+                            currentIsBlack = false;
+                        }
+                    }
+                }
+                if (currentIsBlack)
+                {
+                    FindMaximumRectangle(matrix, processed, startPosX, startPosY, height, out endPosX);
+                    image.AddRec(startPosX + offsetX, startPosY + offSetY, endPosX - startPosX + 1, height - startPosY);
+                    currentIsBlack = false;
+                }
+            }
+        }
+
+        private static void FindMaximumRectangle(BitMatrix matrix, BitMatrix processed, int startPosX, int startPosY, int endPosY, out int endPosX)
+        {
+            endPosX = startPosX;
+
+            for (int x = startPosX + 1; x < matrix.Width; x++)
+            {
+                for (int y = startPosY; y < endPosY; y++)
+                {
+                    if (!matrix[x, y])
+                    {
+                        return;
+                    }
+                }
+                endPosX = x;
+                for (int y = startPosY; y < endPosY; y++)
+                {
+                    processed[x, y] = true;
+                }
+            }
+        }
+    }
 }

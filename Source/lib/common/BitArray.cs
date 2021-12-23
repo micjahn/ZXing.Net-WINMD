@@ -32,7 +32,10 @@ namespace ZXing.Common
       /// </summary>
       public int Size
       {
-         get { return size; }
+            get
+            {
+                return size;
+            }
       }
 
       /// <summary>
@@ -40,7 +43,10 @@ namespace ZXing.Common
       /// </summary>
       public int SizeInBytes
       {
-         get { return (size + 7) >> 3; }
+            get
+            {
+                return (size + 7) >> 3;
+            }
       }
 
       /// <summary>
@@ -50,7 +56,10 @@ namespace ZXing.Common
       /// <returns></returns>
       internal bool this[int i]
       {
-         get { return (bits[i >> 5] & (1 << (i & 0x1F))) != 0; }
+            get
+            {
+                return (bits[i >> 5] & (1 << (i & 0x1F))) != 0;
+            }
          set
          {
             if (value)
@@ -110,7 +119,7 @@ namespace ZXing.Common
 
       private static int numberOfTrailingZeros(int num)
       {
-         var index = (-num & num)%37;
+            var index = (-num & num) % 37;
          if (index < 0)
             index *= -1;
          return _lookup[index];
@@ -304,11 +313,17 @@ namespace ZXing.Common
          {
             throw new ArgumentException("Num bits must be between 0 and 32");
          }
-         ensureCapacity(size + numBits);
-         for (int numBitsLeft = numBits; numBitsLeft > 0; numBitsLeft--)
-         {
-            appendBit(((value >> (numBitsLeft - 1)) & 0x01) == 1);
-         }
+            int nextSize = size;
+            ensureCapacity(nextSize + numBits);
+            for (int numBitsLeft = numBits - 1; numBitsLeft >= 0; numBitsLeft--)
+            {
+                if ((value & (1 << numBitsLeft)) != 0)
+                {
+                    bits[nextSize / 32] |= 1 << (nextSize & 0x1F);
+                }
+                nextSize++;
+            }
+            size = nextSize;
       }
 
       /// <summary>

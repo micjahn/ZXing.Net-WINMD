@@ -24,7 +24,7 @@ namespace ZXing.QrCode.Internal
     /// See ISO 18004:2006 Annex D
     /// </summary>
     /// <author>Sean Owen</author>
-   internal sealed class Version
+    internal sealed class Version
     {
         /// <summary> See ISO 18004:2006 Annex D.
         /// Element i represents the raw version bits that specify version i + 7

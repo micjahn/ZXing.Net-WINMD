@@ -26,7 +26,7 @@ namespace ZXing.OneD
     /// 
     /// <author>erik.barbara@gmail.com (Erik Barbara)</author>
     /// </summary>
-   internal sealed class ITFWriter : OneDimensionalCodeWriter
+    internal sealed class ITFWriter : OneDimensionalCodeWriter
     {
         private static readonly int[] START_PATTERN = { 1, 1, 1, 1 };
         private static readonly int[] END_PATTERN = { 3, 1, 1 };
@@ -50,6 +50,9 @@ namespace ZXing.OneD
 
         private static readonly IList<BarcodeFormat> supportedWriteFormats = new List<BarcodeFormat> { BarcodeFormat.ITF };
 
+        /// <summary>
+        /// returns supported formats
+        /// </summary>
         protected override IList<BarcodeFormat> SupportedWriteFormats
         {
             get { return supportedWriteFormats; }

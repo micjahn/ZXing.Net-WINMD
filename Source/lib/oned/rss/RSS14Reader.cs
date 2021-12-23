@@ -24,14 +24,14 @@ namespace ZXing.OneD.RSS
     /// <summary>
     /// Decodes RSS-14, including truncated and stacked variants. See ISO/IEC 24724:2006.
     /// </summary>
-   internal sealed class RSS14Reader : AbstractRSSReader
+    internal sealed class RSS14Reader : AbstractRSSReader
     {
-        private static readonly int[] OUTSIDE_EVEN_TOTAL_SUBSET = {1, 10, 34, 70, 126};
-        private static readonly int[] INSIDE_ODD_TOTAL_SUBSET = {4, 20, 48, 81};
-        private static readonly int[] OUTSIDE_GSUM = {0, 161, 961, 2015, 2715};
-        private static readonly int[] INSIDE_GSUM = {0, 336, 1036, 1516};
-        private static readonly int[] OUTSIDE_ODD_WIDEST = {8, 6, 4, 3, 1};
-        private static readonly int[] INSIDE_ODD_WIDEST = {2, 4, 6, 8};
+        private static readonly int[] OUTSIDE_EVEN_TOTAL_SUBSET = { 1, 10, 34, 70, 126 };
+        private static readonly int[] INSIDE_ODD_TOTAL_SUBSET = { 4, 20, 48, 81 };
+        private static readonly int[] OUTSIDE_GSUM = { 0, 161, 961, 2015, 2715 };
+        private static readonly int[] INSIDE_GSUM = { 0, 336, 1036, 1516 };
+        private static readonly int[] OUTSIDE_ODD_WIDEST = { 8, 6, 4, 3, 1 };
+        private static readonly int[] INSIDE_ODD_WIDEST = { 2, 4, 6, 8 };
 
         private static readonly int[][] FINDER_PATTERNS =
         {
@@ -157,21 +157,17 @@ namespace ZXing.OneD.RSS
 
             ResultPoint[] leftPoints = leftPair.FinderPattern.ResultPoints;
             ResultPoint[] rightPoints = rightPair.FinderPattern.ResultPoints;
-            return new Result(
+            var result = new Result(
                 buffer.ToString(),
                 null,
-                new ResultPoint[] {leftPoints[0], leftPoints[1], rightPoints[0], rightPoints[1],},
+                new ResultPoint[] { leftPoints[0], leftPoints[1], rightPoints[0], rightPoints[1], },
                 BarcodeFormat.RSS_14);
+            result.putMetadata(ResultMetadataType.SYMBOLOGY_IDENTIFIER, "]e0");
+            return result;
         }
 
         private static bool checkChecksum(Pair leftPair, Pair rightPair)
         {
-            //int leftFPValue = leftPair.FinderPattern.Value;
-            //int rightFPValue = rightPair.FinderPattern.Value;
-            //if ((leftFPValue == 0 && rightFPValue == 8) ||
-            //    (leftFPValue == 8 && rightFPValue == 0))
-            //{
-            //}
             int checkValue = (leftPair.ChecksumPortion + 16 * rightPair.ChecksumPortion) % 79;
             int targetCheckValue =
                 9 * leftPair.FinderPattern.Value + rightPair.FinderPattern.Value;
@@ -195,7 +191,7 @@ namespace ZXing.OneD.RSS
             if (pattern == null)
                 return null;
 
-            ResultPointCallback resultPointCallback = hints == null || !hints.ContainsKey(DecodeHintType.NEED_RESULT_POINT_CALLBACK) ? null : (ResultPointCallback) hints[DecodeHintType.NEED_RESULT_POINT_CALLBACK];
+            ResultPointCallback resultPointCallback = hints == null || !hints.ContainsKey(DecodeHintType.NEED_RESULT_POINT_CALLBACK) ? null : (ResultPointCallback)hints[DecodeHintType.NEED_RESULT_POINT_CALLBACK];
 
             if (resultPointCallback != null)
             {
@@ -223,10 +219,7 @@ namespace ZXing.OneD.RSS
         private DataCharacter decodeDataCharacter(BitArray row, FinderPattern pattern, bool outsideChar)
         {
             int[] counters = getDataCharacterCounters();
-            for (int x = 0; x < counters.Length; x++)
-            {
-                counters[x] = 0;
-            }
+            SupportClass.Fill(counters, 0);
 
             if (outsideChar)
             {
@@ -248,7 +241,7 @@ namespace ZXing.OneD.RSS
             }
 
             int numModules = outsideChar ? 16 : 15;
-            float elementWidth = (float) ZXing.Common.Detector.MathUtils.sum(counters) / (float) numModules;
+            float elementWidth = (float)ZXing.Common.Detector.MathUtils.sum(counters) / (float)numModules;
 
             int[] oddCounts = this.getOddCounts();
             int[] evenCounts = this.getEvenCounts();
@@ -257,8 +250,8 @@ namespace ZXing.OneD.RSS
 
             for (int i = 0; i < counters.Length; i++)
             {
-                float value = (float) counters[i] / elementWidth;
-                int rounded = (int) (value + 0.5f); // Round
+                float value = (float)counters[i] / elementWidth;
+                int rounded = (int)(value + 0.5f); // Round
                 if (rounded < 1)
                 {
                     rounded = 1;
@@ -370,7 +363,7 @@ namespace ZXing.OneD.RSS
                     {
                         if (isFinderPattern(counters))
                         {
-                            return new int[] {patternStart, x};
+                            return new int[] { patternStart, x };
                         }
                         patternStart += counters[0] + counters[1];
                         counters[0] = counters[2];
@@ -417,7 +410,7 @@ namespace ZXing.OneD.RSS
                 start = row.Size - 1 - start;
                 end = row.Size - 1 - end;
             }
-            return new FinderPattern(value, new int[] {firstElementStart, startEnd[1]}, start, end, rowNumber);
+            return new FinderPattern(value, new int[] { firstElementStart, startEnd[1] }, start, end, rowNumber);
         }
 
         private bool adjustOddEvenCounts(bool outsideChar, int numModules)

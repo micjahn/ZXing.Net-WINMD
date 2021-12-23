@@ -141,7 +141,8 @@ namespace ZXing
         /// <value>
         ///   <c>true</c> if image should be inverted; otherwise, <c>false</c>.
         /// </value>
-        public bool TryInverted { get; set; }
+        [Obsolete("Please use Options.TryInverted")]
+        public bool TryInverted { get { return Options.TryInverted; } set { Options.TryInverted = value; } }
 
         /// <summary>
         /// Optional: Gets or sets the function to create a binarizer object for a luminance source.
@@ -278,6 +279,26 @@ namespace ZXing
         }
 
         /// <summary>
+        /// Decodes the specified barcode bitmap.
+        /// </summary>
+        /// <param name="barcodeBitmap">The barcode bitmap.</param>
+        /// <returns>the result data or null</returns>
+        [CLSCompliant(false)]
+        public Result[] DecodeMultipleBitmap(WriteableBitmap barcodeBitmap)
+        {
+            if (CreateLuminanceSource == null)
+            {
+                throw new InvalidOperationException("You have to declare a luminance source delegate.");
+            }
+            if (barcodeBitmap == null)
+                throw new ArgumentNullException("barcodeBitmap");
+
+            var luminanceSource = CreateLuminanceSource(barcodeBitmap);
+
+            return DecodeMultiple(luminanceSource);
+        }
+
+        /// <summary>
         /// Tries to decode barcodes within an image which is given by a luminance source.
         /// That method gives a chance to prepare a luminance source completely before calling
         /// the time consuming decoding method. On the other hand there is a chance to create
@@ -317,14 +338,14 @@ namespace ZXing
             {
                 results = multiReader.decodeMultiple(binaryBitmap, Options.Hints);
 
-                if (results == null)
-                {
-                    if (TryInverted && luminanceSource.InversionSupported)
-                    {
-                        binaryBitmap = new BinaryBitmap(CreateBinarizer(luminanceSource.invert()));
-                        results = multiReader.decodeMultiple(binaryBitmap, Options.Hints);
-                    }
-                }
+            if (results == null)
+            {
+               if (TryInverted && luminanceSource.InversionSupported)
+               {
+                  binaryBitmap = new BinaryBitmap(CreateBinarizer(luminanceSource.invert()));
+                  results = multiReader.decodeMultiple(binaryBitmap, Options.Hints);
+               }
+            }
 
                 if (results != null ||
                     !luminanceSource.RotateSupported ||
@@ -340,17 +361,17 @@ namespace ZXing
                 {
                     if (result.ResultMetadata == null)
                     {
-                        result.putMetadata(ResultMetadataType.ORIENTATION, rotationCount * 90);
+                  result.putMetadata(ResultMetadataType.ORIENTATION, rotationCount*90);
                     }
                     else if (!result.ResultMetadata.ContainsKey(ResultMetadataType.ORIENTATION))
                     {
-                        result.ResultMetadata[ResultMetadataType.ORIENTATION] = rotationCount * 90;
+                  result.ResultMetadata[ResultMetadataType.ORIENTATION] = rotationCount*90;
                     }
                     else
                     {
                         // perhaps the core decoder rotates the image already (can happen if TryHarder is specified)
                         result.ResultMetadata[ResultMetadataType.ORIENTATION] =
-                           ((int)(result.ResultMetadata[ResultMetadataType.ORIENTATION]) + rotationCount * 90) % 360;
+                            ((int) (result.ResultMetadata[ResultMetadataType.ORIENTATION]) + rotationCount*90)%360;
                     }
                 }
 

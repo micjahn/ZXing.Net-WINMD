@@ -23,7 +23,7 @@ namespace ZXing.Datamatrix.Encoder
     {
         public virtual int EncodingMode
         {
-           get { return (int)Encodation.C40; }
+            get { return (int)Encodation.C40; }
         }
 
         public virtual void encode(EncoderContext context)
@@ -65,7 +65,7 @@ namespace ZXing.Datamatrix.Encoder
                     if (newMode != EncodingMode)
                     {
                         // Return to ASCII encodation, which will actually handle latch to new mode
-                       context.signalEncoderChange((int)Encodation.ASCII);
+                        context.signalEncoderChange((int)Encodation.ASCII);
                         break;
                     }
                 }
@@ -87,7 +87,7 @@ namespace ZXing.Datamatrix.Encoder
 
         internal static void writeNextTriplet(EncoderContext context, StringBuilder buffer)
         {
-            context.writeCodewords(encodeToCodewords(buffer, 0));
+            context.writeCodewords(encodeToCodewords(buffer));
             buffer.Remove(0, 3);
         }
 
@@ -157,12 +157,12 @@ namespace ZXing.Datamatrix.Encoder
             }
             if (c >= '0' && c <= '9')
             {
-                sb.Append((char) (c - 48 + 4));
+                sb.Append((char)(c - 48 + 4));
                 return 1;
             }
             if (c >= 'A' && c <= 'Z')
             {
-                sb.Append((char) (c - 65 + 14));
+                sb.Append((char)(c - 65 + 14));
                 return 1;
             }
             if (c <= '\u001f')
@@ -174,42 +174,39 @@ namespace ZXing.Datamatrix.Encoder
             if (c <= '/')
             {
                 sb.Append('\u0001'); //Shift 2 Set
-                sb.Append((char) (c - 33));
+                sb.Append((char)(c - 33));
                 return 2;
             }
             if (c <= '@')
             {
                 sb.Append('\u0001'); //Shift 2 Set
-                sb.Append((char) (c - 58 + 15));
+                sb.Append((char)(c - 58 + 15));
                 return 2;
             }
             if (c <= '_')
             {
                 sb.Append('\u0001'); //Shift 2 Set
-                sb.Append((char) (c - 91 + 22));
+                sb.Append((char)(c - 91 + 22));
                 return 2;
             }
             if (c <= '\u007f')
             {
                 sb.Append('\u0002'); //Shift 3 Set
-                sb.Append((char) (c - 96));
+                sb.Append((char)(c - 96));
                 return 2;
             }
             sb.Append("\u0001\u001e"); //Shift 2, Upper Shift
             int len = 2;
-            len += encodeChar((char) (c - 128), sb);
+            len += encodeChar((char)(c - 128), sb);
             return len;
         }
 
-        private static String encodeToCodewords(StringBuilder sb, int startPos)
+        private static String encodeToCodewords(StringBuilder sb)
         {
-            char c1 = sb[startPos];
-            char c2 = sb[startPos + 1];
-            char c3 = sb[startPos + 2];
-            int v = (1600 * c1) + (40 * c2) + c3 + 1;
-            char cw1 = (char) (v / 256);
-            char cw2 = (char) (v % 256);
-            return new String(new char[] {cw1, cw2});
+            int v = (1600 * sb[0]) + (40 * sb[1]) + sb[2] + 1;
+            char cw1 = (char)(v / 256);
+            char cw2 = (char)(v % 256);
+            return new String(new char[] { cw1, cw2 });
         }
     }
 }

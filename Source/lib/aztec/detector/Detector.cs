@@ -27,7 +27,7 @@ namespace ZXing.Aztec.Internal
     /// is rotated or skewed, or partially obscured.
     /// </summary>
     /// <author>David Olivier</author>
-   internal sealed class Detector
+    internal sealed class Detector
     {
         private static readonly int[] EXPECTED_CORNER_BITS =
         {
@@ -494,10 +494,12 @@ namespace ZXing.Aztec.Internal
         {
             const int corr = 3;
 
-            p1 = new Point(p1.X - corr, p1.Y + corr);
-            p2 = new Point(p2.X - corr, p2.Y - corr);
-            p3 = new Point(p3.X + corr, p3.Y - corr);
-            p4 = new Point(p4.X + corr, p4.Y + corr);
+            p1 = new Point(Math.Max(0, p1.X - corr), Math.Min(image.Height - 1, p1.Y + corr));
+            p2 = new Point(Math.Max(0, p2.X - corr), Math.Max(0, p2.Y - corr));
+            p3 = new Point(Math.Min(image.Width - 1, p3.X + corr),
+                           Math.Max(0, Math.Min(image.Height - 1, p3.Y - corr)));
+            p4 = new Point(Math.Min(image.Width - 1, p4.X + corr),
+                           Math.Min(image.Height - 1, p4.Y + corr));
 
             int cInit = getColor(p4, p1);
 
@@ -535,6 +537,10 @@ namespace ZXing.Aztec.Internal
         private int getColor(Point p1, Point p2)
         {
             float d = distance(p1, p2);
+            if (d == 0.0f)
+            {
+                return 0;
+            }
             float dx = (p2.X - p1.X) / d;
             float dy = (p2.Y - p1.Y) / d;
             int error = 0;
@@ -544,15 +550,15 @@ namespace ZXing.Aztec.Internal
 
             bool colorModel = image[p1.X, p1.Y];
 
-            int iMax = (int)Math.Ceiling(d);
+            int iMax = (int)Math.Floor(d);
             for (int i = 0; i < iMax; i++)
             {
-                px += dx;
-                py += dy;
                 if (image[MathUtils.round(px), MathUtils.round(py)] != colorModel)
                 {
                     error++;
                 }
+                px += dx;
+                py += dy;
             }
 
             float errRatio = error / d;
@@ -632,7 +638,7 @@ namespace ZXing.Aztec.Internal
 
         private bool isValid(int x, int y)
         {
-            return x >= 0 && x < image.Width && y > 0 && y < image.Height;
+            return x >= 0 && x < image.Width && y >= 0 && y < image.Height;
         }
 
         private bool isValid(ResultPoint point)
@@ -659,11 +665,7 @@ namespace ZXing.Aztec.Internal
             {
                 return 4 * nbLayers + 11;
             }
-            if (nbLayers <= 4)
-            {
-                return 4 * nbLayers + 15;
-            }
-            return 4 * nbLayers + 2 * ((nbLayers - 4) / 8 + 1) + 15;
+            return 4 * nbLayers + 2 * ((2 * nbLayers + 6) / 15) + 15;
         }
 
         internal sealed class Point

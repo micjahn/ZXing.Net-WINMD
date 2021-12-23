@@ -26,7 +26,7 @@ namespace ZXing.Multi
     /// 'quadrant' to cover the case where a barcode is found in the center.
     /// </summary>
     /// <seealso cref="GenericMultipleBarcodeReader" />
-   internal sealed class ByQuadrantReader : Reader
+    internal sealed class ByQuadrantReader : Reader
     {
         private readonly Reader @delegate;
 

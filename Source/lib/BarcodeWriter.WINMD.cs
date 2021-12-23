@@ -108,7 +108,7 @@ namespace ZXing
       /// </summary>
       /// <param name="matrix">The matrix.</param>
       /// <returns></returns>
-      internal PixelData Write(BitMatrix matrix)
+      public PixelData WriteFromMatrix(BitMatrix matrix)
       {
          if (Renderer == null)
          {

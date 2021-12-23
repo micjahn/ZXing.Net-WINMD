@@ -98,6 +98,12 @@ namespace ZXing
         PDF417_DIMENSIONS,
 
         /// <summary>
+        /// The Specifies that the PDF417 will contain macro metadata.
+        /// type: <see cref="ZXing.PDF417.PDF417MacroMetadata"/>
+        /// </summary>
+        PDF417_MACRO_META_DATA,
+
+        /// <summary>
         /// Don't append ECI segment.
         /// That is against the specification of QR Code but some
         /// readers have problems if the charset is switched from
@@ -164,5 +170,20 @@ namespace ZXing
         /// (Type <see cref="System.Int32" />, or <see cref="System.String" /> representation of the integer value).
         /// </summary>
         QR_MASK_PATTERN,
+
+        /// <summary>
+        /// Forces which encoding will be used. Currently only used for Code-128 code sets (Type <see cref="System.String" />). Valid values are "A", "B", "C".
+        /// see also CODE128_FORCE_CODESET_B
+        /// </summary>
+        FORCE_CODE_SET,
+
+        /// <summary>
+        /// Specifies whether to use compact mode for QR code (type <see cref="System.Boolean" />, or "true" or "false"
+        /// Please note that when compaction is performed, the most compact character encoding is chosen
+        /// for characters in the input that are not in the ISO-8859-1 character set. Based on experience,
+        /// some scanners do not support encodings like cp-1256 (Arabic). In such cases the encoding can
+        /// be forced to UTF-8 by means of the <see cref="CHARACTER_SET"/> encoding hint.
+        /// </summary>
+        QR_COMPACT,
     }
 }

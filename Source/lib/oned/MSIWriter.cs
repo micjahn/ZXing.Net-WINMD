@@ -24,7 +24,7 @@ namespace ZXing.OneD
     /// <summary>
     /// This object renders a MSI code as a <see cref="BitMatrix"/>.
     /// </summary>
-   internal sealed class MSIWriter : OneDimensionalCodeWriter
+    internal sealed class MSIWriter : OneDimensionalCodeWriter
     {
         private static readonly int[] startWidths = new[] { 2, 1 };
         private static readonly int[] endWidths = new[] { 1, 2, 1 };
@@ -44,6 +44,9 @@ namespace ZXing.OneD
 
         private static readonly IList<BarcodeFormat> supportedWriteFormats = new List<BarcodeFormat> { BarcodeFormat.MSI };
 
+        /// <summary>
+        /// returns supported formats
+        /// </summary>
         protected override IList<BarcodeFormat> SupportedWriteFormats
         {
             get { return supportedWriteFormats; }

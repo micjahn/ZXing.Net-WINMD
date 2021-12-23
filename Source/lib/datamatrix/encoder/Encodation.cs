@@ -16,16 +16,34 @@
 
 namespace ZXing.Datamatrix.Encoder
 {
-   /// <summary>
-   /// Enumeration for encodation types
-   /// </summary>
-   public enum Encodation : int
-   {
-      ASCII = 0,
-      C40 = 1,
-      TEXT = 2,
-      X12 = 3,
-      EDIFACT = 4,
-      BASE256 = 5
-   }
+    /// <summary>
+    /// Enumeration for encodation types
+    /// </summary>
+    public enum Encodation : int
+    {
+        /// <summary>
+        /// ASCII
+        /// </summary>
+        ASCII = 0,
+        /// <summary>
+        /// C40
+        /// </summary>
+        C40 = 1,
+        /// <summary>
+        /// TEXT
+        /// </summary>
+        TEXT = 2,
+        /// <summary>
+        /// X12
+        /// </summary>
+        X12 = 3,
+        /// <summary>
+        /// EDIFACT
+        /// </summary>
+        EDIFACT = 4,
+        /// <summary>
+        /// BASE256
+        /// </summary>
+        BASE256 = 5
+    }
 }

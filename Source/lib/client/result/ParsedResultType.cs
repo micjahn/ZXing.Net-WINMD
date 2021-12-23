@@ -16,24 +16,60 @@
 
 namespace ZXing.Client.Result
 {
-   /// <summary>
-   /// Represents the type of data encoded by a barcode -- from plain text, to a
-   /// URI, to an e-mail address, etc.
-   /// </summary>
-   /// <author>Sean Owen</author>
-   public enum ParsedResultType
-   {
-      ADDRESSBOOK,
-      EMAIL_ADDRESS,
-      PRODUCT,
-      URI,
-      TEXT,
-      GEO,
-      TEL,
-      SMS,
-      CALENDAR,
-      WIFI,
-      ISBN,
-      VIN
-   }
+    /// <summary>
+    /// Represents the type of data encoded by a barcode -- from plain text, to a
+    /// URI, to an e-mail address, etc.
+    /// </summary>
+    /// <author>Sean Owen</author>
+    public enum ParsedResultType
+    {
+        /// <summary>
+        /// address book
+        /// </summary>
+        ADDRESSBOOK,
+        /// <summary>
+        /// email address
+        /// </summary>
+        EMAIL_ADDRESS,
+        /// <summary>
+        /// product
+        /// </summary>
+        PRODUCT,
+        /// <summary>
+        /// URI
+        /// </summary>
+        URI,
+        /// <summary>
+        /// Text
+        /// </summary>
+        TEXT,
+        /// <summary>
+        /// geo coordinates
+        /// </summary>
+        GEO,
+        /// <summary>
+        /// telefon
+        /// </summary>
+        TEL,
+        /// <summary>
+        /// sms
+        /// </summary>
+        SMS,
+        /// <summary>
+        /// calendar
+        /// </summary>
+        CALENDAR,
+        /// <summary>
+        /// wifi
+        /// </summary>
+        WIFI,
+        /// <summary>
+        /// ISBN
+        /// </summary>
+        ISBN,
+        /// <summary>
+        /// VIN
+        /// </summary>
+        VIN
+    }
 }

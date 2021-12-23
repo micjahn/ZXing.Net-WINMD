@@ -19,7 +19,7 @@
  */
 
 using System;
-#if (SILVERLIGHT4 || SILVERLIGHT5 || NET40 || NET45 || NET46 || NET47 || NETFX_CORE || NETSTANDARD) && !NETSTANDARD1_0
+#if (SILVERLIGHT4 || SILVERLIGHT5 || NET40 || NET45 || NET46 || NET47 || NET48 || NETFX_CORE || NETSTANDARD) && !NETSTANDARD1_0
 using System.Numerics;
 #else
 using BigIntegerLibrary;
@@ -175,9 +175,9 @@ namespace ZXing.PDF417.Internal
             //the codewords 0..928 are encoded as Unicode characters
             var sb = new StringBuilder(msg.Length);
 
-            if (encoding != null && !disableEci && String.Compare(DEFAULT_ENCODING_NAME, encoding.WebName, StringComparison.Ordinal) != 0)
+            if (encoding != null && !disableEci && String.Compare(DEFAULT_ENCODING_NAME, encoding.WebName.ToUpper(), StringComparison.Ordinal) != 0)
             {
-                CharacterSetECI eci = CharacterSetECI.getCharacterSetECIByName(encoding.WebName);
+                CharacterSetECI eci = CharacterSetECI.getCharacterSetECI(encoding);
                 if (eci != null)
                 {
                     encodingECI(eci.Value, sb);
@@ -563,35 +563,35 @@ namespace ZXing.PDF417.Internal
 
         private static void encodeNumeric(String msg, int startpos, int count, StringBuilder sb)
         {
-#if (SILVERLIGHT4 || SILVERLIGHT5 || NET40 || NET45 || NET46 || NET47 || NETFX_CORE || NETSTANDARD) && !NETSTANDARD1_0
-         int idx = 0;
-         StringBuilder tmp = new StringBuilder(count/3 + 1);
-         BigInteger num900 = new BigInteger(900);
-         BigInteger num0 = new BigInteger(0);
-         while (idx < count)
-         {
-            tmp.Length = 0;
-            int len = Math.Min(44, count - idx);
-            String part = '1' + msg.Substring(startpos + idx, len);
+#if (SILVERLIGHT4 || SILVERLIGHT5 || NET40 || NET45 || NET46 || NET47 || NET48 || NETFX_CORE || NETSTANDARD) && !NETSTANDARD1_0
+            int idx = 0;
+            StringBuilder tmp = new StringBuilder(count / 3 + 1);
+            BigInteger num900 = new BigInteger(900);
+            BigInteger num0 = new BigInteger(0);
+            while (idx < count)
+            {
+                tmp.Length = 0;
+                int len = Math.Min(44, count - idx);
+                String part = '1' + msg.Substring(startpos + idx, len);
 #if SILVERLIGHT4 || SILVERLIGHT5
             BigInteger bigint = BigIntegerExtensions.Parse(part);
 #else
-            BigInteger bigint = BigInteger.Parse(part);
+                BigInteger bigint = BigInteger.Parse(part);
 #endif
-            do
-            {
-               BigInteger c = bigint%num900;
-               tmp.Append((char) c);
-               bigint = BigInteger.Divide(bigint, num900);
-            } while (!bigint.Equals(num0));
+                do
+                {
+                    BigInteger c = bigint % num900;
+                    tmp.Append((char)c);
+                    bigint = BigInteger.Divide(bigint, num900);
+                } while (!bigint.Equals(num0));
 
-            //Reverse temporary string
-            for (int i = tmp.Length - 1; i >= 0; i--)
-            {
-               sb.Append(tmp[i]);
+                //Reverse temporary string
+                for (int i = tmp.Length - 1; i >= 0; i--)
+                {
+                    sb.Append(tmp[i]);
+                }
+                idx += len;
             }
-            idx += len;
-         }
 #else
             int idx = 0;
             StringBuilder tmp = new StringBuilder(count / 3 + 1);
@@ -731,6 +731,7 @@ namespace ZXing.PDF417.Internal
         /// <param name="bytes">the message converted to a byte array</param>
         /// <param name="startpos">the start position within the message</param>
         /// <param name="encoding"></param>
+        /// <param name="byteCount"></param>
         /// <returns>the requested character count</returns>
         private static int determineConsecutiveBinaryCount(String msg, byte[] bytes, int startpos, Encoding encoding, out int byteCount)
         {

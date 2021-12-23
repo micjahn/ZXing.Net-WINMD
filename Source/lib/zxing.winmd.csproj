@@ -144,6 +144,12 @@
     <Compile Include="client\result\GeoResultParser.cs" />
     <Compile Include="client\result\ISBNParsedResult.cs" />
     <Compile Include="client\result\ISBNResultParser.cs" />
+    <None Include="client\result\optional\AbstractNDEFResultParser.cs" />
+    <None Include="client\result\optional\NDEFRecord.cs" />
+    <None Include="client\result\optional\NDEFSmartPosterParsedResult.cs" />
+    <None Include="client\result\optional\NDEFSmartPosterResultParser.cs" />
+    <None Include="client\result\optional\NDEFTextResultParser.cs" />
+    <None Include="client\result\optional\NDEFURIResultParser.cs" />
     <Compile Include="client\result\ParsedResult.cs" />
     <Compile Include="client\result\ParsedResultType.cs" />
     <Compile Include="client\result\ProductParsedResult.cs" />
@@ -326,7 +332,9 @@
     <Compile Include="pdf417\encoder\PDF417EncodingOptions.cs" />
     <Compile Include="pdf417\encoder\PDF417ErrorCorrection.cs" />
     <Compile Include="pdf417\encoder\PDF417HighLevelEncoder.cs" />
+    <Compile Include="pdf417\encoder\PDF417OptionalMacroFields.cs" />
     <Compile Include="pdf417\PDF417Common.cs" />
+    <Compile Include="pdf417\PDF417MacroMetadata.cs" />
     <Compile Include="pdf417\PDF417Reader.cs" />
     <Compile Include="pdf417\PDF417ResultMetadata.cs" />
     <Compile Include="pdf417\PDF417Writer.cs" />
@@ -353,6 +361,7 @@
     <Compile Include="qrcode\encoder\Encoder.cs" />
     <Compile Include="qrcode\encoder\MaskUtil.cs" />
     <Compile Include="qrcode\encoder\MatrixUtil.cs" />
+    <Compile Include="qrcode\encoder\MinimalEncoder.cs" />
     <Compile Include="qrcode\encoder\QRCode.cs" />
     <Compile Include="qrcode\encoder\QrCodeEncodingOptions.cs" />
     <Compile Include="qrcode\QRCodeReader.cs" />

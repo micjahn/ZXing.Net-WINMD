@@ -26,7 +26,7 @@ namespace ZXing.Datamatrix.Internal
     /// is rotated or skewed, or partially obscured.</p>
     /// </summary>
     /// <author>Sean Owen</author>
-   internal sealed class Detector
+    internal sealed class Detector
     {
         private readonly BitMatrix image;
         private readonly WhiteRectangleDetector rectangleDetector;
@@ -79,7 +79,7 @@ namespace ZXing.Datamatrix.Internal
                 dimensionRight += 1;
             }
 
-            if (4 * dimensionTop < 7 * dimensionRight && 4 * dimensionRight < 7 * dimensionTop)
+            if (4 * dimensionTop < 6 * dimensionRight && 4 * dimensionRight < 6 * dimensionTop)
             {
                 // The matrix is square
                 dimensionTop = dimensionRight = Math.Max(dimensionTop, dimensionRight);
@@ -392,7 +392,8 @@ namespace ZXing.Datamatrix.Internal
             int fromX = (int)from.X;
             int fromY = (int)from.Y;
             int toX = (int)to.X;
-            int toY = (int)to.Y;
+            int toY = Math.Min(image.Height - 1, (int)to.Y);
+
             bool steep = Math.Abs(toY - fromY) > Math.Abs(toX - fromX);
             if (steep)
             {

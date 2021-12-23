@@ -28,7 +28,7 @@ namespace ZXing.PDF417.Internal
     /// 
     /// </summary>
     /// <author>Guenther Grau</author>
-   internal static class PDF417ScanningDecoder
+    internal static class PDF417ScanningDecoder
     {
         private const int CODEWORD_SKEW_SIZE = 2;
 
@@ -325,8 +325,11 @@ namespace ZXing.PDF417.Internal
             }
             else if (numberOfCodewords[0] != calculatedNumberOfCodewords)
             {
-                // The calculated one is more reliable as it is derived from the row indicator columns
-                barcodeMatrix01.setValue(calculatedNumberOfCodewords);
+                if (calculatedNumberOfCodewords >= 1 && calculatedNumberOfCodewords <= PDF417Common.MAX_CODEWORDS_IN_BARCODE)
+                {
+                    // The calculated one is more reliable as it is derived from the row indicator columns
+                    barcodeMatrix01.setValue(calculatedNumberOfCodewords);
+                }
             }
 
             return true;

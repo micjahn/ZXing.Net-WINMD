@@ -19,93 +19,118 @@ using System.Text;
 
 namespace ZXing.Client.Result
 {
-   /// <summary>
-   /// Represents a parsed result that encodes an SMS message, including recipients, subject and body text.
-   /// </summary>
-   /// <author>Sean Owen</author>
-   internal sealed class SMSParsedResult : ParsedResult
-   {
-      public SMSParsedResult(String number,
-                             String via,
-                             String subject,
-                             String body,
-                             bool dummy)
-         : this(new[] { number }, new[] { via }, subject, body)
-      {
-      }
+    /// <summary>
+    /// Represents a parsed result that encodes an SMS message, including recipients, subject and body text.
+    /// </summary>
+    /// <author>Sean Owen</author>
+    internal sealed class SMSParsedResult : ParsedResult
+    {
+        /// <summary>
+        /// initializing constructor
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="via"></param>
+        /// <param name="subject"></param>
+        /// <param name="body"></param>
+        public SMSParsedResult(String number,
+                               String via,
+                               String subject,
+                               String body,
+                               bool dummy)
+           : this(new[] { number }, new[] { via }, subject, body)
+        {
+        }
 
-      public SMSParsedResult([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]String[] numbers,
-                             [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]String[] vias,
-                             String subject,
-                             String body)
-         : base(ParsedResultType.SMS)
-      {
-         Numbers = numbers;
-         Vias = vias;
-         Subject = subject;
-         Body = body;
-         SMSURI = getSMSURI();
+        /// <summary>
+        /// initializing constructor
+        /// </summary>
+        /// <param name="numbers"></param>
+        /// <param name="vias"></param>
+        /// <param name="subject"></param>
+        /// <param name="body"></param>
+        public SMSParsedResult([System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]String[] numbers,
+                               [System.Runtime.InteropServices.WindowsRuntime.ReadOnlyArray]String[] vias,
+                               String subject,
+                               String body)
+           : base(ParsedResultType.SMS)
+        {
+            Numbers = numbers;
+            Vias = vias;
+            Subject = subject;
+            Body = body;
+            SMSURI = getSMSURI();
 
-         var result = new StringBuilder(100);
-         maybeAppend(Numbers, result);
-         maybeAppend(Subject, result);
-         maybeAppend(Body, result);
-         displayResultValue = result.ToString();
-      }
+            var result = new StringBuilder(100);
+            maybeAppend(Numbers, result);
+            maybeAppend(Subject, result);
+            maybeAppend(Body, result);
+            displayResultValue = result.ToString();
+        }
 
-      private String getSMSURI()
-      {
-         var result = new StringBuilder();
-         result.Append("sms:");
-         bool first = true;
-         for (int i = 0; i < Numbers.Length; i++)
-         {
-            if (first)
+        private String getSMSURI()
+        {
+            var result = new StringBuilder();
+            result.Append("sms:");
+            bool first = true;
+            for (int i = 0; i < Numbers.Length; i++)
             {
-               first = false;
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    result.Append(',');
+                }
+                result.Append(Numbers[i]);
+                if (Vias != null && Vias[i] != null)
+                {
+                    result.Append(";via=");
+                    result.Append(Vias[i]);
+                }
             }
-            else
+            bool hasBody = Body != null;
+            bool hasSubject = Subject != null;
+            if (hasBody || hasSubject)
             {
-               result.Append(',');
+                result.Append('?');
+                if (hasBody)
+                {
+                    result.Append("body=");
+                    result.Append(Body);
+                }
+                if (hasSubject)
+                {
+                    if (hasBody)
+                    {
+                        result.Append('&');
+                    }
+                    result.Append("subject=");
+                    result.Append(Subject);
+                }
             }
-            result.Append(Numbers[i]);
-            if (Vias != null && Vias[i] != null)
-            {
-               result.Append(";via=");
-               result.Append(Vias[i]);
-            }
-         }
-         bool hasBody = Body != null;
-         bool hasSubject = Subject != null;
-         if (hasBody || hasSubject)
-         {
-            result.Append('?');
-            if (hasBody)
-            {
-               result.Append("body=");
-               result.Append(Body);
-            }
-            if (hasSubject)
-            {
-               if (hasBody)
-               {
-                  result.Append('&');
-               }
-               result.Append("subject=");
-               result.Append(Subject);
-            }
-         }
-         return result.ToString();
-      }
+            return result.ToString();
+        }
 
-      public String[] Numbers { get; private set; }
-
-      public String[] Vias { get; private set; }
-
-      public String Subject { get; private set; }
-
-      public String Body { get; private set; }
-
-      public String SMSURI { get; private set; }
-   }
+        /// <summary>
+        /// numbers
+        /// </summary>
+        public String[] Numbers { get; private set; }
+        /// <summary>
+        ///  vias
+        /// </summary>
+        public String[] Vias { get; private set; }
+        /// <summary>
+        /// subject
+        /// </summary>
+        public String Subject { get; private set; }
+        /// <summary>
+        /// body
+        /// </summary>
+        public String Body { get; private set; }
+        /// <summary>
+        /// sms uri
+        /// </summary>
+        public String SMSURI { get; private set; }
+    }
 }

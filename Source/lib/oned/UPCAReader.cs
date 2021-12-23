@@ -27,7 +27,7 @@ namespace ZXing.OneD
     ///   <author>dswitkin@google.com (Daniel Switkin)</author>
     ///   <author>Sean Owen</author>
     /// </summary>
-   internal sealed class UPCAReader : UPCEANReader
+    internal sealed class UPCAReader : UPCEANReader
     {
         private readonly UPCEANReader ean13Reader = new EAN13Reader();
 
