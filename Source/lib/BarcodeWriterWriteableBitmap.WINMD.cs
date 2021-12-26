@@ -110,6 +110,7 @@ namespace ZXing
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns></returns>
+        [CLSCompliant(false)]
         public WriteableBitmap WriteFromMatrix(BitMatrix matrix)
         {
             if (Renderer == null)

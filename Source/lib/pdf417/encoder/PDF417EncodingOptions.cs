@@ -254,7 +254,6 @@ namespace ZXing.PDF417
 
         /// <summary>
         /// Specifies the width of the barcode image
-
         /// </summary>
         public int Width
         {
@@ -274,7 +273,6 @@ namespace ZXing.PDF417
 
         /// <summary>
         /// Don't put the content string into the output image.
-
         /// </summary>
         public bool PureBarcode
         {

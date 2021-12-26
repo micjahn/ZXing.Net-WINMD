@@ -20,147 +20,153 @@ using System.ComponentModel;
 
 namespace ZXing.Common
 {
-   public interface IEncodingOptions
-   {
-      IDictionary<EncodeHintType, object> Hints { get; }
-   }
+    /// <summary>
+    /// interface which gives access to the encoding options
+    /// </summary>
+    public interface IEncodingOptions
+    {
+        /// <summary>
+        /// dictionary which contains the encoding options
+        /// </summary>
+        IDictionary<EncodeHintType, object> Hints { get; }
+    }
 
-   /// <summary>
-   /// Defines an container for encoder options
-   /// </summary>
-   [Serializable]
-   public sealed class EncodingOptions : IEncodingOptions
-   {
-      /// <summary>
-      /// Gets the data container for all options
-      /// </summary>
+    /// <summary>
+    /// Defines an container for encoder options
+    /// </summary>
+    [Serializable]
+    public sealed class EncodingOptions : IEncodingOptions
+    {
+        /// <summary>
+        /// Gets the data container for all options
+        /// </summary>
 #if !UNITY
-      [Browsable(false)]
+        [Browsable(false)]
 #endif
-      public IDictionary<EncodeHintType, object> Hints { get; private set; }
+        public IDictionary<EncodeHintType, object> Hints { get; private set; }
 
-      /// <summary>
-      /// Specifies the height of the barcode image
-      /// </summary>
+        /// <summary>
+        /// Specifies the height of the barcode image
+        /// </summary>
 #if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
         [CategoryAttribute("Output dimensions"), DescriptionAttribute("Height in pixels.")]
 #endif
-      public int Height
-      {
-         get
-         {
-            if (Hints.ContainsKey(EncodeHintType.HEIGHT))
+        public int Height
+        {
+            get
             {
-               return (int)Hints[EncodeHintType.HEIGHT];
+                if (Hints.ContainsKey(EncodeHintType.HEIGHT))
+                {
+                    return (int)Hints[EncodeHintType.HEIGHT];
+                }
+                return 0;
             }
-            return 0;
-         }
-         set
-         {
-            Hints[EncodeHintType.HEIGHT] = value;
-         }
-      }
+            set
+            {
+                Hints[EncodeHintType.HEIGHT] = value;
+            }
+        }
 
-      /// <summary>
-      /// Specifies the width of the barcode image
-      /// </summary>
+        /// <summary>
+        /// Specifies the width of the barcode image
+        /// </summary>
 #if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
         [CategoryAttribute("Output dimensions"), DescriptionAttribute("Width in pixels.")]
 #endif
-      public int Width
-      {
-         get
-         {
-            if (Hints.ContainsKey(EncodeHintType.WIDTH))
+        public int Width
+        {
+            get
             {
-               return (int)Hints[EncodeHintType.WIDTH];
+                if (Hints.ContainsKey(EncodeHintType.WIDTH))
+                {
+                    return (int)Hints[EncodeHintType.WIDTH];
+                }
+                return 0;
             }
-            return 0;
-         }
-         set
-         {
-            Hints[EncodeHintType.WIDTH] = value;
-         }
-      }
+            set
+            {
+                Hints[EncodeHintType.WIDTH] = value;
+            }
+        }
 
-      /// <summary>
-      /// Don't put the content string into the output image.
-      /// </summary>
+        /// <summary>
+        /// Don't put the content string into the output image.
+        /// </summary>
 #if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
         [CategoryAttribute("Output options"), DescriptionAttribute("Output only barcode, no Human Readable Interpretation.")]
 #endif
-      public bool PureBarcode
-      {
-         get
-         {
-            if (Hints.ContainsKey(EncodeHintType.PURE_BARCODE))
+        public bool PureBarcode
+        {
+            get
             {
-               return (bool)Hints[EncodeHintType.PURE_BARCODE];
+                if (Hints.ContainsKey(EncodeHintType.PURE_BARCODE))
+                {
+                    return (bool)Hints[EncodeHintType.PURE_BARCODE];
+                }
+                return false;
             }
-            return false;
-         }
-         set
-         {
-            Hints[EncodeHintType.PURE_BARCODE] = value;
-         }
-      }
+            set
+            {
+                Hints[EncodeHintType.PURE_BARCODE] = value;
+            }
+        }
 
-      /// <summary>
-      /// Specifies margin, in pixels, to use when generating the barcode. The meaning can vary
-      /// by format; for example it controls margin before and after the barcode horizontally for
-      /// most 1D formats.
-      /// </summary>
+        /// <summary>
+        /// Specifies margin, in pixels, to use when generating the barcode. The meaning can vary
+        /// by format; for example it controls margin before and after the barcode horizontally for
+        /// most 1D formats.
+        /// </summary>
 #if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
         [CategoryAttribute("Output dimensions"), DescriptionAttribute("Specifies margin, in pixels, to use " +
             "when generating the barcode. The meaning can vary by format; for example it controls margin " +
             "before and after the barcode horizontally for most 1D formats.")]
 #endif
-      public int Margin
-      {
-         get
-         {
-            if (Hints.ContainsKey(EncodeHintType.MARGIN))
+        public int Margin
+        {
+            get
             {
+                if (Hints.ContainsKey(EncodeHintType.MARGIN))
+                {
                     return (int)Hints[EncodeHintType.MARGIN];
+                }
+                return 0;
             }
-            return 0;
-         }
-         set
-         {
-            Hints[EncodeHintType.MARGIN] = value;
-         }
-      }
+            set
+            {
+                Hints[EncodeHintType.MARGIN] = value;
+            }
+        }
 
-      /// <summary>
-      /// Specifies whether the data should be encoded to the GS1 standard;
-      /// FNC1 character is added in front of the data
-      /// </summary>
+        /// <summary>
+        /// Specifies whether the data should be encoded to the GS1 standard;
+        /// FNC1 character is added in front of the data
+        /// </summary>
 #if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
         [CategoryAttribute("Standard"), DescriptionAttribute("Specifies whether the data should be encoded " +
             "to the GS1 standard; if so a FNC1 character is added in front of the data.")]
 #endif
-      public bool GS1Format
-      {
-         get
-         {
-            if (Hints.ContainsKey(EncodeHintType.GS1_FORMAT))
+        public bool GS1Format
+        {
+            get
             {
-               return (bool)Hints[EncodeHintType.GS1_FORMAT];
+                if (Hints.ContainsKey(EncodeHintType.GS1_FORMAT))
+                {
+                    return (bool)Hints[EncodeHintType.GS1_FORMAT];
+                }
+                return false;
             }
-            return false;
-         }
-         set
-         {
-            Hints[EncodeHintType.GS1_FORMAT] = value;
-         }
-      }
+            set
+            {
+                Hints[EncodeHintType.GS1_FORMAT] = value;
+            }
+        }
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="EncodingOptions"/> class.
-      /// </summary>
-      public EncodingOptions()
-      {
-         Hints = new Dictionary<EncodeHintType, object>();
-      }
-   }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EncodingOptions"/> class.
+        /// </summary>
+        public EncodingOptions()
+        {
+            Hints = new Dictionary<EncodeHintType, object>();
+        }
+    }
 }

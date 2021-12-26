@@ -28,6 +28,10 @@ namespace ZXing.Common
 {
     public sealed partial class BitMatrix
     {
+        /// <summary>
+        /// Converts this ByteMatrix to a black and white bitmap.
+        /// </summary>
+        /// <returns>A black and white bitmap converted from this ByteMatrix.</returns>
         [Obsolete("Use BarcodeWriter instead")]
         public PixelData ToBitmap()
         {

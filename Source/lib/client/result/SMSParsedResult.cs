@@ -32,6 +32,7 @@ namespace ZXing.Client.Result
         /// <param name="via"></param>
         /// <param name="subject"></param>
         /// <param name="body"></param>
+        /// <param name="dummy">not used</param>
         public SMSParsedResult(String number,
                                String via,
                                String subject,

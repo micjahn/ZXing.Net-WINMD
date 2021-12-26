@@ -225,20 +225,23 @@ namespace ZXing.Common
          return matrix;
       }
 
+      /// <summary>
+      /// <p>Gets the requested bit, where true means black.</p>
+      /// </summary>
+      /// <param name="x">The horizontal component (i.e. which column)</param>
+      /// <param name="y">The vertical component (i.e. which row)</param>
+      /// <returns> value of given bit in matrix</returns>
       public bool get(int x, int y)
       {
          return this[x, y];
       }
 
-      /// <summary> <p>Gets the requested bit, where true means black.</p>
-      /// 
+      /// <summary>
+      /// <p>Gets the requested bit, where true means black.</p>
       /// </summary>
-      /// <param name="x">The horizontal component (i.e. which column)
-      /// </param>
-      /// <param name="y">The vertical component (i.e. which row)
-      /// </param>
-      /// <returns> value of given bit in matrix
-      /// </returns>
+      /// <param name="x">The horizontal component (i.e. which column)</param>
+      /// <param name="y">The vertical component (i.e. which row)</param>
+      /// <returns> value of given bit in matrix</returns>
       internal bool this[int x, int y]
       {
          get

@@ -237,15 +237,12 @@ namespace ZXing.Common
          }
       }
 
-      /// <summary> Efficient method to check if a range of bits is set, or not set.
-      /// 
+      /// <summary>
+      /// Efficient method to check if a range of bits is set, or not set.
       /// </summary>
-      /// <param name="start">start of range, inclusive.
-      /// </param>
-      /// <param name="end">end of range, exclusive
-      /// </param>
-      /// <param name="value">if true, checks that bits in range are set, otherwise checks that they are not set
-      /// </param>
+      /// <param name="start">start of range, inclusive.</param>
+      /// <param name="end">end of range, exclusive</param>
+      /// <param name="val">if true, checks that bits in range are set, otherwise checks that they are not set</param>
       /// <returns> true iff all bits are set or not set in range, according to value argument</returns>
       /// <throws><exception cref="ArgumentException" /> if end is less than start or the range is not contained in the array</throws>
       public bool isRange(int start, int end, bool val)
