@@ -24,10 +24,10 @@ namespace ZXing.Common
    /// module, x is the column position, and y is the row position. The ordering is always x, y.
    /// The origin is at the top-left.</p>
    ///   <p>Internally the bits are represented in a 1-D array of 32-bit ints. However, each row begins
-   /// with a new int. This is done intentionally so that we can copy out a row into a BitArray very
+    /// with a new int. This is done intentionally so that we can copy out a row into a <see cref="BitArray"/> very
    /// efficiently.</p>
    ///   <p>The ordering of bits is row-major. Within each int, the least significant bits are used first,
-   /// meaning they represent lower x values. This is compatible with BitArray's implementation.</p>
+   /// meaning they represent lower x values. This is compatible with <see cref="BitArray"/>'s implementation.</p>
    /// </summary>
    /// <author>Sean Owen</author>
    /// <author>dswitkin@google.com (Daniel Switkin)</author>
@@ -246,14 +246,14 @@ namespace ZXing.Common
       {
          get
          {
-            int offset = y*rowSize + (x >> 5);
-            return (((int) ((uint) (bits[offset]) >> (x & 0x1f))) & 1) != 0;
+            int offset = y * rowSize + (x >> 5);
+            return (((int)((uint)(bits[offset]) >> (x & 0x1f))) & 1) != 0;
          }
          set
          {
             if (value)
             {
-               int offset = y*rowSize + (x >> 5);
+               int offset = y * rowSize + (x >> 5);
                bits[offset] |= 1 << (x & 0x1f);
             }
             else
@@ -412,6 +412,31 @@ namespace ZXing.Common
       public void setRow(int y, BitArray row)
       {
             Array.Copy(row.Array, 0, bits, y * rowSize, rowSize);
+      }
+
+      /// <summary>
+      /// Modifies this {@code BitMatrix} to represent the same but rotated the given degrees(0, 90, 180, 270)
+      /// </summary>
+      /// <param name="degrees">number of degrees to rotate through counter-clockwise(0, 90, 180, 270)</param>
+      /// <exception cref="ArgumentException"></exception>
+      public void rotate(int degrees)
+      {
+          switch (degrees % 360)
+          {
+              case 0:
+                  return;
+              case 90:
+                  rotate90();
+                  return;
+              case 180:
+                  rotate180();
+                  return;
+              case 270:
+                  rotate90();
+                  rotate180();
+                  return;
+          }
+          throw new ArgumentException("degrees must be a multiple of 0, 90, 180, or 270");
       }
 
       /// <summary>

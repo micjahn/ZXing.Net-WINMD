@@ -24,6 +24,9 @@ namespace ZXing.Common
    /// <author>Sean Owen</author>
    public sealed class BitArray
    {
+      private static int[] EMPTY_BITS = { };
+      private static float LOAD_FACTOR = 0.75f;
+
       private int[] bits;
       private int size;
 
@@ -56,10 +59,10 @@ namespace ZXing.Common
       /// <returns></returns>
       internal bool this[int i]
       {
-            get
-            {
-                return (bits[i >> 5] & (1 << (i & 0x1F))) != 0;
-            }
+         get
+         {
+            return (bits[i >> 5] & (1 << (i & 0x1F))) != 0;
+         }
          set
          {
             if (value)
@@ -73,7 +76,7 @@ namespace ZXing.Common
       public BitArray()
       {
          this.size = 0;
-         this.bits = new int[1];
+         this.bits = EMPTY_BITS;
       }
 
       /// <summary>
@@ -97,11 +100,11 @@ namespace ZXing.Common
          this.size = size;
       }
 
-      private void ensureCapacity(int size)
+      private void ensureCapacity(int newSize)
       {
-         if (size > bits.Length << 5)
+         if (newSize > bits.Length << 5)
          {
-            int[] newBits = makeArray(size);
+            int[] newBits = makeArray((int)Math.Ceiling(newSize / LOAD_FACTOR));
             System.Array.Copy(bits, 0, newBits, 0, bits.Length);
             bits = newBits;
          }
@@ -237,12 +240,15 @@ namespace ZXing.Common
          }
       }
 
-      /// <summary>
-      /// Efficient method to check if a range of bits is set, or not set.
+      /// <summary> Efficient method to check if a range of bits is set, or not set.
+      /// 
       /// </summary>
-      /// <param name="start">start of range, inclusive.</param>
-      /// <param name="end">end of range, exclusive</param>
-      /// <param name="val">if true, checks that bits in range are set, otherwise checks that they are not set</param>
+      /// <param name="start">start of range, inclusive.
+      /// </param>
+      /// <param name="end">end of range, exclusive
+      /// </param>
+      /// <param name="val">if true, checks that bits in range are set, otherwise checks that they are not set
+      /// </param>
       /// <returns> true iff all bits are set or not set in range, according to value argument</returns>
       /// <throws><exception cref="ArgumentException" /> if end is less than start or the range is not contained in the array</throws>
       public bool isRange(int start, int end, bool val)
@@ -376,7 +382,7 @@ namespace ZXing.Common
                }
                bitOffset++;
             }
-            array[offset + i] = (byte) theByte;
+            array[offset + i] = (byte)theByte;
          }
       }
 
@@ -389,25 +395,25 @@ namespace ZXing.Common
          var oldBitsLen = len + 1;
          for (var i = 0; i < oldBitsLen; i++)
          {
-            var x = (long) bits[i];
+            var x = (long)bits[i];
             x = ((x >> 1) & 0x55555555u) | ((x & 0x55555555u) << 1);
             x = ((x >> 2) & 0x33333333u) | ((x & 0x33333333u) << 2);
             x = ((x >> 4) & 0x0f0f0f0fu) | ((x & 0x0f0f0f0fu) << 4);
             x = ((x >> 8) & 0x00ff00ffu) | ((x & 0x00ff00ffu) << 8);
             x = ((x >> 16) & 0x0000ffffu) | ((x & 0x0000ffffu) << 16);
-            newBits[len - i] = (int) x;
+            newBits[len - i] = (int)x;
          }
          // now correct the int's if the bit size isn't a multiple of 32
-         if (size != oldBitsLen*32)
+         if (size != oldBitsLen * 32)
          {
-            var leftOffset = oldBitsLen*32 - size;
-            var currentInt = ((int) ((uint) newBits[0] >> leftOffset)); // (newBits[0] >>> leftOffset);
+            var leftOffset = oldBitsLen * 32 - size;
+            var currentInt = ((int)((uint)newBits[0] >> leftOffset)); // (newBits[0] >>> leftOffset);
             for (var i = 1; i < oldBitsLen; i++)
             {
                var nextInt = newBits[i];
                currentInt |= nextInt << (32 - leftOffset);
                newBits[i - 1] = currentInt;
-               currentInt = ((int) ((uint) nextInt >> leftOffset)); // (nextInt >>> leftOffset);
+               currentInt = ((int)((uint)nextInt >> leftOffset)); // (nextInt >>> leftOffset);
             }
             newBits[oldBitsLen - 1] = currentInt;
          }
@@ -452,7 +458,7 @@ namespace ZXing.Common
          var hash = size;
          foreach (var bit in bits)
          {
-            hash = 31*hash + bit.GetHashCode();
+             hash = 31 * hash + bit.GetHashCode();
          }
          return hash;
       }
@@ -465,7 +471,7 @@ namespace ZXing.Common
       /// </returns>
       public override String ToString()
       {
-         var result = new System.Text.StringBuilder(size + (size/8) + 1);
+         var result = new System.Text.StringBuilder(size + (size / 8) + 1);
          for (int i = 0; i < size; i++)
          {
             if ((i & 0x07) == 0)

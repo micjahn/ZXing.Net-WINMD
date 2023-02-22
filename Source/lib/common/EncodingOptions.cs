@@ -162,6 +162,28 @@ namespace ZXing.Common
         }
 
         /// <summary>
+        /// Don't add a white area around the generated barcode if the requested size is larger than then barcode.
+        /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Output options"), DescriptionAttribute("Don't add a white area around the generated barcode if the requested size is larger than then barcode.")]
+#endif
+        public bool NoPadding
+        {
+            get
+            {
+                if (Hints.ContainsKey(EncodeHintType.NO_PADDING))
+                {
+                    return (bool)Hints[EncodeHintType.NO_PADDING];
+                }
+                return false;
+            }
+            set
+            {
+                Hints[EncodeHintType.NO_PADDING] = value;
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="EncodingOptions"/> class.
         /// </summary>
         public EncodingOptions()

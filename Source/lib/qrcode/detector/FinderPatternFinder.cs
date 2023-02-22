@@ -629,12 +629,12 @@ namespace ZXing.QrCode.Internal
             float? centerJ = centerFromEnd(stateCount, j);
             if (centerJ == null)
                 return false;
-            float? centerI = crossCheckVertical(i, (int)centerJ.Value, stateCount[2], stateCountTotal);
+            float? centerI = crossCheckVertical(i, (int) centerJ.Value, stateCount[2], stateCountTotal);
             if (centerI != null)
             {
                 // Re-cross check
-                centerJ = crossCheckHorizontal((int)centerJ.Value, (int)centerI.Value, stateCount[2], stateCountTotal);
-                if (centerJ != null && crossCheckDiagonal((int)centerI, (int)centerJ))
+                centerJ = crossCheckHorizontal((int) centerJ.Value, (int) centerI.Value, stateCount[2], stateCountTotal);
+                if (centerJ != null && crossCheckDiagonal((int) centerI, (int) centerJ))
                 {
                     float estimatedModuleSize = stateCountTotal / 7.0f;
                     bool found = false;
@@ -698,7 +698,7 @@ namespace ZXing.QrCode.Internal
                         // This is the case where you find top left last.
                         hasSkipped = true;
                         //UPGRADE_WARNING: Data types in Visual C# might be different.  Verify the accuracy of narrowing conversions. "ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?index='!DefaultContextWindowIndex'&keyword='jlca1042'"
-                        return (int)(Math.Abs(firstConfirmedCenter.X - center.X) - Math.Abs(firstConfirmedCenter.Y - center.Y)) / 2;
+                        return (int) (Math.Abs(firstConfirmedCenter.X - center.X) - Math.Abs(firstConfirmedCenter.Y - center.Y)) / 2;
                     }
                 }
             }
@@ -759,6 +759,22 @@ namespace ZXing.QrCode.Internal
         private FinderPattern[] selectBestPatterns()
         {
             int startSize = possibleCenters.Count;
+            if (startSize < 3)
+            {
+                // Couldn't find enough finder patterns
+                return null;
+            }
+
+            for (var i = 0; i < possibleCenters.Count; i++)
+            {
+                if (possibleCenters[i].Count < CENTER_QUORUM)
+                {
+                    possibleCenters.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            startSize = possibleCenters.Count;
             if (startSize < 3)
             {
                 // Couldn't find enough finder patterns

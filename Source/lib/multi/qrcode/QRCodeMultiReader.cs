@@ -59,11 +59,17 @@ namespace ZXing.Multi.QrCode
                 var points = detectorResult.Points;
                 // If the code was mirrored: swap the bottom-left and the top-right points.
                 var data = decoderResult.Other as QRCodeDecoderMetaData;
-                if (data != null)
+                if (data != null && data.IsMirrored)
                 {
                     data.applyMirroredCorrection(points);
                 }
                 var result = new Result(decoderResult.Text, decoderResult.RawBytes, points, BarcodeFormat.QR_CODE);
+
+                if (data != null)
+                {
+                    result.putMetadata(ResultMetadataType.QR_MASK_PATTERN, data.DataMask);
+                }
+
                 var byteSegments = decoderResult.ByteSegments;
                 if (byteSegments != null)
                 {
@@ -121,7 +127,7 @@ namespace ZXing.Multi.QrCode
                     newRawBytes.Write(saBytes, 0, saBytes.Length);
                     if (saResult.ResultMetadata.ContainsKey(ResultMetadataType.BYTE_SEGMENTS))
                     {
-                        var byteSegments = (IEnumerable<byte[]>)saResult.ResultMetadata[ResultMetadataType.BYTE_SEGMENTS];
+                        var byteSegments = (IEnumerable<byte[]>) saResult.ResultMetadata[ResultMetadataType.BYTE_SEGMENTS];
                         if (byteSegments != null)
                         {
                             foreach (byte[] segment in byteSegments)
@@ -146,8 +152,8 @@ namespace ZXing.Multi.QrCode
 
         private static int SaSequenceSort(Result a, Result b)
         {
-            var aNumber = (int)(a.ResultMetadata[ResultMetadataType.STRUCTURED_APPEND_SEQUENCE]);
-            var bNumber = (int)(b.ResultMetadata[ResultMetadataType.STRUCTURED_APPEND_SEQUENCE]);
+            var aNumber = (int) (a.ResultMetadata[ResultMetadataType.STRUCTURED_APPEND_SEQUENCE]);
+            var bNumber = (int) (b.ResultMetadata[ResultMetadataType.STRUCTURED_APPEND_SEQUENCE]);
             return aNumber - bNumber;
         }
     }

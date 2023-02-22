@@ -107,10 +107,10 @@ namespace ZXing.Rendering
                                                                     format == BarcodeFormat.UPC_A ||
                                                                     format == BarcodeFormat.MSI ||
                                                                     format == BarcodeFormat.PLESSEY);
-            int emptyArea = outputContent && matrix.Height > 16 ? 16 : 0;
+            int emptyArea = outputContent ? 16 : 0;
             int pixelsize = 1;
 
-            if (options != null)
+            if (options != null && !options.NoPadding)
             {
                 if (options.Width > width)
                 {

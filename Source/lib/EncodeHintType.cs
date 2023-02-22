@@ -16,6 +16,11 @@
 
 namespace ZXing
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using ZXing.Common;
+
     /// <summary>
     /// These are a set of hints that you may pass to Writers to specify their behavior.
     /// </summary>
@@ -172,8 +177,10 @@ namespace ZXing
         QR_MASK_PATTERN,
 
         /// <summary>
-        /// Forces which encoding will be used. Currently only used for Code-128 code sets (Type <see cref="System.String" />). Valid values are "A", "B", "C".
+        /// Forces which encoding will be used. Currently only used for Code-128 code sets (Type <see cref="System.String" />).
+        /// Valid values are "A", "B", "C".
         /// see also CODE128_FORCE_CODESET_B
+        /// This option and {@link #CODE128_COMPACT} are mutually exclusive.
         /// </summary>
         FORCE_CODE_SET,
 
@@ -185,5 +192,235 @@ namespace ZXing
         /// be forced to UTF-8 by means of the <see cref="CHARACTER_SET"/> encoding hint.
         /// </summary>
         QR_COMPACT,
+
+        /// <summary>
+        /// if set to true, barcode writer uses WIDTH and HEIGHT as maximum values and in combination with MARGIN=0
+        /// there is no white border added. The resulting image would be smaller than the requested size.
+        /// </summary>
+        NO_PADDING,
+
+        /// <summary>
+        /// Specifies whether to use compact mode for Data Matrix (type {@link Boolean}, or "true" or "false"
+        /// The compact encoding mode also supports the encoding of characters that are not in the ISO-8859-1
+        /// character set via ECIs.
+        /// Please note that in that case, the most compact character encoding is chosen for characters in
+        /// the input that are not in the ISO-8859-1 character set. Based on experience, some scanners do not
+        /// support encodings like cp-1256 (Arabic). In such cases the encoding can be forced to UTF-8 by
+        /// means of the {@link #CHARACTER_SET} encoding hint.
+        /// Compact encoding also provides GS1-FNC1 support when {@link #GS1_FORMAT} is selected. In this case
+        /// group-separator character (ASCII 29 decimal) can be used to encode the positions of FNC1 codewords
+        /// for the purpose of delimiting AIs.
+        /// This option and {@link #FORCE_C40} are mutually exclusive.
+        /// </summary>
+        DATA_MATRIX_COMPACT,
+
+        /// <summary>
+        /// Specifies whether to use compact mode for Code-128 code (type {@link Boolean}, or "true" or "false"
+        /// This can yield slightly smaller bar codes. This option and {@link #FORCE_CODE_SET} are mutually
+        /// exclusive options.
+        /// </summary>
+        CODE128_COMPACT,
+
+        /// <summary>
+        /// Forces C40 encoding for data-matrix (type {@link Boolean}, or "true" or "false") {@link String } value). This 
+        /// option and {@link #DATA_MATRIX_COMPACT} are mutually exclusive.
+        /// </summary>
+        FORCE_C40,
+
+        /// <summary>
+        /// Specifies whether to automatically insert ECIs when encoding PDF417 (type {@link Boolean}, or "true" or "false"
+        /// {@link String} value). 
+        /// Please note that in that case, the most compact character encoding is chosen for characters in
+        /// the input that are not in the ISO-8859-1 character set. Based on experience, some scanners do not
+        /// support encodings like cp-1256 (Arabic). In such cases the encoding can be forced to UTF-8 by
+        /// means of the {@link #CHARACTER_SET} encoding hint.
+        /// </summary>
+        PDF417_AUTO_ECI,
+    }
+
+    internal static class IDictionaryExtensions
+    {
+        public static bool IsBooleanFlagSet(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType)
+        {
+            return IsBooleanFlagSet(hints, encodeHintType, false);
+        }
+
+        public static bool IsBooleanFlagSet(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType, bool defaultIfNotContained)
+        {
+            if (hints != null && hints.ContainsKey(encodeHintType))
+            {
+                var boolObj = hints[encodeHintType];
+                if (boolObj != null)
+                {
+                    try
+                    {
+                        return Convert.ToBoolean(boolObj.ToString());
+                    }
+                    catch
+                    {
+                        // User passed in something that wasn't convertible, ignore and fallback to default
+                    }
+                }
+            }
+            return defaultIfNotContained;
+        }
+
+        public static int GetIntValue(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType)
+        {
+            return GetIntValue(hints, encodeHintType, 0);
+        }
+
+        public static int GetIntValue(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType, int defaultIfNotContained)
+        {
+            if (hints != null && hints.ContainsKey(encodeHintType))
+            {
+                var intObj = hints[encodeHintType];
+                if (intObj != null)
+                {
+                    try
+                    {
+                        return Convert.ToInt32(intObj.ToString());
+                    }
+                    catch
+                    {
+                        // User passed in something that wasn't convertible, ignore and fallback to default
+                    }
+                }
+            }
+            return defaultIfNotContained;
+        }
+
+        public static float GetFloatValue(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType)
+        {
+            return GetFloatValue(hints, encodeHintType, 0);
+        }
+
+        public static float GetFloatValue(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType, float defaultIfNotContained)
+        {
+            if (hints != null && hints.ContainsKey(encodeHintType))
+            {
+                var floatObj = hints[encodeHintType];
+                if (floatObj != null)
+                {
+                    try
+                    {
+                        return Convert.ToSingle(floatObj.ToString());
+                    }
+                    catch
+                    {
+                        // User passed in something that wasn't convertible, ignore and fallback to default
+                    }
+                }
+            }
+            return defaultIfNotContained;
+        }
+
+        public static int GetEnumValue(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType, Type enumType)
+        {
+            return GetEnumValue(hints, encodeHintType, 0);
+        }
+
+        public static int GetEnumValue(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType, Type enumType, int defaultIfNotContained)
+        {
+            if (hints != null && hints.ContainsKey(encodeHintType))
+            {
+                var valueObj = hints[encodeHintType];
+                if (valueObj != null)
+                {
+                    if (valueObj is int)
+                    {
+                        return (int)valueObj;
+                    }
+                    else
+                    {
+                        if (Enum.IsDefined(enumType, valueObj.ToString()))
+                        {
+                            var enumValue = Enum.Parse(enumType, valueObj.ToString(), true);
+                            return (int)enumValue;
+                        }
+                    }
+                }
+            }
+            return defaultIfNotContained;
+        }
+
+        public static TEnum GetEnumValue<TEnum>(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType, TEnum defaultIfNotContained)
+        {
+            if (hints != null && hints.ContainsKey(encodeHintType))
+            {
+                var valueObj = hints[encodeHintType];
+                if (valueObj != null)
+                {
+                    if (valueObj is int)
+                    {
+                        return (TEnum)valueObj;
+                    }
+                    else
+                    {
+                        if (Enum.IsDefined(typeof(TEnum), valueObj.ToString()))
+                        {
+                            var enumValue = (TEnum)Enum.Parse(typeof(TEnum), valueObj.ToString(), true);
+                            return enumValue;
+                        }
+                    }
+                }
+            }
+            return defaultIfNotContained;
+        }
+
+        public static T GetValue<T>(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType) where T : class
+        {
+            return GetValue<T>(hints, encodeHintType, null);
+        }
+
+        public static T GetValue<T>(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType, T defaultIfNotContained) where T : class
+        {
+            if (hints != null && hints.ContainsKey(encodeHintType))
+            {
+                var valueObj = hints[encodeHintType];
+                if (valueObj != null
+#if !NETSTANDARD1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !WINDOWS_UWP && !NETFX_CORE
+                    && typeof(T).IsAssignableFrom(valueObj.GetType())
+#endif
+                    )
+                {
+                    return (T)valueObj;
+                }
+            }
+            return defaultIfNotContained;
+        }
+
+        public static Encoding GetEncoding(IDictionary<EncodeHintType, object> hints)
+        {
+            return GetEncoding(hints, EncodeHintType.CHARACTER_SET, null);
+        }
+
+        public static Encoding GetEncoding(IDictionary<EncodeHintType, object> hints, Encoding defaultIfNotContained)
+        {
+            return GetEncoding(hints, EncodeHintType.CHARACTER_SET, defaultIfNotContained);
+        }
+
+        public static Encoding GetEncoding(IDictionary<EncodeHintType, object> hints, EncodeHintType encodeHintType, Encoding defaultIfNotContained)
+        {
+            Encoding encoding = defaultIfNotContained;
+#if !SILVERLIGHT || WINDOWS_PHONE
+            if (hints != null && hints.ContainsKey(encodeHintType))
+            {
+                object charsetname = hints[encodeHintType];
+                if (charsetname != null)
+                {
+                    encoding = CharacterSetECI.getEncoding(charsetname.ToString()) ?? encoding;
+                }
+            }
+#else
+            if (hints != null && hints.ContainsKey(encodeHintType))
+            {
+                // Silverlight supports only UTF-8 and UTF-16 out-of-the-box
+                encoding = CharacterSetECI.getEncoding(StringUtils.UTF8);
+            }
+#endif
+
+            return encoding;
+        }
     }
 }

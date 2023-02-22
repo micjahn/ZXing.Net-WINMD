@@ -105,32 +105,36 @@ namespace ZXing.OneD
             }
 
             int sidesMargin = DefaultMargin;
+            var noPadding = false;
             if (hints != null)
             {
-                var sidesMarginInt = hints.ContainsKey(EncodeHintType.MARGIN) ? hints[EncodeHintType.MARGIN] : null;
-                if (sidesMarginInt != null)
-                {
-                    sidesMargin = Convert.ToInt32(sidesMarginInt);
-                }
+                sidesMargin = IDictionaryExtensions.GetIntValue(hints, EncodeHintType.MARGIN, sidesMargin);
+                noPadding = IDictionaryExtensions.IsBooleanFlagSet(hints, EncodeHintType.NO_PADDING, false);
             }
 
             var code = encode(contents, hints);
-            return renderResult(code, width, height, sidesMargin);
+            return renderResult(code, width, height, sidesMargin, noPadding);
         }
 
         /// <summary>
         /// </summary>
         /// <returns>a byte array of horizontal pixels (0 = white, 1 = black)</returns>
-        private static BitMatrix renderResult(bool[] code, int width, int height, int sidesMargin)
+        private static BitMatrix renderResult(bool[] code, int width, int height, int sidesMargin, bool noPadding)
         {
             int inputWidth = code.Length;
             // Add quiet zone on both sides.
-            int fullWidth = inputWidth + sidesMargin;
+            int fullWidth = inputWidth + sidesMargin * 2;
             int outputWidth = Math.Max(width, fullWidth);
             int outputHeight = Math.Max(1, height);
 
             int multiple = outputWidth / fullWidth;
             int leftPadding = (outputWidth - (inputWidth * multiple)) / 2;
+
+            if (noPadding)
+            {
+                outputWidth = fullWidth * multiple;
+                leftPadding = sidesMargin * multiple;
+            }
 
             BitMatrix output = new BitMatrix(outputWidth, outputHeight);
             for (int inputX = 0, outputX = leftPadding; inputX < inputWidth; inputX++, outputX += multiple)
@@ -180,16 +184,23 @@ namespace ZXing.OneD
             return numAdded;
         }
 
+        private int defaultMargin = 10;
+
         /// <summary>
         /// Gets the default margin.
         /// </summary>
-        virtual public int DefaultMargin
+        public int DefaultMargin
         {
             get
             {
                 // CodaBar spec requires a side margin to be more than ten times wider than narrow space.
                 // This seems like a decent idea for a default for all formats.
-                return 10;
+                return defaultMargin;
+            }
+            internal set
+            {
+                // mainly for test cases
+                defaultMargin = value;
             }
         }
 

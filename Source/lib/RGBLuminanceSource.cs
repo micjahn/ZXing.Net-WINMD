@@ -148,8 +148,8 @@ namespace ZXing
 
       private static BitmapFormat DetermineBitmapFormat(byte[] rgbRawBytes, int width, int height)
       {
-         var square = width*height;
-         var byteperpixel = rgbRawBytes.Length/square;
+         var square = width * height;
+         var byteperpixel = rgbRawBytes.Length / square;
 
          switch (byteperpixel)
          {

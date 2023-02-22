@@ -46,11 +46,29 @@ namespace ZXing.Maxicode.Internal
         private const char FS = '\u001C';
         private const char GS = '\u001D';
         private const char RS = '\u001E';
+        private static byte[] COUNTRY_BYTES = { 53, 54, 43, 44, 45, 46, 47, 48, 37, 38 };
+        private static byte[] SERVICE_CLASS_BYTES = { 55, 56, 57, 58, 59, 60, 49, 50, 51, 52 };
+        private static byte[] POSTCODE_2_LENGTH_BYTES = { 39, 40, 41, 42, 31, 32 };
+        private static byte[] POSTCODE_2_BYTES = { 33, 34, 35, 36, 25, 26, 27, 28, 29, 30, 19,
+            20, 21, 22, 23, 24, 13, 14, 15, 16, 17, 18, 7, 8, 9, 10, 11, 12, 1, 2 };
+        private static byte[][] POSTCODE_3_BYTES;
+
+        static DecodedBitStreamParser()
+        {
+            POSTCODE_3_BYTES = new byte[6][];
+            POSTCODE_3_BYTES[0] = new byte[] { 39, 40, 41, 42, 31, 32};
+            POSTCODE_3_BYTES[1] = new byte[] { 33, 34, 35, 36, 25, 26 };
+            POSTCODE_3_BYTES[2] = new byte[] { 27, 28, 29, 30, 19, 20 };
+            POSTCODE_3_BYTES[3] = new byte[] { 21, 22, 23, 24, 13, 14 };
+            POSTCODE_3_BYTES[4] = new byte[] { 15, 16, 17, 18, 7, 8 };
+            POSTCODE_3_BYTES[5] = new byte[] { 9, 10, 11, 12, 1, 2 };
+        }
+
         private const string NINE_DIGITS = "000000000";
         private const string THREE_DIGITS = "000";
 
         private static String[] SETS = {
-                                 "\nABCDEFGHIJKLMNOPQRSTUVWXYZ"+ECI+FS+GS+RS+NS+' '+PAD+"\"#$%&'()*+,-./0123456789:"+SHIFTB+SHIFTC+SHIFTD+SHIFTE+LATCHB,
+                                 "\rABCDEFGHIJKLMNOPQRSTUVWXYZ"+ECI+FS+GS+RS+NS+' '+PAD+"\"#$%&'()*+,-./0123456789:"+SHIFTB+SHIFTC+SHIFTD+SHIFTE+LATCHB,
                                  "`abcdefghijklmnopqrstuvwxyz"+ECI+FS+GS+RS+NS+'{'+PAD+"}~\u007F;<=>?[\\]^_ ,./:@!|"+PAD+TWOSHIFTA+THREESHIFTA+PAD+SHIFTA+SHIFTC+SHIFTD+SHIFTE+LATCHA,
                                  "\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\u00C6\u00C7\u00C8\u00C9\u00CA\u00CB\u00CC\u00CD\u00CE\u00CF\u00D0\u00D1\u00D2\u00D3\u00D4\u00D5\u00D6\u00D7\u00D8\u00D9\u00DA"+ECI+FS+GS+RS+NS+"\u00DB\u00DC\u00DD\u00DE\u00DF\u00AA\u00AC\u00B1\u00B2\u00B3\u00B5\u00B9\u00BA\u00BC\u00BD\u00BE\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089"+LATCHA+' '+LOCK+SHIFTD+SHIFTE+LATCHB,
                                  "\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA"+ECI+FS+GS+RS+NS+"\u00FB\u00FC\u00FD\u00FE\u00FF\u00A1\u00A8\u00AB\u00AF\u00B0\u00B4\u00B7\u00B8\u00BB\u00BF\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094"+LATCHA+' '+SHIFTC+LOCK+SHIFTE+LATCHB,
@@ -68,6 +86,11 @@ namespace ZXing.Maxicode.Internal
                     if (mode == 2)
                     {
                         int pc = getPostCode2(bytes);
+                        int ps2Length = getPostCode2Length(bytes);
+                        if (ps2Length > 10)
+                        {
+                            throw new FormatException("Post Code 2 length > 10");
+                        }
                         var df = "0000000000".Substring(0, getPostCode2Length(bytes));
                         postcode = pc.ToString(df);
                     }
@@ -106,9 +129,6 @@ namespace ZXing.Maxicode.Internal
 
         private static int getInt(byte[] bytes, byte[] x)
         {
-            if (x.Length == 0)
-                throw new ArgumentException("x");
-
             int val = 0;
             for (int i = 0; i < x.Length; i++)
             {
@@ -119,38 +139,32 @@ namespace ZXing.Maxicode.Internal
 
         private static int getCountry(byte[] bytes)
         {
-            return getInt(bytes, new byte[] { 53, 54, 43, 44, 45, 46, 47, 48, 37, 38 });
+            return getInt(bytes, COUNTRY_BYTES);
         }
 
         private static int getServiceClass(byte[] bytes)
         {
-            return getInt(bytes, new byte[] { 55, 56, 57, 58, 59, 60, 49, 50, 51, 52 });
+            return getInt(bytes, SERVICE_CLASS_BYTES);
         }
 
         private static int getPostCode2Length(byte[] bytes)
         {
-            return getInt(bytes, new byte[] { 39, 40, 41, 42, 31, 32 });
+            return getInt(bytes, POSTCODE_2_LENGTH_BYTES);
         }
 
         private static int getPostCode2(byte[] bytes)
         {
-            return getInt(bytes, new byte[] {33, 34, 35, 36, 25, 26, 27, 28, 29, 30, 19,
-        20, 21, 22, 23, 24, 13, 14, 15, 16, 17, 18, 7, 8, 9, 10, 11, 12, 1, 2});
+            return getInt(bytes, POSTCODE_2_BYTES);
         }
 
         private static String getPostCode3(byte[] bytes)
         {
-            return new String(
-               new char[]
+            var sb = new StringBuilder(POSTCODE_3_BYTES.Length);
+            foreach (byte[] p3bytes in POSTCODE_3_BYTES)
                   {
-                  SETS[0][getInt(bytes, new byte[] {39, 40, 41, 42, 31, 32})],
-                  SETS[0][getInt(bytes, new byte[] {33, 34, 35, 36, 25, 26})],
-                  SETS[0][getInt(bytes, new byte[] {27, 28, 29, 30, 19, 20})],
-                  SETS[0][getInt(bytes, new byte[] {21, 22, 23, 24, 13, 14})],
-                  SETS[0][getInt(bytes, new byte[] {15, 16, 17, 18, 7, 8})],
-                  SETS[0][getInt(bytes, new byte[] {9, 10, 11, 12, 1, 2})],
-                  }
-               );
+                sb.Append(SETS[0][getInt(bytes, p3bytes)]);
+            }
+            return sb.ToString();
         }
 
         private static String getMessage(byte[] bytes, int start, int len)

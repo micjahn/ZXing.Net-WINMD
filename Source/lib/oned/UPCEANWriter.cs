@@ -25,15 +25,12 @@ namespace ZXing.OneD
     internal abstract class UPCEANWriter : OneDimensionalCodeWriter
     {
         /// <summary>
-        /// Gets the default margin.
+        /// 
         /// </summary>
-        public sealed override int DefaultMargin
+        public UPCEANWriter()
         {
-            get
-            {
-                // Use a different default more appropriate for UPC/EAN
-                return 9;
-            }
+            // Use a different default more appropriate for UPC/EAN
+            DefaultMargin = 9;
         }
     }
 }

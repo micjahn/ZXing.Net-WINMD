@@ -156,6 +156,120 @@ namespace ZXing.Datamatrix
         }
 
         /// <summary>
+        /// Specifies whether to use compact mode for Data Matrix (type {@link Boolean}, or "true" or "false"
+        /// The compact encoding mode also supports the encoding of characters that are not in the ISO-8859-1
+        /// character set via ECIs.
+        /// Please note that in that case, the most compact character encoding is chosen for characters in
+        /// the input that are not in the ISO-8859-1 character set. Based on experience, some scanners do not
+        /// support encodings like cp-1256 (Arabic). In such cases the encoding can be forced to UTF-8 by
+        /// means of the {@link #CHARACTER_SET} encoding hint.
+        /// Compact encoding also provides GS1-FNC1 support when {@link #GS1_FORMAT} is selected. In this case
+        /// group-separator character (ASCII 29 decimal) can be used to encode the positions of FNC1 codewords
+        /// for the purpose of delimiting AIs.
+        /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Standard"), DescriptionAttribute("Specifies whether to use compact mode for Data Matrix."+
+            " The compact encoding mode also supports the encoding of characters that are not in the ISO-8859-1" +
+            " character set via ECIs." +
+            " Please note that in that case, the most compact character encoding is chosen for characters in" +
+            " the input that are not in the ISO-8859-1 character set. Based on experience, some scanners do not" +
+            " support encodings like cp-1256 (Arabic). In such cases the encoding can be forced to UTF-8 by" +
+            " means of the {@link #CHARACTER_SET} encoding hint." +
+            " Compact encoding also provides GS1-FNC1 support when {@link #GS1_FORMAT} is selected. In this case" +
+            " group-separator character (ASCII 29 decimal) can be used to encode the positions of FNC1 codewords" +
+            " for the purpose of delimiting AIs.")]
+#endif
+        public bool CompactEncoding
+        {
+            get
+            {
+                if (Hints.ContainsKey(EncodeHintType.DATA_MATRIX_COMPACT))
+                {
+                    var boolObj = Hints[EncodeHintType.DATA_MATRIX_COMPACT];
+                    if (boolObj != null)
+                        return (bool)boolObj;
+                }
+                return false;
+            }
+            set
+            {
+                if (value)
+                {
+                    Hints[EncodeHintType.DATA_MATRIX_COMPACT] = value;
+                }
+                else
+                {
+                    if (Hints.ContainsKey(EncodeHintType.DATA_MATRIX_COMPACT))
+                        Hints.Remove(EncodeHintType.DATA_MATRIX_COMPACT);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Forces C40 encoding for data-matrix (type {@link Boolean}, or "true" or "false") {@link String } value). This 
+        /// option and {@link #DATA_MATRIX_COMPACT} are mutually exclusive.
+        /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Standard"), DescriptionAttribute("Forces C40 encoding for data-matrix. This " +
+            " option and CompactEncoding are mutually exclusive.")]
+#endif
+        public bool ForceC40
+        {
+            get
+            {
+                if (Hints.ContainsKey(EncodeHintType.FORCE_C40))
+                {
+                    var boolObj = Hints[EncodeHintType.FORCE_C40];
+                    if (boolObj != null)
+                        return (bool)boolObj;
+                }
+                return false;
+            }
+            set
+            {
+                if (value)
+                {
+                    Hints[EncodeHintType.FORCE_C40] = value;
+                }
+                else
+                {
+                    if (Hints.ContainsKey(EncodeHintType.FORCE_C40))
+                        Hints.Remove(EncodeHintType.FORCE_C40);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Specifies what character encoding to use where applicable (type {@link String})
+        /// </summary>
+#if !NETSTANDARD && !NETFX_CORE && !WindowsCE && !SILVERLIGHT && !PORTABLE && !UNITY
+        [CategoryAttribute("Standard"), DescriptionAttribute("Specifies what character encoding to " +
+            "use where applicable.")]
+#endif
+        public string CharacterSet
+        {
+            get
+            {
+                if (Hints.ContainsKey(EncodeHintType.CHARACTER_SET))
+                {
+                    return (string)Hints[EncodeHintType.CHARACTER_SET];
+                }
+                return null;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    if (Hints.ContainsKey(EncodeHintType.CHARACTER_SET))
+                        Hints.Remove(EncodeHintType.CHARACTER_SET);
+                }
+                else
+                {
+                    Hints[EncodeHintType.CHARACTER_SET] = value;
+                }
+            }
+        }
+        /// <summary>
         /// Gets the data container for all options
         /// </summary>
         [Browsable(false)]

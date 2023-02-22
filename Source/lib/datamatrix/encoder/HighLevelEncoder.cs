@@ -115,7 +115,7 @@ namespace ZXing.Datamatrix.Encoder
         /// <returns>the encoded message (the char values range from 0 to 255)</returns>
         public static String encodeHighLevel(String msg)
         {
-            return encodeHighLevel(msg, SymbolShapeHint.FORCE_NONE, null, null, (int)Encodation.ASCII);
+            return encodeHighLevel(msg, SymbolShapeHint.FORCE_NONE, null, null, (int)Encodation.ASCII, false, null, false);
         }
 
         /// <summary>
@@ -134,14 +134,40 @@ namespace ZXing.Datamatrix.Encoder
                                              Dimension maxSize,
                                              int defaultEncodation)
         {
+            return encodeHighLevel(msg, shape, minSize, maxSize, defaultEncodation, false, null, false);
+        }
+
+        /// <summary>
+        /// Performs message encoding of a DataMatrix message using the algorithm described in annex P
+        /// of ISO/IEC 16022:2000(E).
+        /// </summary>
+        /// <param name="msg">the message</param>
+        /// <param name="shape">requested shape. May be {@code SymbolShapeHint.FORCE_NONE},{@code SymbolShapeHint.FORCE_SQUARE} or {@code SymbolShapeHint.FORCE_RECTANGLE}.</param>
+        /// <param name="minSize">the minimum symbol size constraint or null for no constraint</param>
+        /// <param name="maxSize">the maximum symbol size constraint or null for no constraint</param>
+        /// <param name="defaultEncodation">encoding mode to start with</param>
+        /// <param name="forceC40">enforce C40 encoding</param>
+        /// <param name="encoding"></param>
+        /// <param name="disableEci"></param>
+        /// <returns>the encoded message (the char values range from 0 to 255)</returns>
+        public static String encodeHighLevel(String msg,
+                                             SymbolShapeHint shape,
+                                             Dimension minSize,
+                                             Dimension maxSize,
+                                             int defaultEncodation,
+                                             bool forceC40,
+                                             Encoding encoding,
+                                             bool disableEci)
+        {
             //the codewords 0..255 are encoded as Unicode characters
+            C40Encoder c40Encoder = new C40Encoder();
             Encoder[] encoders =
                {
-               new ASCIIEncoder(), new C40Encoder(), new TextEncoder(),
+               new ASCIIEncoder(), c40Encoder, new TextEncoder(),
                new X12Encoder(), new EdifactEncoder(), new Base256Encoder()
             };
 
-            var context = new EncoderContext(msg);
+            var context = new EncoderContext(msg, encoding, disableEci);
             context.setSymbolShape(shape);
             context.setSizeConstraints(minSize, maxSize);
 
@@ -159,6 +185,14 @@ namespace ZXing.Datamatrix.Encoder
             }
 
             int encodingMode = defaultEncodation; //Default mode
+
+            if (forceC40)
+            {
+                c40Encoder.encodeMaximal(context);
+                encodingMode = context.NewEncoding;
+                context.resetEncoderSignal();
+            }
+
             switch (encodingMode)
             {
                 case (int)Encodation.BASE256:
@@ -260,37 +294,41 @@ namespace ZXing.Datamatrix.Encoder
                 charCounts[currentMode] = 0;
             }
 
-            int charsProcessed = 0;
+            var charsProcessed = 0;
+            var mins = new byte[6];
+            var intCharCounts = new int[6];
             while (true)
             {
                 //step K
                 if ((startpos + charsProcessed) == msg.Length)
                 {
-                    var min = Int32.MaxValue;
-                    var mins = new byte[6];
-                    var intCharCounts = new int[6];
-                    min = findMinimums(charCounts, intCharCounts, min, mins);
+                    SupportClass.Fill(mins, (byte)0);
+                    SupportClass.Fill(intCharCounts, 0);
+                    var min = findMinimums(charCounts, intCharCounts, Int32.MaxValue, mins);
                     var minCount = getMinimumCount(mins);
 
                     if (intCharCounts[(int)Encodation.ASCII] == min)
                     {
                         return (int)Encodation.ASCII;
                     }
-                    if (minCount == 1 && mins[(int)Encodation.BASE256] > 0)
+                    if (minCount == 1)
                     {
-                        return (int)Encodation.BASE256;
-                    }
-                    if (minCount == 1 && mins[(int)Encodation.EDIFACT] > 0)
-                    {
-                        return (int)Encodation.EDIFACT;
-                    }
-                    if (minCount == 1 && mins[(int)Encodation.TEXT] > 0)
-                    {
-                        return (int)Encodation.TEXT;
-                    }
-                    if (minCount == 1 && mins[(int)Encodation.X12] > 0)
-                    {
-                        return (int)Encodation.X12;
+                        if (mins[(int)Encodation.BASE256] > 0)
+                        {
+                            return (int)Encodation.BASE256;
+                        }
+                        if (mins[(int)Encodation.EDIFACT] > 0)
+                        {
+                            return (int)Encodation.EDIFACT;
+                        }
+                        if (mins[(int)Encodation.TEXT] > 0)
+                        {
+                            return (int)Encodation.TEXT;
+                        }
+                        if (mins[(int)Encodation.X12] > 0)
+                        {
+                            return (int)Encodation.X12;
+                        }
                     }
                     return (int)Encodation.C40;
                 }
@@ -383,8 +421,8 @@ namespace ZXing.Datamatrix.Encoder
                 //step R
                 if (charsProcessed >= 4)
                 {
-                    var intCharCounts = new int[6];
-                    var mins = new byte[6];
+                    SupportClass.Fill(mins, (byte)0);
+                    SupportClass.Fill(intCharCounts, 0);
                     findMinimums(charCounts, intCharCounts, Int32.MaxValue, mins);
 
                     if (intCharCounts[(int)Encodation.ASCII] < min(intCharCounts[(int)Encodation.BASE256],
@@ -459,11 +497,9 @@ namespace ZXing.Datamatrix.Encoder
 
         private static int findMinimums(float[] charCounts, int[] intCharCounts, int min, byte[] mins)
         {
-            SupportClass.Fill(mins, (byte)0);
             for (int i = 0; i < 6; i++)
             {
-                intCharCounts[i] = (int)Math.Ceiling(charCounts[i]);
-                int current = intCharCounts[i];
+                int current = (intCharCounts[i] = (int)Math.Ceiling(charCounts[i]));
                 if (min > current)
                 {
                     min = current;
@@ -472,7 +508,6 @@ namespace ZXing.Datamatrix.Encoder
                 if (min == current)
                 {
                     mins[i]++;
-
                 }
             }
             return min;
@@ -549,7 +584,7 @@ namespace ZXing.Datamatrix.Encoder
 
         internal static void illegalCharacter(char c)
         {
-            throw new ArgumentException(String.Format("Illegal character: {0} (0x{1:X})", c, c));
+            throw new ArgumentException(String.Format("Illegal character: {0} (0x{1:X})", c, (int)c));
         }
     }
 }

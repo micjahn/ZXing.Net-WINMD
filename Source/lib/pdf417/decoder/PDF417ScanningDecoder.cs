@@ -51,13 +51,15 @@ namespace ZXing.PDF417.Internal
         /// <param name="imageBottomRight">Image bottom right.</param>
         /// <param name="minCodewordWidth">Minimum codeword width.</param>
         /// <param name="maxCodewordWidth">Max codeword width.</param>
+        /// <param name="startWithEncoding"></param>
         public static DecoderResult decode(BitMatrix image,
                                            ResultPoint imageTopLeft,
                                            ResultPoint imageBottomLeft,
                                            ResultPoint imageTopRight,
                                            ResultPoint imageBottomRight,
                                            int minCodewordWidth,
-                                           int maxCodewordWidth)
+                                           int maxCodewordWidth,
+                                           Encoding startWithEncoding)
         {
             var boundingBox = BoundingBox.Create(image, imageTopLeft, imageBottomLeft, imageTopRight, imageBottomRight);
             if (boundingBox == null)
@@ -144,7 +146,7 @@ namespace ZXing.PDF417.Internal
                     }
                 }
             }
-            return createDecoderResult(detectionResult);
+            return createDecoderResult(detectionResult, startWithEncoding);
         }
 
         /// <summary>
@@ -323,14 +325,13 @@ namespace ZXing.PDF417.Internal
                 }
                 barcodeMatrix01.setValue(calculatedNumberOfCodewords);
             }
-            else if (numberOfCodewords[0] != calculatedNumberOfCodewords)
-            {
-                if (calculatedNumberOfCodewords >= 1 && calculatedNumberOfCodewords <= PDF417Common.MAX_CODEWORDS_IN_BARCODE)
+            else if (numberOfCodewords[0] != calculatedNumberOfCodewords &&
+                calculatedNumberOfCodewords >= 1 &&
+                calculatedNumberOfCodewords <= PDF417Common.MAX_CODEWORDS_IN_BARCODE)
                 {
                     // The calculated one is more reliable as it is derived from the row indicator columns
                     barcodeMatrix01.setValue(calculatedNumberOfCodewords);
                 }
-            }
 
             return true;
         }
@@ -340,7 +341,8 @@ namespace ZXing.PDF417.Internal
         /// </summary>
         /// <returns>The decoder result.</returns>
         /// <param name="detectionResult">Detection result.</param>
-        private static DecoderResult createDecoderResult(DetectionResult detectionResult)
+        /// <param name="startWithEncoding"></param>
+        private static DecoderResult createDecoderResult(DetectionResult detectionResult, Encoding startWithEncoding)
         {
             BarcodeValue[][] barcodeMatrix = createBarcodeMatrix(detectionResult);
             if (barcodeMatrix == null)
@@ -381,7 +383,7 @@ namespace ZXing.PDF417.Internal
                 ambiguousIndexValues[i] = ambiguousIndexValuesList[i];
             }
             return createDecoderResultFromAmbiguousValues(detectionResult.ErrorCorrectionLevel, codewords,
-                                                          erasures.ToArray(), ambiguousIndexesList.ToArray(), ambiguousIndexValues);
+                                                          erasures.ToArray(), ambiguousIndexesList.ToArray(), ambiguousIndexValues, startWithEncoding);
         }
 
         /// <summary>
@@ -399,11 +401,13 @@ namespace ZXing.PDF417.Internal
         /// <param name="ambiguousIndexes">array with the indexes that have more than one most likely value.</param>
         /// <param name="ambiguousIndexValues">two dimensional array that contains the ambiguous values. The first dimension must
         /// be the same Length as the ambiguousIndexes array.</param>
+        /// <param name="startWithEncoding"></param>
         private static DecoderResult createDecoderResultFromAmbiguousValues(int ecLevel,
                                                                             int[] codewords,
                                                                             int[] erasureArray,
                                                                             int[] ambiguousIndexes,
-                                                                            int[][] ambiguousIndexValues)
+                                                                            int[][] ambiguousIndexValues,
+                                                                            Encoding startWithEncoding)
         {
             int[] ambiguousIndexCount = new int[ambiguousIndexes.Length];
 
@@ -416,7 +420,7 @@ namespace ZXing.PDF417.Internal
                 }
                 try
                 {
-                    var result = decodeCodewords(codewords, ecLevel, erasureArray);
+                    var result = decodeCodewords(codewords, ecLevel, erasureArray, startWithEncoding);
                     if (result != null)
                         return result;
                 }
@@ -751,7 +755,8 @@ namespace ZXing.PDF417.Internal
         /// <param name="codewords">Codewords.</param>
         /// <param name="ecLevel">Ec level.</param>
         /// <param name="erasures">Erasures.</param>
-        private static DecoderResult decodeCodewords(int[] codewords, int ecLevel, int[] erasures)
+        /// <param name="startWithEncoding"></param>
+        private static DecoderResult decodeCodewords(int[] codewords, int ecLevel, int[] erasures, Encoding startWithEncoding)
         {
             if (codewords.Length == 0)
             {
@@ -771,7 +776,7 @@ namespace ZXing.PDF417.Internal
             }
 
             // Decode the codewords
-            DecoderResult decoderResult = DecodedBitStreamParser.decode(codewords, ecLevel.ToString());
+            DecoderResult decoderResult = DecodedBitStreamParser.decode(codewords, ecLevel.ToString(), startWithEncoding);
             if (decoderResult != null)
             {
                 decoderResult.ErrorsCorrected = correctedErrorsCount;

@@ -26,6 +26,46 @@ namespace ZXing.Datamatrix.Encoder
             get { return (int)Encodation.C40; }
         }
 
+        public void encodeMaximal(EncoderContext context)
+        {
+            var buffer = new StringBuilder();
+            var lastCharSize = 0;
+            var backtrackStartPosition = context.Pos;
+            var backtrackBufferLength = 0;
+            while (context.HasMoreCharacters)
+            {
+                char c = context.CurrentChar;
+                context.Pos++;
+                lastCharSize = encodeChar(c, buffer);
+                if (buffer.Length % 3 == 0)
+                {
+                    backtrackStartPosition = context.Pos;
+                    backtrackBufferLength = buffer.Length;
+                }
+            }
+            if (backtrackBufferLength != buffer.Length)
+            {
+                var unwritten = (buffer.Length / 3) * 2;
+
+                var curCodewordCount = context.CodewordCount + unwritten + 1; // +1 for the latch to C40
+                context.updateSymbolInfo(curCodewordCount);
+                var available = context.SymbolInfo.dataCapacity - curCodewordCount;
+                var rest = buffer.Length % 3;
+                if ((rest == 2 && available != 2) ||
+                    (rest == 1 && (lastCharSize > 3 || available != 1)))
+                {
+                    buffer.Capacity = backtrackBufferLength;
+                    context.Pos = backtrackStartPosition;
+                }
+            }
+            if (buffer.Length > 0)
+            {
+                context.writeCodeword(HighLevelEncoder.LATCH_TO_C40);
+            }
+
+            handleEOD(context, buffer);
+        }
+
         public virtual void encode(EncoderContext context)
         {
             //step C
@@ -157,12 +197,12 @@ namespace ZXing.Datamatrix.Encoder
             }
             if (c >= '0' && c <= '9')
             {
-                sb.Append((char)(c - 48 + 4));
+                sb.Append((char) (c - 48 + 4));
                 return 1;
             }
             if (c >= 'A' && c <= 'Z')
             {
-                sb.Append((char)(c - 65 + 14));
+                sb.Append((char) (c - 65 + 14));
                 return 1;
             }
             if (c <= '\u001f')
@@ -174,39 +214,39 @@ namespace ZXing.Datamatrix.Encoder
             if (c <= '/')
             {
                 sb.Append('\u0001'); //Shift 2 Set
-                sb.Append((char)(c - 33));
+                sb.Append((char) (c - 33));
                 return 2;
             }
             if (c <= '@')
             {
                 sb.Append('\u0001'); //Shift 2 Set
-                sb.Append((char)(c - 58 + 15));
+                sb.Append((char) (c - 58 + 15));
                 return 2;
             }
             if (c <= '_')
             {
                 sb.Append('\u0001'); //Shift 2 Set
-                sb.Append((char)(c - 91 + 22));
+                sb.Append((char) (c - 91 + 22));
                 return 2;
             }
             if (c <= '\u007f')
             {
                 sb.Append('\u0002'); //Shift 3 Set
-                sb.Append((char)(c - 96));
+                sb.Append((char) (c - 96));
                 return 2;
             }
             sb.Append("\u0001\u001e"); //Shift 2, Upper Shift
             int len = 2;
-            len += encodeChar((char)(c - 128), sb);
+            len += encodeChar((char) (c - 128), sb);
             return len;
         }
 
         private static String encodeToCodewords(StringBuilder sb)
         {
             int v = (1600 * sb[0]) + (40 * sb[1]) + sb[2] + 1;
-            char cw1 = (char)(v / 256);
-            char cw2 = (char)(v % 256);
-            return new String(new char[] { cw1, cw2 });
+            char cw1 = (char) (v / 256);
+            char cw2 = (char) (v % 256);
+            return new String(new char[] {cw1, cw2});
         }
     }
 }
